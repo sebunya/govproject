@@ -144,16 +144,35 @@ app.get('/api/applications', (req, res) => {
 });
 
 app.get('/api/applications/:id', (req, res) => {
-  const app = db.prepare(`SELECT * FROM applications WHERE id = ? OR referenceNumber = ?`)
+  const row = db.prepare(`SELECT * FROM applications WHERE id = ? OR referenceNumber = ?`)
     .get(req.params.id, req.params.id);
-  if (!app) return res.status(404).json({ error: 'Not found' });
+  if (!row) return res.status(404).json({ error: 'Not found' });
 
   const docs = db.prepare(`SELECT * FROM documents WHERE applicationId = ?`)
-    .all((app as { id: number }).id);
+    .all((row as { id: number }).id);
   const auditLog = db.prepare(`SELECT * FROM audit_log WHERE applicationId = ? ORDER BY createdAt ASC`)
-    .all((app as { id: number }).id);
+    .all((row as { id: number }).id);
 
-  res.json({ ...(app as object), documents: docs, auditLog });
+  res.json({ ...(row as object), documents: docs, auditLog });
+});
+
+// Officer opens an application → transition submitted → under_review
+app.patch('/api/applications/:id/claim', (req, res) => {
+  const now = new Date().toISOString();
+  const row = db.prepare(`SELECT status FROM applications WHERE id = ?`).get(req.params.id) as { status: string } | undefined;
+  if (!row) return res.status(404).json({ error: 'Not found' });
+
+  if (row.status === 'submitted') {
+    db.prepare(`UPDATE applications SET status = 'under_review', assignedOfficerId = 1, respondedAt = COALESCE(respondedAt, ?) WHERE id = ?`)
+      .run(now, req.params.id);
+    db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt) VALUES (?, 'Application claimed for review', 'officer', 'Tumusiime Robert', 'Officer opened and claimed application', ?)`)
+      .run(req.params.id, now);
+  }
+
+  const updated = db.prepare(`SELECT * FROM applications WHERE id = ?`).get(req.params.id);
+  const docs = db.prepare(`SELECT * FROM documents WHERE applicationId = ?`).all(req.params.id);
+  const auditLog = db.prepare(`SELECT * FROM audit_log WHERE applicationId = ? ORDER BY createdAt ASC`).all(req.params.id);
+  res.json({ ...(updated as object), documents: docs, auditLog });
 });
 
 app.patch('/api/applications/:id/officer-decision', (req, res) => {

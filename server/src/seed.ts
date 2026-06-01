@@ -37,7 +37,8 @@ const historicalApps = [
   { ref: 'NGS-2026-0002', status: 'approved', district: 'Gulu', submittedAt: daysAgo(25), resolvedAt: daysAgo(22), officerId: 4, rating: 4 },
   { ref: 'NGS-2026-0003', status: 'approved', district: 'Jinja', submittedAt: daysAgo(20), resolvedAt: daysAgo(18), officerId: 5, rating: 5 },
   { ref: 'NGS-2026-0004', status: 'rejected', district: 'Kampala', submittedAt: daysAgo(18), resolvedAt: daysAgo(15), officerId: 3, rating: 2 },
-  { ref: 'NGS-2026-0005', status: 'approved', district: 'Mbarara', submittedAt: daysAgo(14), resolvedAt: daysAgo(12), officerId: 1, rating: 5 },
+  // NGS-2026-0005 belongs to Akello Sarah (demo NIN) — approved prior permit, shows history
+  { ref: 'NGS-2026-0005', status: 'approved', district: 'Mbarara', submittedAt: daysAgo(45), resolvedAt: daysAgo(42), officerId: 1, rating: 5 },
   { ref: 'NGS-2026-0006', status: 'approved', district: 'Gulu', submittedAt: daysAgo(12), resolvedAt: daysAgo(10), officerId: 4, rating: 4 },
   { ref: 'NGS-2026-0007', status: 'approved', district: 'Jinja', submittedAt: daysAgo(10), resolvedAt: daysAgo(8), officerId: 5, rating: 5 },
   { ref: 'NGS-2026-0008', status: 'approved', district: 'Kampala', submittedAt: daysAgo(8), resolvedAt: daysAgo(6), officerId: 3, rating: 4 },
@@ -78,6 +79,8 @@ const insertApp = db.prepare(`
   )
 `);
 
+const DEMO_NIN = 'CM93019100ABC1J'; // Akello Sarah's NIN — used in demo form
+
 historicalApps.forEach((app, i) => {
   const name = names[i] || `Citizen ${i + 1}`;
   const coop = coopNames[i] || `Cooperative ${i + 1}`;
@@ -85,14 +88,20 @@ historicalApps.forEach((app, i) => {
   const rating = app.rating;
   const ratedAt = rating && app.resolvedAt ? new Date(new Date(app.resolvedAt).getTime() + 3600000).toISOString() : null;
 
+  // Index 4 = NGS-2026-0005 belongs to Akello Sarah for demo history
+  const nin = i === 4 ? DEMO_NIN : `CM9301910${String(i).padStart(4, '0')}ABC`;
+  const fullName = i === 4 ? 'Akello Sarah Namugenyi' : name;
+  const gender = i === 4 ? 'Female' : (i % 2 === 0 ? 'Male' : 'Female');
+  const cooperativeName = i === 4 ? 'Mbarara Highlands Coffee Growers Cooperative' : coop;
+
   insertApp.run(
     app.ref,
-    `CM9301910${String(i).padStart(4, '0')}ABC`,
-    name,
-    `199${(i % 9) + 1}-0${(i % 9) + 1}-1${(i % 9) + 5}`,
+    nin,
+    fullName,
+    i === 4 ? '1991-04-12' : `199${(i % 9) + 1}-0${(i % 9) + 1}-1${(i % 9) + 5}`,
     app.district,
-    i % 2 === 0 ? 'Male' : 'Female',
-    coop,
+    gender,
+    cooperativeName,
     `100${String(i + 1).padStart(9, '0')}`,
     'Compliant',
     '2026-12-31',

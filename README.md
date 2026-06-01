@@ -17,7 +17,7 @@ npm run dev            # start API (port 3001) + UI (port 3000)
 
 - **Citizen Portal:**   http://localhost:3000/portal?persona=citizen
 - **Officer Desk:**     http://localhost:3000/desk?persona=officer
-- **Supervisor Desk:**  http://localhost:3000/desk?persona=supervisor
+- **Supervisor Desk:**  http://localhost:3000/supervisor?persona=supervisor
 - **Exec Dashboard:**   http://localhost:3000/dashboard?persona=leadership
 
 ---

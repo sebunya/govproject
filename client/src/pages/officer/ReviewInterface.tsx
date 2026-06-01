@@ -30,7 +30,7 @@ export default function ReviewInterface() {
 
   const { data: app, isLoading } = useQuery({
     queryKey: ['application', id],
-    queryFn: () => axios.get(`/api/applications/${id}`).then(r => r.data),
+    queryFn: () => axios.patch(`/api/applications/${id}/claim`).then(r => r.data),
   });
 
   const submitDecision = async () => {

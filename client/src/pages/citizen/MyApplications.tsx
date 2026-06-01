@@ -45,17 +45,21 @@ export default function MyApplications() {
         </div>
       ) : (
         <div className="space-y-4">
-          {apps.map((app: any) => (
+          {apps.map((app: any) => {
+            const isNew = Date.now() - new Date(app.submittedAt).getTime() < 3600000;
+            return (
             <div
               key={app.id}
               onClick={() => navigate(`/portal/application/${app.id}?persona=${persona}`)}
-              className="card hover:shadow-md hover:border-navy-700 cursor-pointer transition-all"
+              className={`card hover:shadow-md cursor-pointer transition-all ${isNew ? 'border-navy-700 ring-2 ring-navy-700 ring-opacity-20' : 'hover:border-navy-700'}`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <span className="font-extrabold text-navy-700">{app.referenceNumber}</span>
                     <StatusBadge status={app.status} />
+                    {isNew && <span className="badge-blue animate-pulse-slow">NEW</span>}
+                    {app.status === 'approved' && <span className="badge-green">✓ Permit Granted</span>}
                     {app.rating && (
                       <span className="text-xs text-gray-500">{'⭐'.repeat(app.rating)} {app.rating}/5</span>
                     )}
@@ -77,7 +81,8 @@ export default function MyApplications() {
                 </div>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

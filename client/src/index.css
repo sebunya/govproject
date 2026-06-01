@@ -70,3 +70,42 @@
 .animate-pulse-slow {
   animation: pulse-slow 2s ease-in-out infinite;
 }
+
+/* ─── Print / PDF Scorecard ──────────────────────────────────────────────── */
+@media print {
+  /* Hide interactive chrome */
+  .print\:hidden, nav, [role="navigation"] { display: none !important; }
+
+  body { font-family: 'Inter', sans-serif; color: #111; background: #fff; font-size: 11pt; }
+
+  .card, .stat-card {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure charts render */
+  .recharts-responsive-container { overflow: visible !important; }
+  .recharts-wrapper { width: 100% !important; }
+
+  h1 { font-size: 18pt; color: #1F3864; }
+  h2 { font-size: 13pt; color: #1F3864; border-bottom: 2px solid #BF8F00; padding-bottom: 4px; margin-bottom: 12px; }
+
+  /* Stat cards in a 5-col grid for print */
+  .grid-cols-5-print {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+
+  /* Footer watermark */
+  @page {
+    size: A4 landscape;
+    margin: 16mm;
+    @bottom-center {
+      content: "NileGov Stack — Mbarara District Local Government — CONFIDENTIAL INTERNAL DOCUMENT";
+      font-size: 8pt;
+      color: #888;
+    }
+  }
+}

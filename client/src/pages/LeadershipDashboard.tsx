@@ -35,8 +35,14 @@ export default function LeadershipDashboard() {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold text-navy-700">Executive Operations Dashboard</h1>
-            <div className="w-16 h-0.5 bg-gold-500 mt-1 mb-2" />
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-2xl font-extrabold text-navy-700">Executive Operations Dashboard</h1>
+              <span className="flex items-center gap-1.5 bg-status-greenBg text-status-green text-xs font-bold px-2.5 py-1 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-status-green animate-pulse inline-block" />
+                LIVE
+              </span>
+            </div>
+            <div className="w-16 h-0.5 bg-gold-500 mb-2" />
             <p className="text-gray-600">Mbarara District Local Government · Real-time service delivery metrics</p>
           </div>
           <div className="flex gap-3">

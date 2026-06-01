@@ -4,6 +4,7 @@ import PersonaSwitcher from './components/PersonaSwitcher';
 import CitizenPortal from './pages/CitizenPortal';
 import OfficerDesk from './pages/OfficerDesk';
 import LeadershipDashboard from './pages/LeadershipDashboard';
+import NotFound from './pages/NotFound';
 
 export default function App() {
   const [params] = useSearchParams();
@@ -18,7 +19,7 @@ export default function App() {
         <Route path="/desk/*" element={<OfficerDesk />} />
         <Route path="/supervisor/*" element={<OfficerDesk />} />
         <Route path="/dashboard/*" element={<LeadershipDashboard />} />
-        <Route path="*" element={<Navigate to={`/portal?persona=${persona}`} replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

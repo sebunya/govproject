@@ -61,13 +61,31 @@ export default function ApplicationStatus() {
 
       {/* Decision banner */}
       {app.status === 'approved' && (
-        <div className="bg-status-greenBg border border-status-green rounded-xl p-5">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">✅</span>
-            <div>
-              <h3 className="font-bold text-status-green text-lg">Application Approved</h3>
-              <p className="text-sm text-gray-700 mt-0.5">Your cooperative registration and agribusiness permit has been approved by Mbarara District Local Government.</p>
-              {app.supervisorNotes && <p className="text-sm text-gray-600 mt-1">Officer notes: "{app.supervisorNotes}"</p>}
+        <div className="bg-status-greenBg border-2 border-status-green rounded-xl overflow-hidden">
+          <div className="bg-status-green text-white px-5 py-3 flex items-center gap-2">
+            <span className="text-xl">✅</span>
+            <span className="font-bold text-lg">Application Approved — Permit Granted</span>
+          </div>
+          <div className="p-5 space-y-3">
+            <p className="text-sm text-gray-700">
+              Your application for <strong>Cooperative Registration & Agribusiness Permit</strong> has been
+              approved by Mbarara District Local Government. Your cooperative is authorised to operate.
+            </p>
+            {app.supervisorNotes && (
+              <div className="bg-white rounded-lg p-3 border border-status-green">
+                <p className="text-xs font-semibold text-gray-500 mb-1">Senior Officer's Note</p>
+                <p className="text-sm text-gray-700 italic">"{app.supervisorNotes}"</p>
+              </div>
+            )}
+            <div className="flex gap-3 pt-1">
+              <div className="text-xs text-gray-500">
+                Decision by: <strong>Nakamya Grace</strong> · Senior District Officer
+              </div>
+              {app.resolvedAt && (
+                <div className="text-xs text-gray-500">
+                  Date: <strong>{new Date(app.resolvedAt).toLocaleDateString('en-UG', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                </div>
+              )}
             </div>
           </div>
         </div>
