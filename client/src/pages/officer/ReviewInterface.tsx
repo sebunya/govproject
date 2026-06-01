@@ -10,7 +10,7 @@ const SOP_ITEMS = [
   { id: 2, label: 'Applicant identity confirmed', check: (a: any) => !!a.fullName },
   { id: 3, label: 'Cooperative name provided', check: (a: any) => !!a.cooperativeName },
   { id: 4, label: 'URA tax clearance confirmed', check: (a: any) => a.taxStatus === 'Compliant' },
-  { id: 5, label: 'Cooperative Bylaws document attached', check: (a: any) => a.documents?.some((d: any) => d.originalName?.toLowerCase().includes('bylaw') || true) },
+  { id: 5, label: 'Cooperative Bylaws document attached', check: (a: any) => a.documents?.length >= 1 },
   { id: 6, label: 'Member Roster attached', check: (a: any) => a.documents?.length >= 2 },
   { id: 7, label: 'Citizen consent recorded', check: (a: any) => !!a.consentTimestamp },
   { id: 8, label: 'Application within district jurisdiction (Mbarara)', check: (a: any) => a.district === 'Mbarara' },

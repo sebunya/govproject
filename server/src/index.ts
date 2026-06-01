@@ -112,13 +112,14 @@ app.get('/api/applications', (req, res) => {
       ORDER BY a.submittedAt DESC
     `).all(nin as string);
   } else if (persona === 'officer') {
+    // Sort by SLA urgency: least time remaining (submittedAt + slaResponseHours) first
     rows = db.prepare(`
       SELECT a.*, GROUP_CONCAT(d.originalName, '||') as docNames
       FROM applications a
       LEFT JOIN documents d ON d.applicationId = a.id
       WHERE a.status IN ('submitted','under_review','more_info_requested')
       GROUP BY a.id
-      ORDER BY a.submittedAt ASC
+      ORDER BY (julianday(a.submittedAt) + a.slaResponseHours / 24.0) ASC
     `).all();
   } else if (persona === 'supervisor') {
     rows = db.prepare(`
@@ -348,6 +349,59 @@ app.get('/api/dashboard', (_req, res) => {
     weeklyTrend,
     categoryStats,
   });
+});
+
+// ─── ERROR HANDLING ────────────────────────────────────────────────────────
+
+// Multer / file upload errors
+app.use((err: any, _req: any, res: any, next: any) => {
+  if (err?.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ error: 'File too large. Maximum size is 5MB.' });
+  }
+  if (err?.code === 'LIMIT_UNEXPECTED_FILE') {
+    return res.status(400).json({ error: 'Unexpected file field.' });
+  }
+  if (err) {
+    console.error('API error:', err.message);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+  next();
+});
+
+// ─── PER-DISTRICT SLA TREND (for leadership drill-down) ────────────────────
+
+app.get('/api/dashboard/district-trend', (_req, res) => {
+  const now = new Date();
+  const districts = ['Mbarara', 'Kampala', 'Gulu', 'Jinja'];
+
+  const trend: Record<string, any[]> = {};
+  for (const district of districts) {
+    trend[district] = [];
+    for (let w = 4; w >= 0; w--) {
+      const weekStart = new Date(now.getTime() - (w + 1) * 7 * 86400000).toISOString();
+      const weekEnd = new Date(now.getTime() - w * 7 * 86400000).toISOString();
+      const total = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE district = ? AND submittedAt >= ? AND submittedAt < ?`).get(district, weekStart, weekEnd) as { c: number }).c;
+      const breached = (db.prepare(`
+        SELECT COUNT(*) as c FROM applications
+        WHERE district = ? AND resolvedAt >= ? AND resolvedAt < ?
+          AND (julianday(resolvedAt) - julianday(submittedAt)) * 24 > slaResolveHours
+      `).get(district, weekStart, weekEnd) as { c: number }).c;
+      const onTimeCount = (db.prepare(`
+        SELECT COUNT(*) as c FROM applications
+        WHERE district = ? AND resolvedAt >= ? AND resolvedAt < ?
+          AND (julianday(resolvedAt) - julianday(submittedAt)) * 24 <= slaResolveHours
+      `).get(district, weekStart, weekEnd) as { c: number }).c;
+      trend[district].push({
+        week: `W-${w}`,
+        total,
+        slaBreached: breached,
+        onTime: onTimeCount,
+        compliance: total > 0 ? Math.round(((total - breached) / total) * 100) : 100,
+      });
+    }
+  }
+
+  res.json({ districts, trend });
 });
 
 const PORT = process.env.PORT || 3001;

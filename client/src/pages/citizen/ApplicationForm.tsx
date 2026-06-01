@@ -69,26 +69,34 @@ export default function ApplicationForm() {
     setter(file);
   };
 
+  const [submitError, setSubmitError] = useState('');
+
   const handleSubmit = async () => {
     setSubmitting(true);
-    const fd = new FormData();
-    fd.append('nin', nin);
-    fd.append('fullName', niraData!.fullName);
-    fd.append('dateOfBirth', niraData!.dateOfBirth);
-    fd.append('district', niraData!.district);
-    fd.append('gender', niraData!.gender);
-    fd.append('cooperativeName', cooperativeName);
-    fd.append('proposedTin', proposedTin);
-    fd.append('taxStatus', uraData!.taxStatus);
-    fd.append('taxClearanceValidUntil', uraData!.clearanceValidUntil);
-    fd.append('consentTimestamp', new Date().toISOString());
-    if (bylaws) fd.append('bylaws', bylaws);
-    if (memberRoster) fd.append('memberRoster', memberRoster);
+    setSubmitError('');
+    try {
+      const fd = new FormData();
+      fd.append('nin', nin);
+      fd.append('fullName', niraData!.fullName);
+      fd.append('dateOfBirth', niraData!.dateOfBirth);
+      fd.append('district', niraData!.district);
+      fd.append('gender', niraData!.gender);
+      fd.append('cooperativeName', cooperativeName);
+      fd.append('proposedTin', proposedTin);
+      fd.append('taxStatus', uraData!.taxStatus);
+      fd.append('taxClearanceValidUntil', uraData!.clearanceValidUntil);
+      fd.append('consentTimestamp', new Date().toISOString());
+      if (bylaws) fd.append('bylaws', bylaws);
+      if (memberRoster) fd.append('memberRoster', memberRoster);
 
-    const res = await axios.post('/api/applications', fd);
-    setSubmitted(res.data);
-    setStep(6);
-    setSubmitting(false);
+      const res = await axios.post('/api/applications', fd);
+      setSubmitted(res.data);
+      setStep(6);
+    } catch (err: any) {
+      setSubmitError(err?.response?.data?.error || 'Submission failed. Please check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const stepLabels = [
@@ -481,6 +489,13 @@ export default function ApplicationForm() {
               <strong>SLA Commitment:</strong> Mbarara District Local Government will respond within <strong>2 working days</strong> and resolve your application within <strong>14 working days</strong>.
             </div>
           </div>
+
+          {submitError && (
+            <div className="bg-status-redBg border border-status-red text-status-red rounded-lg p-3 text-sm flex items-start gap-2">
+              <span className="mt-0.5">⚠</span>
+              <span>{submitError}</span>
+            </div>
+          )}
 
           <div className="flex justify-between">
             <button onClick={() => setStep(4)} className="btn-secondary">← Back</button>

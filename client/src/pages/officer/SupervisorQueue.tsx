@@ -13,6 +13,7 @@ export default function SupervisorQueue() {
   const [decision, setDecision] = useState<Record<number, 'approved' | 'rejected'>>({});
   const [notes, setNotes] = useState<Record<number, string>>({});
   const [submitting, setSubmitting] = useState<number | null>(null);
+  const [recentDecision, setRecentDecision] = useState<{ ref: string; decision: string } | null>(null);
 
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ['supervisor-queue'],
@@ -20,15 +21,21 @@ export default function SupervisorQueue() {
     refetchInterval: 5000,
   });
 
-  const submitDecision = async (appId: number) => {
+  const submitDecision = async (appId: number, refNum: string) => {
     setSubmitting(appId);
-    await axios.patch(`/api/applications/${appId}/supervisor-decision`, {
-      decision: decision[appId],
-      notes: notes[appId] || '',
-    });
-    qc.invalidateQueries({ queryKey: ['supervisor-queue'] });
-    setExpanded(null);
-    setSubmitting(null);
+    try {
+      await axios.patch(`/api/applications/${appId}/supervisor-decision`, {
+        decision: decision[appId],
+        notes: notes[appId] || '',
+      });
+      qc.invalidateQueries({ queryKey: ['supervisor-queue'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+      setExpanded(null);
+      setRecentDecision({ ref: refNum, decision: decision[appId] });
+      setTimeout(() => setRecentDecision(null), 5000);
+    } finally {
+      setSubmitting(null);
+    }
   };
 
   if (isLoading) return (
@@ -39,6 +46,22 @@ export default function SupervisorQueue() {
 
   return (
     <div className="space-y-6">
+      {/* Decision confirmation toast */}
+      {recentDecision && (
+        <div className={`fixed top-16 right-4 z-50 rounded-xl shadow-xl p-4 flex items-center gap-3 text-white text-sm font-semibold transition-all ${
+          recentDecision.decision === 'approved' ? 'bg-status-green' : 'bg-status-red'
+        }`}>
+          <span className="text-lg">{recentDecision.decision === 'approved' ? '✅' : '❌'}</span>
+          <div>
+            <div>{recentDecision.ref} — Decision recorded</div>
+            <div className="font-normal text-xs opacity-90 mt-0.5">
+              {recentDecision.decision === 'approved' ? 'Application approved and permit granted' : 'Application rejected'}
+            </div>
+          </div>
+          <button onClick={() => setRecentDecision(null)} className="ml-2 opacity-70 hover:opacity-100">✕</button>
+        </div>
+      )}
+
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-navy-700">Supervisor Review Queue</h1>
@@ -137,7 +160,7 @@ export default function SupervisorQueue() {
                       onChange={e => setNotes(prev => ({ ...prev, [app.id]: e.target.value }))}
                     />
                     <button
-                      onClick={() => submitDecision(app.id)}
+                      onClick={() => submitDecision(app.id, app.referenceNumber)}
                       disabled={!decision[app.id] || submitting === app.id}
                       className={`font-semibold px-6 py-2.5 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
                         decision[app.id] === 'rejected' ? 'bg-status-red' : 'bg-status-green'

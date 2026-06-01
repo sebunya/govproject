@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Header from '../components/Header';
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer,
+  Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid,
+  PolarAngleAxis, Radar,
 } from 'recharts';
 
 function StatCard({ value, label, sub, color }: { value: string | number; label: string; sub?: string; color?: string }) {
@@ -16,11 +18,26 @@ function StatCard({ value, label, sub, color }: { value: string | number; label:
   );
 }
 
+const DISTRICT_COLORS: Record<string, string> = {
+  Mbarara: '#1F3864',
+  Kampala: '#1F6F3F',
+  Gulu: '#B85800',
+  Jinja: '#BF8F00',
+};
+
 export default function LeadershipDashboard() {
+  const [drillDistrict, setDrillDistrict] = useState<string | null>(null);
+
   const { data: metrics, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () => axios.get('/api/dashboard').then(r => r.data),
     refetchInterval: 10000,
+  });
+
+  const { data: districtTrend } = useQuery({
+    queryKey: ['district-trend'],
+    queryFn: () => axios.get('/api/dashboard/district-trend').then(r => r.data),
+    refetchInterval: 30000,
   });
 
   const printReport = () => {
@@ -144,8 +161,16 @@ export default function LeadershipDashboard() {
                     {metrics.districtStats.map((d: any) => {
                       const compliance = d.total > 0 ? Math.round(((d.total - d.slaBreached) / d.total) * 100) : 100;
                       return (
-                        <tr key={d.district} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="py-3 font-medium">{d.district}</td>
+                        <tr
+                          key={d.district}
+                          className={`border-b border-gray-100 hover:bg-navy-50 cursor-pointer transition-colors ${drillDistrict === d.district ? 'bg-navy-50' : ''}`}
+                          onClick={() => setDrillDistrict(drillDistrict === d.district ? null : d.district)}
+                        >
+                          <td className="py-3 font-medium flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full inline-block" style={{ background: DISTRICT_COLORS[d.district] || '#888' }} />
+                            {d.district}
+                            {drillDistrict === d.district && <span className="text-xs text-navy-700 font-normal ml-1">▲ trend</span>}
+                          </td>
                           <td className="py-3 text-right">{d.total}</td>
                           <td className="py-3 text-right text-status-green font-semibold">{d.approved}</td>
                           <td className="py-3 text-right">
@@ -167,6 +192,58 @@ export default function LeadershipDashboard() {
                 </table>
               </div>
             </div>
+
+            {/* District SLA Trend Drill-Down */}
+            {drillDistrict && districtTrend && districtTrend.trend[drillDistrict] && (
+              <div className="card border-navy-700 border-2">
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="section-title mb-0">
+                    SLA Compliance Trend — {drillDistrict} District
+                  </h2>
+                  <button onClick={() => setDrillDistrict(null)} className="text-gray-400 hover:text-gray-600 text-sm">✕ Close</button>
+                </div>
+                <p className="text-xs text-gray-500 mb-4">5-week rolling window · Click a district row to drill down</p>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={districtTrend.trend[drillDistrict]} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="week" tick={{ fontSize: 11 }} />
+                    <YAxis tick={{ fontSize: 11 }} unit="%" domain={[0, 100]} />
+                    <Tooltip formatter={(v: any) => `${v}%`} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="compliance"
+                      stroke={DISTRICT_COLORS[drillDistrict] || '#1F3864'}
+                      strokeWidth={3}
+                      dot={{ r: 5 }}
+                      name="SLA Compliance %"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <div className="grid grid-cols-4 gap-3 mt-4">
+                  {districtTrend.trend[drillDistrict].slice(-1).map((w: any) => (
+                    <div key="latest" className="bg-navy-50 rounded-lg p-3 text-center">
+                      <div className={`text-xl font-extrabold ${w.compliance >= 90 ? 'text-status-green' : w.compliance >= 70 ? 'text-status-orange' : 'text-status-red'}`}>
+                        {w.compliance}%
+                      </div>
+                      <div className="text-xs text-gray-500 mt-0.5">Current SLA</div>
+                    </div>
+                  ))}
+                  <div className="bg-navy-50 rounded-lg p-3 text-center">
+                    <div className="text-xl font-extrabold text-navy-700">{districtTrend.trend[drillDistrict].reduce((s: number, w: any) => s + w.total, 0)}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">Total (5 wks)</div>
+                  </div>
+                  <div className="bg-navy-50 rounded-lg p-3 text-center">
+                    <div className="text-xl font-extrabold text-status-red">{districtTrend.trend[drillDistrict].reduce((s: number, w: any) => s + w.slaBreached, 0)}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">SLA Breached</div>
+                  </div>
+                  <div className="bg-navy-50 rounded-lg p-3 text-center">
+                    <div className="text-xl font-extrabold text-status-green">{districtTrend.trend[drillDistrict].reduce((s: number, w: any) => s + w.onTime, 0)}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">On Time</div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Category SLA */}
             <div className="card">

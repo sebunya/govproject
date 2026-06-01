@@ -1,9 +1,37 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 export default function CitizenLanding() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const persona = params.get('persona') || 'citizen';
+
+  const { data: metrics } = useQuery({
+    queryKey: ['dashboard-public'],
+    queryFn: () => axios.get('/api/dashboard').then(r => r.data),
+    staleTime: 30000,
+  });
+
+  const stats = [
+    {
+      label: 'Services Available',
+      value: '1 Active',
+      sub: '4 coming soon',
+    },
+    {
+      label: 'Avg. Resolution Time',
+      value: metrics ? `${metrics.avgResolutionHours >= 24
+        ? `${Math.round(metrics.avgResolutionHours / 24 * 10) / 10} days`
+        : `${metrics.avgResolutionHours}h`}` : '—',
+      sub: 'vs. 14-day SLA target',
+    },
+    {
+      label: 'SLA Compliance',
+      value: metrics ? `${metrics.slaCompliancePercent}%` : '—',
+      sub: 'Applications resolved on time',
+    },
+  ];
 
   return (
     <div className="space-y-8">
@@ -20,7 +48,7 @@ export default function CitizenLanding() {
           <h1 className="text-3xl md:text-4xl font-extrabold mb-3 leading-tight">
             Government services that respect your time
           </h1>
-          <p className="text-navy-100 text-lg mb-6 max-w-xl">
+          <p className="text-navy-100 text-lg mb-6 max-w-xl opacity-90">
             Apply for permits, register cooperatives, and track your applications — all in one place.
             Transparent, accountable, and designed around you.
           </p>
@@ -41,13 +69,9 @@ export default function CitizenLanding() {
         </div>
       </div>
 
-      {/* Stats bar */}
+      {/* Live stats */}
       <div className="grid grid-cols-3 gap-4">
-        {[
-          { label: 'Services Available', value: '1 Active', sub: '4 Coming soon' },
-          { label: 'Avg. Resolution Time', value: '8.2 days', sub: 'vs. 14-day SLA' },
-          { label: 'Citizen Satisfaction', value: '4.4 / 5', sub: 'Based on 47 ratings' },
-        ].map(s => (
+        {stats.map(s => (
           <div key={s.label} className="bg-navy-50 rounded-xl p-4 text-center">
             <div className="text-2xl font-extrabold text-navy-700">{s.value}</div>
             <div className="text-xs font-semibold text-navy-700 mt-0.5">{s.label}</div>
@@ -82,6 +106,27 @@ export default function CitizenLanding() {
           </div>
         ))}
       </div>
+
+      {/* Active applications alert */}
+      {metrics && metrics.activeApplications > 0 && (
+        <div className="bg-gold-50 border border-gold-500 rounded-xl p-4 flex items-center gap-3">
+          <span className="text-gold-500 text-xl">📌</span>
+          <div>
+            <p className="text-sm font-semibold text-yellow-900">
+              {metrics.activeApplications} application{metrics.activeApplications !== 1 ? 's' : ''} currently being processed
+            </p>
+            <p className="text-xs text-yellow-800 mt-0.5">
+              Officers are reviewing submissions. Track yours under "My Applications".
+            </p>
+          </div>
+          <button
+            onClick={() => navigate(`/portal/my-applications?persona=${persona}`)}
+            className="ml-auto btn-secondary text-sm py-1.5 shrink-0"
+          >
+            Track →
+          </button>
+        </div>
+      )}
     </div>
   );
 }
