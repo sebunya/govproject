@@ -1,7 +1,17 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-7C COMPLETE — Next: Pass 11B-8 (Installation Hooks and Final Audit)
+## Status: 11B-7D COMPLETE — Next: Pass 11B-8 (Installation Hooks and Final Audit)
+
+## Pass 11B-7D: Citizen Status Lookup and Redaction Layer ✅ COMPLETE
+- [x] Create pure redaction helper module `application/redaction.py`
+- [x] Add status lookup API endpoint `get_redacted_case_status_preview` to `public_readiness.py`
+- [x] Export status lookup API endpoint in `interfaces/frappe/api/__init__.py`
+- [x] Create unit test suite `tests/unit/test_redaction.py`
+- [x] Update static and unit test assertions in `test_public_api_scaffold.py` and `test_public_api_scaffold_outputs.py`
+- [x] Run unit tests to verify all tests pass (1376/1376 passed)
+- [x] Update documentation: `13_evidence_index.md`, `08_runtime_validation_checklist.md`, `walkthrough.md`
+- [x] Run compilation check and final verification command checks
 
 ## Pass 11B-7C: REST API Envelope Endpoint Scaffolding ✅ COMPLETE
 - [x] Create `interfaces/frappe/api/public_readiness.py`

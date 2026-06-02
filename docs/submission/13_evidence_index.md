@@ -239,7 +239,15 @@ This document indexes the code deliverables, verification results, and operation
 - Exported API endpoints in [__init__.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/interfaces/frappe/api/__init__.py).
 - Created [test_public_api_scaffold.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_public_api_scaffold.py) statically asserting that the endpoints are whitelisted, free of secrets, forbidden fields, or emails, and enforce disclaimers.
 - Created [test_public_api_scaffold_outputs.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_public_api_scaffold_outputs.py) validating API envelopes, schemas, optional NIN formatting, and response structure.
-- **1367 / 1367 passed** in total test suite.
+- **1376 / 1376 passed** in total test suite.
+
+### Pass 11B-7D Additions (Citizen Status Lookup and Redaction Layer)
+- Created [redaction.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/redaction.py) containing masking functions (`mask_nin`, `mask_phone`, `mask_email`) and status data redaction helpers.
+- Added `get_redacted_case_status_preview` to [public_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/interfaces/frappe/api/public_readiness.py) whitelisting a secure read-only case status lookup by reference.
+- Exported the new API endpoint in [__init__.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/interfaces/frappe/api/__init__.py).
+- Created [test_redaction.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_redaction.py) to independently unit-test all masking and redaction behaviors.
+- Updated unit and architecture tests in `test_public_api_scaffold.py` and `test_public_api_scaffold_outputs.py` to cover safety constraints and the lookup endpoints.
+
 
 
 

@@ -226,4 +226,8 @@ Validate on Hetzner/Frappe runtime:
 - [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_prototype_payment_requirement_preview` returns a sandbox disclaimer warning.
 - [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_interoperability_disclaimer` returns all integration status flags as `False`.
 - [ ] Confirm all whitelisted endpoints are strictly read-only and enforce disclaimers without interacting with any production gateways.
+- [ ] Verify `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_redacted_case_status_preview` returns a missing reference error envelope if called without a reference.
+- [ ] Verify `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_redacted_case_status_preview?reference_number=REQ-2026-9999` returns a fully-redacted status dictionary matching the application level redaction rules.
+- [ ] Verify that no internal workflow detail (assigned officer, supervisor comments, raw notes) is ever leaked.
+
 

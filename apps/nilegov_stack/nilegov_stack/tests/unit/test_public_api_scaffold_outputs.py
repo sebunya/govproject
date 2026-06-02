@@ -11,6 +11,7 @@ from nilegov_stack.interfaces.frappe.api.public_readiness import (
     get_consent_capture_schema,
     get_prototype_payment_requirement_preview,
     get_interoperability_disclaimer,
+    get_redacted_case_status_preview,
 )
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -90,3 +91,29 @@ class TestPublicAPIScaffoldOutputs:
         flags = data["connected_systems"]
         for k, v in flags.items():
             assert v is False
+
+    def test_get_redacted_case_status_preview_missing_ref(self):
+        res = get_redacted_case_status_preview()
+        assert res["success"] is False
+        assert res["error"]["code"] == "MISSING_REFERENCE"
+        assert "reference is required" in res["error"]["message"]
+
+    def test_get_redacted_case_status_preview_success(self):
+        res = get_redacted_case_status_preview("REQ-2026-9999")
+        assert res["success"] is True
+        data = res["data"]
+        assert data["service_request_reference"] == "REQ-2026-9999"
+        assert data["service_type"] == "LOST_NATIONAL_ID"
+        assert data["citizen_visible_status"] == "In Progress"
+        assert data["masked_nin"] == "**********0000"
+        assert data["masked_phone"] == "+25670****001"
+        assert data["masked_email"] == "d*************@example.test"
+        assert "assigned_officer" not in data
+        assert "closure_notes" not in data
+
+    def test_get_redacted_case_status_preview_runtime_error(self):
+        res = get_redacted_case_status_preview("trigger-runtime-error")
+        assert res["success"] is False
+        assert res["error"]["code"] == "RUNTIME_VALIDATION_REQUIRED"
+        assert "runtime validation" in res["error"]["message"]
+

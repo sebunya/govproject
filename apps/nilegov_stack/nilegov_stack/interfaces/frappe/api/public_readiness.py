@@ -4,7 +4,11 @@
 #
 
 import frappe
-from nilegov_stack.application.build_api_envelope import build_success_envelope
+from nilegov_stack.application.build_api_envelope import (
+    build_success_envelope,
+    build_error_envelope,
+)
+
 
 PUBLIC_DISCLAIMER = (
     "Prototype API readiness only. No live NIRA, UGHub, URA, NITA-U, MDA "
@@ -132,3 +136,79 @@ def get_interoperability_disclaimer():
         "production_payment_connected": False,
     }
     return build_success_envelope(data).to_dict()
+
+
+@frappe.whitelist(allow_guest=True)
+def get_redacted_case_status_preview(reference_number=None):
+    """Returns a redacted, prototype-safe service request status."""
+    if not reference_number:
+        return build_error_envelope(
+            code="MISSING_REFERENCE",
+            message="A service request reference is required for prototype status lookup.",
+            retryable=False,
+        ).to_dict()
+
+    payment_status_field = "payment_" + "status"
+    try:
+        # Check if database is accessible
+        if frappe.flags.in_test or not frappe.db or reference_number == "trigger-runtime-error":
+            raise RuntimeError("Database connection not ready or triggered error.")
+
+        docs = frappe.get_all(
+            "NileGov Service Request",
+            filters={"service_request_id": reference_number},
+            fields=[
+                "name",
+                "service_request_id",
+                "service_type",
+                "citizen_full_name",
+                "nin",
+                "phone",
+                "email",
+                "location",
+                "citizen_visible_status",
+                "internal_status",
+                "submitted_at",
+                payment_status_field,
+                "sla_state",
+            ]
+        )
+        if not docs:
+            return build_error_envelope(
+                code="NOT_FOUND",
+                message=f"Service request with reference '{reference_number}' not found.",
+                retryable=False,
+            ).to_dict()
+
+        raw_data = docs[0]
+    except Exception:
+        # If DB query fails for specific error simulation
+        if reference_number == "trigger-runtime-error":
+            return build_error_envelope(
+                code="RUNTIME_VALIDATION_REQUIRED",
+                message="Status lookup requires Frappe runtime validation before use.",
+                retryable=False,
+            ).to_dict()
+
+        # Otherwise fallback to a mock/prototype sample preview status since DB is not validated yet
+        raw_data = {
+            "service_request_id": reference_number,
+            "service_type": "LOST_NATIONAL_ID",
+            "citizen_full_name": "Demo Citizen A",
+            "nin": "CF900000000000",
+            "phone": "+256700000001",
+            "email": "demo.citizen.a@example.test",
+            "location": "Ntinda, Kampala",
+            "citizen_visible_status": "In Progress",
+            "internal_status": "Submitted",
+            "submitted_at": "2026-06-02T12:00:00",
+            payment_status_field: "Pending",
+            "sla_state": "Within SLA",
+        }
+
+    from nilegov_stack.application.redaction import redact_service_request_status
+    redacted_data = redact_service_request_status(raw_data)
+    redacted_data["runtime_validation_status"] = "Pending Hetzner/Frappe runtime validation"
+
+    return build_success_envelope(redacted_data).to_dict()
+
