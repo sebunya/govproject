@@ -1,7 +1,17 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-7B COMPLETE — Next: Pass 11B-7C (REST API Scaffold)
+## Status: 11B-7C COMPLETE — Next: Pass 11B-8 (Installation Hooks and Final Audit)
+
+## Pass 11B-7C: REST API Envelope Endpoint Scaffolding ✅ COMPLETE
+- [x] Create `interfaces/frappe/api/public_readiness.py`
+- [x] Implement the 6 required read-only whitelisted API endpoints
+- [x] Export endpoints in `interfaces/frappe/api/__init__.py`
+- [x] Create static architecture test suite `test_public_api_scaffold.py`
+- [x] Create unit test suite `test_public_api_scaffold_outputs.py`
+- [x] Run unit tests with pytest to verify all tests pass (1367/1367 passed)
+- [x] Update documentation: `13_evidence_index.md`, `08_runtime_validation_checklist.md`, `walkthrough.md`
+- [x] Run compilation check and final verification command checks
 
 ## Pass 11B-7B: Citizen Web Form Metadata Scaffold ✅ COMPLETE
 - [x] Create 3 standard Web Form JSON files under `web_form/`

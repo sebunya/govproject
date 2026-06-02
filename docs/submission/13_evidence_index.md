@@ -234,5 +234,12 @@ This document indexes the code deliverables, verification results, and operation
 - Registered Web Forms in `hooks.py` fixtures.
 - Created [test_web_form_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_web_form_definitions.py) to statically verify field safety, disclaimers, and security parameters.
 
+### Pass 11B-7C Additions (REST API Envelope Endpoint Scaffolding)
+- Created [public_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/interfaces/frappe/api/public_readiness.py) implementing 6 read-only whitelisted API endpoints.
+- Exported API endpoints in [__init__.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/interfaces/frappe/api/__init__.py).
+- Created [test_public_api_scaffold.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_public_api_scaffold.py) statically asserting that the endpoints are whitelisted, free of secrets, forbidden fields, or emails, and enforce disclaimers.
+- Created [test_public_api_scaffold_outputs.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_public_api_scaffold_outputs.py) validating API envelopes, schemas, optional NIN formatting, and response structure.
+- **1367 / 1367 passed** in total test suite.
+
 
 

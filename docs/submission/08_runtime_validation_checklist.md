@@ -216,3 +216,14 @@ Validate on Hetzner/Frappe runtime:
 - confirm ordinary users cannot delete integration simulation logs;
 - confirm no role exposes `.env` secrets;
 - confirm no role implies live government registry access.
+
+## Public REST API Scaffold Runtime Validation - Deferred
+Validate on Hetzner/Frappe runtime:
+- [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_service_catalogue_preview` is guest-accessible and returns a valid envelope payload.
+- [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_lost_nid_intake_schema` is guest-accessible, lists `nin` as optional, and returns the warning description.
+- [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_evidence_metadata_schema` does not leak verification status, officer notes, or file paths.
+- [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_consent_capture_schema` does not leak consent timestamps.
+- [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_prototype_payment_requirement_preview` returns a sandbox disclaimer warning.
+- [ ] Verify that `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_interoperability_disclaimer` returns all integration status flags as `False`.
+- [ ] Confirm all whitelisted endpoints are strictly read-only and enforce disclaimers without interacting with any production gateways.
+
