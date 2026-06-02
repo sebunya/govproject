@@ -52,3 +52,18 @@ The following documentation was created/updated:
 * `[MODIFY]` [docs/submission/07_claims_matrix.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/07_claims_matrix.md) *(Added SLA Rules & Escalation status)*
 * `[MODIFY]` [docs/submission/13_evidence_index.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/13_evidence_index.md) *(Added new files to codebase deliverables index)*
 * `[MODIFY]` [docs/submission/08_runtime_validation_checklist.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/08_runtime_validation_checklist.md) *(Added seeded SLA rules and escalation status validation check items)*
+
+## AntiGravity service instability note
+
+After completing and pushing the M&E Reporting Foundation, Google AntiGravity began returning repeated service-side HTTP 500 / MCP errors during the next API interoperability planning pass.
+
+This appears to be an AntiGravity/Cloud AI Companion service issue, not a NileGov Stack code issue.
+
+Current repo status before pausing AntiGravity:
+- GitHub main branch is pushed.
+- Working tree is clean.
+- `.env` remains untracked.
+- Latest verified test count: 299/299 passing.
+- Python compile check passed.
+- Next planned pass: Pass 8A-9A API / Interoperability Readiness audit and plan.
+
