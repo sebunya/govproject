@@ -526,3 +526,84 @@ python3 -m compileall → COMPILE OK
 - Test verifies no forbidden live labels in non-comment JS content
 - No external URLs in JS
 - No .env references in JS
+
+---
+
+## Pass 11B-4B: High-Priority Supporting DocType Form Helpers
+
+**Verdict: Completed**
+
+### Audit Findings (Pre-Code)
+
+| DocType | Existing JS | Whitelisted Methods | Action |
+|---|---|---|---|
+| NileGov Evidence Document | None | 0 | Created — read-only helper only |
+| NileGov Payment Record | None | 0 | Created — read-only helper only |
+| NileGov Escalation Record | None | 0 | Created — read-only helper only |
+| NileGov Reporting Snapshot | None | 0 | Created — read-only helper only |
+
+### Helper UI Added per DocType
+
+**Evidence Document:**
+- Prototype banner: "No live NIRA, police, court or official registry verification"
+- Colour-coded verification_status headline (green=Verified, red=Rejected, orange=Requires Review)
+- Context summary (type, title, channel, uploaded_by, visibility) in officer_notes description
+- Navigate to Service Request + Navigate to Citizen Profile buttons
+
+**Payment Record:**
+- Sandbox/simulated banner: "Not live payment processing. No real money moved. No Pesapal live keys."
+- Colour-coded payment_status + verification_status + receipt_status headline
+- Context summary (purpose, amount (labelled simulated), currency, provider, mode, channel, reference) in failure_reason description
+- Navigate to Service Request + Navigate to Citizen Profile buttons
+
+**Escalation Record:**
+- Prototype escalation banner: "No live Ministry or government MDA escalation system contacted"
+- Colour-coded status headline (red=Escalated, green=Resolved, orange=Open)
+- Context summary (reason, escalated_by, escalated_to, timestamps) in supervisor_decision description
+- Navigate to Service Request button
+- Informational show_alert when status=Escalated pointing to Service Request Supervisor Actions
+
+**Reporting Snapshot:**
+- Prototype M&E banner: "Not official government statistics. Fictional seed data only."
+- Executive metric summary headline (snapshot_name, total_requests, within_sla, at_risk, overdue, escalated) with colour (orange if overdue/escalated > 0)
+- Disclaimer field description reinforced with red bold "Prototype metrics only. Not official government statistics."
+- Payment metrics description (pending/verified/failed counts)
+- Evidence status description (complete/incomplete counts)
+- View All Snapshots list navigation button
+
+### Deferred Actions
+
+- No backend calls needed for any of the four DocTypes — all helpers are read-only UI
+- All frappe.call is absent from all four JS files (verified by tests)
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `nilegov_evidence_document.js` | Evidence review helper |
+| `nilegov_payment_record.js` | Payment sandbox helper |
+| `nilegov_escalation_record.js` | Escalation review helper |
+| `nilegov_reporting_snapshot.js` | M&E prototype viewer |
+| `tests/architecture/test_supporting_doctype_js_helpers.py` | 77 tests, 12 classes |
+
+### Test Results
+
+```
+941 passed in 1.09s
+```
+
+**Previously: 863/863. Now: 941/941. +78 new tests.**
+
+### Compile Result
+
+```
+python3 -m compileall → COMPILE OK
+```
+
+### No Live Claims
+
+- Evidence: no official NIRA/police/court claim (tests verify)
+- Payment: no production payment / real clearance / live Pesapal claim (tests verify)
+- Reporting: no official government statistics claim (tests verify)
+- Escalation: no live Ministry MDA claim (tests verify)
+- No frappe.call in any of the four JS files
