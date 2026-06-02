@@ -6,7 +6,7 @@ This document indexes the code deliverables, verification results, and operation
 
 ## 1. Automated Verification Checks
 
-* **Pytest Suite Verification:** **266 passed in 0.52s (100% success rate)** via `.venv/bin/pytest`.
+* **Pytest Suite Verification:** **299 passed in 0.44s (100% success rate)** via `.venv/bin/pytest`.
 * **Python Compile Check:** **100% successful** via `compileall` (zero syntax/linter errors).
 * **Language Compliance Check:** Proves that all strings avoid overclaiming live connections.
 
@@ -23,6 +23,7 @@ This document indexes the code deliverables, verification results, and operation
 - [escalation.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/escalation.py) *(EscalationRecord aggregate class)*
 - [notification.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/notification.py) *(NotificationEvent aggregate root managing statuses, channels, recipients, message types, titles, body previews, and consent tracking checks)*
 - [payment.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/payment.py) *(PaymentRecord aggregate root managing statuses, purposes, channels, verification statuses, receipt-readiness, and reconciliation)*
+- [reporting_snapshot.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/reporting_snapshot.py) *(ReportingSnapshot domain aggregate root compiling pipeline metrics)*
 - [value_objects.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/value_objects.py) *(PII validation)*
 - [create_citizen_profile.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_citizen_profile.py) *(Create profile use case)*
 - [update_citizen_contact.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/update_citizen_contact.py) *(Update profile contact use case)*
@@ -85,6 +86,15 @@ This document indexes the code deliverables, verification results, and operation
 - [initiate_pesapal_payment.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/initiate_pesapal_payment.py) *(Initiate Pesapal sandbox payment flow use case)*
 - [refresh_pesapal_payment_status.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/refresh_pesapal_payment_status.py) *(Refresh Pesapal payment status and sync use case)*
 - [pesapal_payload_parsers.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/pesapal_payload_parsers.py) *(Parses Pesapal callback and IPN payloads metadata)*
+- [service_catalogue.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/service_catalogue.py) *(ServiceCatalogueItem domain aggregate and enums)*
+- [create_service_catalogue_item.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_service_catalogue_item.py) *(Create service catalogue item use case)*
+- [update_service_catalogue_item.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/update_service_catalogue_item.py) *(Update service catalogue item attributes use case)*
+- [list_services.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_services.py) *(List and filter service catalogue items use case)*
+- [manage_service_status.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/manage_service_status.py) *(Transition item active status use case)*
+- [retrieve_service_by_code.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/retrieve_service_by_code.py) *(Fetch item by short code use case)*
+- [apply_catalogue_defaults.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/apply_catalogue_defaults.py) *(Sync defaults to service request and payment aggregates, check evidence requirements use case)*
+- [generate_reporting_snapshot.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/generate_reporting_snapshot.py) *(GenerateReportingSnapshot application service to compile performance metrics)*
+
 
 ### Infrastructure Layer (Persistence & Gateways)
 - [frappe_service_request_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_service_request_repository.py) *(Maps service request SLA and escalation domain state changes to the database)*
@@ -104,6 +114,11 @@ This document indexes the code deliverables, verification results, and operation
 - [simulated_payment_gateway.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/integrations/simulated_payment_gateway.py) *(Sandbox check updated for PaymentRecord verification)*
 - [pesapal_api_client.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/integrations/pesapal_api_client.py) *(Pesapal API 3.0 Sandbox/Live integration client)*
 - [simulated_notification_gateway.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/notifications/simulated_notification_gateway.py) *(Logs simulated notifications for email, SMS, and WhatsApp)*
+- [frappe_service_catalogue_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_service_catalogue_repository.py) *(Maps service catalogue item domain state changes to the database)*
+- [service_catalogue_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/service_catalogue_repository.py) *(InMemory repository for service catalogue testing)*
+- [reporting_snapshot_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/reporting_snapshot_repository.py) *(InMemory repository for ReportingSnapshot testing)*
+- [frappe_reporting_snapshot_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_reporting_snapshot_repository.py) *(Maps ReportingSnapshot domain state changes to the database)*
+
 
 ### Frappe Integration Layer
 - [nilegov_citizen_profile.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_citizen_profile/nilegov_citizen_profile.json) *(Citizen Profile DocType schema)*
@@ -118,6 +133,9 @@ This document indexes the code deliverables, verification results, and operation
 - [nilegov_citizen_notification.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_citizen_notification/nilegov_citizen_notification.py) *(Citizen Notification controller validations)*
 - [nilegov_payment_record.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_payment_record/nilegov_payment_record.json) *(Payment Record DocType schema)*
 - [nilegov_payment_record.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_payment_record/nilegov_payment_record.py) *(Payment Record controller validations)*
+- [nilegov_service_catalogue.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_service_catalogue/nilegov_service_catalogue.json) *(Service Catalogue DocType schema)*
+- [nilegov_service_catalogue.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_service_catalogue/nilegov_service_catalogue.py) *(Service Catalogue controller validations)*
+
 - [nilegov_service_request.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_service_request/nilegov_service_request.json) *(Service Request DocType schema, updated for SLA and escalations)*
 - [nilegov_service_request.js](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_service_request/nilegov_service_request.js) *(Desk action handlers)*
 - [nilegov_case_operations.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/workspace/nilegov_case_operations/nilegov_case_operations.json) *(Desk Operations Workspace)*
@@ -129,6 +147,6 @@ This document indexes the code deliverables, verification results, and operation
 
 ## 3. Operational Testing Status
 
-* **Static Schema Verification:** Checked. All 14 schema definitions contain the required disclaimers.
+* **Static Schema Verification:** Checked. All 15 schema definitions contain the required disclaimers.
 * **Gunicorn / MariaDB Execution:** Stalled. Live runtime validation is pending deployment on a working container host.
 * **Wording Audit:** Verified. No live integration claims are made in documentation or code.

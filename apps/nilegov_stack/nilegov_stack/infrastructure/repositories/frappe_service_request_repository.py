@@ -29,6 +29,7 @@ class FrappeServiceRequestRepository(ServiceRequestRepository):
             doc.service_request_id = service_request.request_id
             
         doc.reference_no = service_request.reference_no
+        doc.service_type = service_request.service_type
         doc.citizen_profile = service_request.citizen_profile_id
         doc.citizen_full_name = service_request.citizen_name
         doc.nin = str(service_request.citizen_nin)
@@ -173,6 +174,7 @@ class FrappeServiceRequestRepository(ServiceRequestRepository):
             created_at=frappe.utils.get_timestamp(doc.creation),
             citizen_profile_id=doc.citizen_profile
         )
+        req.service_type = doc.service_type
         
         req.status = doc.internal_status
         req.payment_status = doc.payment_status

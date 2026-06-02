@@ -1,0 +1,157 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:service_catalogue_id",
+ "creation": "2026-06-02 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "service_catalogue_id",
+   "fieldtype": "Data",
+   "label": "Service Catalogue ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "service_name",
+   "fieldtype": "Data",
+   "label": "Service Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "service_code",
+   "fieldtype": "Data",
+   "label": "Service Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "responsible_mda_placeholder",
+   "fieldtype": "Data",
+   "label": "Responsible MDA Placeholder"
+  },
+  {
+   "fieldname": "service_category",
+   "fieldtype": "Select",
+   "label": "Service Category",
+   "options": "Identity Services\nCitizen Complaints\nPermit Applications\nInspection Services\nInformation Requests\nOther Government Services",
+   "default": "Identity Services",
+   "reqd": 1
+  },
+  {
+   "fieldname": "service_description",
+   "fieldtype": "Small Text",
+   "label": "Service Description"
+  },
+  {
+   "fieldname": "required_documents",
+   "fieldtype": "Small Text",
+   "label": "Required Documents"
+  },
+  {
+   "fieldname": "fee_required",
+   "fieldtype": "Check",
+   "label": "Fee Required",
+   "default": "0"
+  },
+  {
+   "fieldname": "default_fee_amount",
+   "fieldtype": "Currency",
+   "label": "Default Fee Amount",
+   "default": "0.0"
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Data",
+   "label": "Default Currency",
+   "default": "UGX"
+  },
+  {
+   "fieldname": "default_payment_purpose",
+   "fieldtype": "Select",
+   "label": "Default Payment Purpose",
+   "options": "National ID Replacement Fee\nService Processing Fee\nDocument Replacement Fee\nOther Government Service Fee\nNot Applicable",
+   "default": "Not Applicable"
+  },
+  {
+   "fieldname": "default_payment_provider",
+   "fieldtype": "Select",
+   "label": "Default Payment Provider",
+   "options": "Simulated\nPesapal Sandbox Ready\nNot Applicable",
+   "default": "Not Applicable",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_sla_rule",
+   "fieldtype": "Link",
+   "label": "Default SLA Rule",
+   "options": "NileGov SLA Rule"
+  },
+  {
+   "fieldname": "responsible_department",
+   "fieldtype": "Data",
+   "label": "Responsible Department"
+  },
+  {
+   "fieldname": "responsible_queue",
+   "fieldtype": "Data",
+   "label": "Responsible Queue"
+  },
+  {
+   "fieldname": "workflow_template",
+   "fieldtype": "Select",
+   "label": "Workflow Template",
+   "options": "Standard Application Workflow\nReplacement Request Workflow\nComplaint Resolution Workflow\nInspection Workflow\nInformation Request Workflow",
+   "default": "Standard Application Workflow",
+   "reqd": 1
+  },
+  {
+   "fieldname": "active_status",
+   "fieldtype": "Select",
+   "label": "Active Status",
+   "options": "Active\nInactive\nDemo Only\nRetired",
+   "default": "Active",
+   "reqd": 1
+  },
+  {
+   "fieldname": "public_visibility",
+   "fieldtype": "Select",
+   "label": "Public Visibility",
+   "options": "Demo Visible\nCitizen Hidden\nPublic Visible",
+   "default": "Demo Visible"
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "default": "Prototype service catalogue only. Not connected to a live government service registry.",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-02 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Service Catalogue",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

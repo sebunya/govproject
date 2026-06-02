@@ -24,7 +24,8 @@ EXPECTED_DOCTYPES = {
     "nilegov_citizen_notification": "NileGov Citizen Notification",
     "nilegov_audit_event": "NileGov Audit Event",
     "nilegov_integration_simulation_log": "NileGov Integration Simulation Log",
-    "nilegov_payment_record": "NileGov Payment Record"
+    "nilegov_payment_record": "NileGov Payment Record",
+    "nilegov_service_catalogue": "NileGov Service Catalogue"
 }
 
 
@@ -87,7 +88,8 @@ def test_schema_required_fields_exist():
         "nilegov_citizen_notification": {"service_request", "notification_type", "recipient", "channel", "message", "delivery_status"},
         "nilegov_audit_event": {"event_type", "actor", "event_time", "action_summary"},
         "nilegov_integration_simulation_log": {"service_request", "integration_name", "simulation_type", "status", "simulated_at", "disclaimer"},
-        "nilegov_payment_record": {"payment_record_id", "service_request", "amount", "payment_status", "verification_status", "disclaimer"}
+        "nilegov_payment_record": {"payment_record_id", "service_request", "amount", "payment_status", "verification_status", "disclaimer"},
+        "nilegov_service_catalogue": {"service_catalogue_id", "service_name", "service_code", "service_category", "default_payment_provider", "active_status", "workflow_template", "disclaimer"}
     }
     
     for folder, required_fields in required_fields_map.items():
@@ -105,7 +107,8 @@ def test_disclaimer_fields_in_simulation_records():
     disclaimer_records = {
         "nilegov_simulated_identity_verification": "response_message",
         "nilegov_integration_simulation_log": "disclaimer",
-        "nilegov_payment_record": "disclaimer"
+        "nilegov_payment_record": "disclaimer",
+        "nilegov_service_catalogue": "disclaimer"
     }
     
     for folder, fieldname in disclaimer_records.items():
@@ -121,6 +124,8 @@ def test_disclaimer_fields_in_simulation_records():
         required_msg = "Prototype simulation only. No live Government registry access."
         if folder == "nilegov_payment_record":
             required_msg = "Prototype simulation only. No live payment was processed."
+        elif folder == "nilegov_service_catalogue":
+            required_msg = "Prototype service catalogue only. Not connected to a live government service registry."
         assert required_msg in default_val, (
             f"Disclaimer message mismatch in '{folder}' for field '{fieldname}'. "
             f"Expected it to contain '{required_msg}'"

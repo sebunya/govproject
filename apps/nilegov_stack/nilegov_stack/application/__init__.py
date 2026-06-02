@@ -52,3 +52,13 @@ from nilegov_stack.application.pesapal_payload_parsers import (
     update_payment_record_from_callback_metadata
 )
 
+# Service Catalogue use cases
+from nilegov_stack.application.create_service_catalogue_item import CreateServiceCatalogueItem
+from nilegov_stack.application.update_service_catalogue_item import UpdateServiceCatalogueItem
+from nilegov_stack.application.list_services import ListServices
+from nilegov_stack.application.manage_service_status import ManageServiceStatus
+from nilegov_stack.application.retrieve_service_by_code import RetrieveServiceByCode
+from nilegov_stack.application.apply_catalogue_defaults import ApplyCatalogueDefaults
+from nilegov_stack.application.generate_reporting_snapshot import GenerateReportingSnapshot
+
+

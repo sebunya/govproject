@@ -10,6 +10,8 @@ from nilegov_stack.domain.evidence import EvidenceDocument
 from nilegov_stack.domain.sla import SLARule
 from nilegov_stack.domain.notification import NotificationEvent
 from nilegov_stack.domain.payment import PaymentRecord
+from nilegov_stack.domain.service_catalogue import ServiceCatalogueItem
+from nilegov_stack.domain.reporting_snapshot import ReportingSnapshot
 
 
 class ServiceRequestRepository(ABC):
@@ -245,5 +247,64 @@ class PaymentRecordRepository(ABC):
     def get_all(self) -> List[PaymentRecord]:
         """Loads all PaymentRecords in the system."""
         pass
+
+
+class ServiceCatalogueRepository(ABC):
+    """Port interface for persisting and loading Service Catalogue Item aggregates."""
+
+    @abstractmethod
+    def save(self, item: ServiceCatalogueItem) -> None:
+        """Persists the state of the Service Catalogue Item."""
+        pass
+
+    @abstractmethod
+    def get_by_id(self, item_id: str) -> Optional[ServiceCatalogueItem]:
+        """Loads a Service Catalogue Item by its unique ID."""
+        pass
+
+    @abstractmethod
+    def get_by_code(self, service_code: str) -> Optional[ServiceCatalogueItem]:
+        """Loads a Service Catalogue Item by its service code."""
+        pass
+
+    @abstractmethod
+    def get_all(self) -> List[ServiceCatalogueItem]:
+        """Loads all Service Catalogue Items."""
+        pass
+
+    @abstractmethod
+    def get_active(self) -> List[ServiceCatalogueItem]:
+        """Loads all Active Service Catalogue Items."""
+        pass
+
+    @abstractmethod
+    def get_demo(self) -> List[ServiceCatalogueItem]:
+        """Loads all Demo Only Service Catalogue Items."""
+        pass
+
+    @abstractmethod
+    def get_by_category(self, category: str) -> List[ServiceCatalogueItem]:
+        """Loads all Service Catalogue Items in a specific category."""
+        pass
+
+
+class ReportingSnapshotRepository(ABC):
+    """Port interface for persisting and loading Reporting Snapshot aggregates."""
+
+    @abstractmethod
+    def save(self, snapshot: ReportingSnapshot) -> None:
+        """Persists the state of the Reporting Snapshot."""
+        pass
+
+    @abstractmethod
+    def get_by_id(self, snapshot_id: str) -> Optional[ReportingSnapshot]:
+        """Loads a Reporting Snapshot by its unique ID."""
+        pass
+
+    @abstractmethod
+    def get_all(self) -> List[ReportingSnapshot]:
+        """Loads all Reporting Snapshots."""
+        pass
+
 
 

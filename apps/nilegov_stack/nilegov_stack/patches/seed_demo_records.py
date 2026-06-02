@@ -829,5 +829,294 @@ def execute():
             pay_doc.insert(ignore_permissions=True)
             frappe.db.commit()
 
+    # 6. Seed Service Catalogue records
+    catalogue_seeds = [
+        {
+            "id": "SVC-LOST-NID",
+            "name": "Lost National ID Replacement",
+            "code": "LOST_NATIONAL_ID",
+            "mda": "National Identification and Registration Authority (NIRA)",
+            "category": "Identity Services",
+            "description": "Request replacement for a lost or damaged National Identification Card.",
+            "required_docs": "Police Letter Placeholder, Affidavit Placeholder, Supporting ID Placeholder",
+            "fee_required": 1,
+            "fee_amount": 50000.0,
+            "currency": "UGX",
+            "purpose": "National ID Replacement Fee",
+            "provider": "Simulated",
+            "sla_rule": "SLA-LOST-NID",
+            "department": "National ID Replacement Desk",
+            "queue": "National ID Replacement Desk",
+            "workflow": "Replacement Request Workflow",
+            "status": "Active",
+            "visibility": "Demo Visible"
+        },
+        {
+            "id": "SVC-CITIZEN-COMPLAINT",
+            "name": "Citizen Complaint Portal",
+            "code": "CITIZEN_COMPLAINT",
+            "mda": "Inspectorate of Government (IG)",
+            "category": "Citizen Complaints",
+            "description": "Submit a public service delivery complaint or report misconduct.",
+            "required_docs": "",
+            "fee_required": 0,
+            "fee_amount": 0.0,
+            "currency": "UGX",
+            "purpose": "Not Applicable",
+            "provider": "Not Applicable",
+            "sla_rule": None,
+            "department": "Complaints Intake Unit",
+            "queue": "Citizen Complaints Desk",
+            "workflow": "Complaint Resolution Workflow",
+            "status": "Demo Only",
+            "visibility": "Demo Visible"
+        },
+        {
+            "id": "SVC-PERMIT-APPLICATION",
+            "name": "Environmental Permit Application",
+            "code": "ENVIRONMENT_PERMIT",
+            "mda": "National Environment Management Authority (NEMA)",
+            "category": "Permit Applications",
+            "description": "Apply for environmental impact assessment certificates and permits.",
+            "required_docs": "Environmental Impact Assessment Report, Land Ownership Document",
+            "fee_required": 1,
+            "fee_amount": 250000.0,
+            "currency": "UGX",
+            "purpose": "Service Processing Fee",
+            "provider": "Pesapal Sandbox Ready",
+            "sla_rule": None,
+            "department": "Environmental Monitoring and Compliance",
+            "queue": "Environmental Permits Desk",
+            "workflow": "Standard Application Workflow",
+            "status": "Inactive",
+            "visibility": "Citizen Hidden"
+        }
+    ]
+
+    for cs in catalogue_seeds:
+        if not frappe.db.exists("NileGov Service Catalogue", cs["id"]):
+            cat_doc = frappe.new_doc("NileGov Service Catalogue")
+            cat_doc.service_catalogue_id = cs["id"]
+            cat_doc.service_name = cs["name"]
+            cat_doc.service_code = cs["code"]
+            cat_doc.responsible_mda_placeholder = cs["mda"]
+            cat_doc.service_category = cs["category"]
+            cat_doc.service_description = cs["description"]
+            cat_doc.required_documents = cs["required_docs"]
+            cat_doc.fee_required = cs["fee_required"]
+            cat_doc.default_fee_amount = cs["fee_amount"]
+            cat_doc.default_currency = cs["currency"]
+            cat_doc.default_payment_purpose = cs["purpose"]
+            cat_doc.default_payment_provider = cs["provider"]
+            cat_doc.default_sla_rule = cs["sla_rule"]
+            cat_doc.responsible_department = cs["department"]
+            cat_doc.responsible_queue = cs["queue"]
+            cat_doc.workflow_template = cs["workflow"]
+            cat_doc.active_status = cs["status"]
+            cat_doc.public_visibility = cs["visibility"]
+            cat_doc.disclaimer = "Prototype service catalogue only. Not connected to a live government service registry."
+            cat_doc.insert(ignore_permissions=True)
+            frappe.db.commit()
+
+    # 7. Seed Reporting Snapshots conditionally (if DocType exists at runtime)
+    if frappe.db.table_exists("NileGov Reporting Snapshot"):
+        import json
+        snapshot_seeds = [
+            {
+                "id": "SNAP-DAILY-001",
+                "name": "Daily Operations Reporting Snapshot",
+                "start": 1772539200.0,
+                "end": 1772625600.0,
+                "generated_at": 1772625600.0,
+                "by": "officer_demo",
+                "dataset": "Seeded Fictional Demo Data",
+                "total_requests": 9,
+                "total_services": 3,
+                "active_services": 1,
+                "demo_services": 1,
+                "status_breakdown": {"Submitted": 1, "Under Review": 2, "Information Required": 1, "Payment Pending": 1, "Payment Verified": 1, "Approved": 1, "Ready for Collection": 1, "Closed": 1},
+                "service_breakdown": {"LOST_NATIONAL_ID": 9},
+                "queue_breakdown": {"National ID Replacement Desk": 7, "Verification Desk": 1, "Supervisor Review Queue": 1},
+                "loc_breakdown": {"Ntinda, Kampala": 8, "Bukoto, Kampala": 1},
+                "within_sla": 5,
+                "at_risk": 1,
+                "overdue": 3,
+                "escalated": 1,
+                "ev_complete": 8,
+                "ev_incomplete": 1,
+                "ev_rejected": 1,
+                "ev_replaced": 1,
+                "pay_pending": 1,
+                "pay_submitted": 1,
+                "pay_verified": 5,
+                "pay_failed": 1,
+                "pay_reversed": 0,
+                "notif_draft": 1,
+                "notif_queued": 2,
+                "notif_sent": 8,
+                "notif_failed": 1,
+                "notif_cancelled": 0,
+                "notif_not_req": 0,
+                "workload": {"officer_demo": 3, "officer_review": 3},
+                "pay_val": {"total_simulated_payment_value": 250000.0}
+            },
+            {
+                "id": "SNAP-SERVICE-PERF-001",
+                "name": "Service Performance Reporting Snapshot",
+                "start": 1772539200.0,
+                "end": 1772625600.0,
+                "generated_at": 1772625600.0,
+                "by": "officer_demo",
+                "dataset": "Seeded Fictional Demo Data",
+                "total_requests": 9,
+                "total_services": 3,
+                "active_services": 1,
+                "demo_services": 1,
+                "status_breakdown": {"Submitted": 1, "Under Review": 2, "Information Required": 1, "Payment Pending": 1, "Payment Verified": 1, "Approved": 1, "Ready for Collection": 1, "Closed": 1},
+                "service_breakdown": {"LOST_NATIONAL_ID": 9},
+                "queue_breakdown": {"National ID Replacement Desk": 7, "Verification Desk": 1, "Supervisor Review Queue": 1},
+                "loc_breakdown": {"Ntinda, Kampala": 8, "Bukoto, Kampala": 1},
+                "within_sla": 5,
+                "at_risk": 1,
+                "overdue": 3,
+                "escalated": 1,
+                "ev_complete": 8,
+                "ev_incomplete": 1,
+                "ev_rejected": 1,
+                "ev_replaced": 1,
+                "pay_pending": 1,
+                "pay_submitted": 1,
+                "pay_verified": 5,
+                "pay_failed": 1,
+                "pay_reversed": 0,
+                "notif_draft": 1,
+                "notif_queued": 2,
+                "notif_sent": 8,
+                "notif_failed": 1,
+                "notif_cancelled": 0,
+                "notif_not_req": 0,
+                "workload": {"officer_demo": 3, "officer_review": 3},
+                "pay_val": {"total_simulated_payment_value": 250000.0}
+            },
+            {
+                "id": "SNAP-SLA-BACKLOG-001",
+                "name": "SLA Backlog Reporting Snapshot",
+                "start": 1772539200.0,
+                "end": 1772625600.0,
+                "generated_at": 1772625600.0,
+                "by": "supervisor_demo",
+                "dataset": "Seeded Fictional Demo Data",
+                "total_requests": 9,
+                "total_services": 3,
+                "active_services": 1,
+                "demo_services": 1,
+                "status_breakdown": {"Submitted": 1, "Under Review": 2, "Information Required": 1, "Payment Pending": 1, "Payment Verified": 1, "Approved": 1, "Ready for Collection": 1, "Closed": 1},
+                "service_breakdown": {"LOST_NATIONAL_ID": 9},
+                "queue_breakdown": {"National ID Replacement Desk": 7, "Verification Desk": 1, "Supervisor Review Queue": 1},
+                "loc_breakdown": {"Ntinda, Kampala": 8, "Bukoto, Kampala": 1},
+                "within_sla": 5,
+                "at_risk": 1,
+                "overdue": 3,
+                "escalated": 1,
+                "ev_complete": 8,
+                "ev_incomplete": 1,
+                "ev_rejected": 1,
+                "ev_replaced": 1,
+                "pay_pending": 1,
+                "pay_submitted": 1,
+                "pay_verified": 5,
+                "pay_failed": 1,
+                "pay_reversed": 0,
+                "notif_draft": 1,
+                "notif_queued": 2,
+                "notif_sent": 8,
+                "notif_failed": 1,
+                "notif_cancelled": 0,
+                "notif_not_req": 0,
+                "workload": {"officer_demo": 3, "officer_review": 3},
+                "pay_val": {"total_simulated_payment_value": 250000.0}
+            },
+            {
+                "id": "SNAP-PAY-NOTIF-001",
+                "name": "Payment & Notification Summary Snapshot",
+                "start": 1772539200.0,
+                "end": 1772625600.0,
+                "generated_at": 1772625600.0,
+                "by": "officer_demo",
+                "dataset": "Seeded Fictional Demo Data",
+                "total_requests": 9,
+                "total_services": 3,
+                "active_services": 1,
+                "demo_services": 1,
+                "status_breakdown": {"Submitted": 1, "Under Review": 2, "Information Required": 1, "Payment Pending": 1, "Payment Verified": 1, "Approved": 1, "Ready for Collection": 1, "Closed": 1},
+                "service_breakdown": {"LOST_NATIONAL_ID": 9},
+                "queue_breakdown": {"National ID Replacement Desk": 7, "Verification Desk": 1, "Supervisor Review Queue": 1},
+                "loc_breakdown": {"Ntinda, Kampala": 8, "Bukoto, Kampala": 1},
+                "within_sla": 5,
+                "at_risk": 1,
+                "overdue": 3,
+                "escalated": 1,
+                "ev_complete": 8,
+                "ev_incomplete": 1,
+                "ev_rejected": 1,
+                "ev_replaced": 1,
+                "pay_pending": 1,
+                "pay_submitted": 1,
+                "pay_verified": 5,
+                "pay_failed": 1,
+                "pay_reversed": 0,
+                "notif_draft": 1,
+                "notif_queued": 2,
+                "notif_sent": 8,
+                "notif_failed": 1,
+                "notif_cancelled": 0,
+                "notif_not_req": 0,
+                "workload": {"officer_demo": 3, "officer_review": 3},
+                "pay_val": {"total_simulated_payment_value": 250000.0}
+            }
+        ]
+
+        for ss in snapshot_seeds:
+            if not frappe.db.exists("NileGov Reporting Snapshot", ss["id"]):
+                snap_doc = frappe.new_doc("NileGov Reporting Snapshot")
+                snap_doc.reporting_snapshot_id = ss["id"]
+                snap_doc.snapshot_name = ss["name"]
+                snap_doc.reporting_period_start = ss["start"]
+                snap_doc.reporting_period_end = ss["end"]
+                snap_doc.generated_at = ss["generated_at"]
+                snap_doc.generated_by = ss["by"]
+                snap_doc.source_dataset = ss["dataset"]
+                snap_doc.total_requests = ss["total_requests"]
+                snap_doc.total_services = ss["total_services"]
+                snap_doc.active_services = ss["active_services"]
+                snap_doc.demo_services = ss["demo_services"]
+                snap_doc.requests_by_status = json.dumps(ss["status_breakdown"])
+                snap_doc.requests_by_service = json.dumps(ss["service_breakdown"])
+                snap_doc.requests_by_queue = json.dumps(ss["queue_breakdown"])
+                snap_doc.requests_by_location = json.dumps(ss["loc_breakdown"])
+                snap_doc.within_sla_count = ss["within_sla"]
+                snap_doc.at_risk_count = ss["at_risk"]
+                snap_doc.overdue_count = ss["overdue"]
+                snap_doc.escalated_count = ss["escalated"]
+                snap_doc.evidence_complete_count = ss["ev_complete"]
+                snap_doc.evidence_incomplete_count = ss["ev_incomplete"]
+                snap_doc.evidence_rejected_count = ss["ev_rejected"]
+                snap_doc.evidence_requiring_replacement_count = ss["ev_replaced"]
+                snap_doc.payment_pending_count = ss["pay_pending"]
+                snap_doc.payment_verified_count = ss["pay_verified"]
+                snap_doc.payment_failed_count = ss["pay_failed"]
+                snap_doc.notification_draft_count = ss["notif_draft"]
+                snap_doc.notification_queued_count = ss["notif_queued"]
+                snap_doc.notification_simulated_sent_count = ss["notif_sent"]
+                snap_doc.notification_failed_count = ss["notif_failed"]
+                snap_doc.notification_cancelled_count = ss["notif_cancelled"]
+                snap_doc.notification_not_required_count = ss["notif_not_req"]
+                snap_doc.officer_workload_summary = json.dumps(ss["workload"])
+                snap_doc.payment_value_summary = json.dumps(ss["pay_val"])
+                snap_doc.disclaimer = "Prototype reporting snapshot only. Metrics are calculated from fictional demo data and are not official government statistics."
+                snap_doc.insert(ignore_permissions=True)
+                frappe.db.commit()
+
+
 
 

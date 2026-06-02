@@ -55,6 +55,8 @@ class ServiceRequest:
         self.created_at = created_at or 0.0
         self.updated_at = self.created_at
         self.citizen_profile_id = citizen_profile_id
+        self.service_type: Optional[str] = None
+        self.service_catalogue_item_id: Optional[str] = None
         
         self.status = WorkflowStatus.SUBMITTED
         self.assigned_officer_id: Optional[str] = None
