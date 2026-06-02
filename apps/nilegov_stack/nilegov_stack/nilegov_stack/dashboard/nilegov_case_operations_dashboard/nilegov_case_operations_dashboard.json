@@ -1,0 +1,77 @@
+{
+ "chart_options": {},
+ "charts": [
+  {
+   "chart": "NileGov Requests by Status Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Requests by Service Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov SLA Compliance Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Payment Status Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Evidence Verification Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Notification Delivery Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Officer Workload Chart",
+   "width": "Full"
+  },
+  {
+   "chart": "NileGov Integration Simulation Chart",
+   "width": "Half"
+  }
+ ],
+ "creation": "2026-06-02 00:00:00.000000",
+ "dashboard_name": "NileGov Case Operations Dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "is_default": 0,
+ "is_standard": 1,
+ "module": "NileGov Stack",
+ "modified": "2026-06-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "NileGov Case Operations Dashboard",
+ "owner": "Administrator",
+ "cards": [
+  {
+   "card": "NileGov Total Requests"
+  },
+  {
+   "card": "NileGov Open Requests"
+  },
+  {
+   "card": "NileGov Overdue SLA Cases"
+  },
+  {
+   "card": "NileGov Escalated Cases"
+  },
+  {
+   "card": "NileGov Pending Payments"
+  },
+  {
+   "card": "NileGov Verified Payments"
+  },
+  {
+   "card": "NileGov Evidence Incomplete"
+  },
+  {
+   "card": "NileGov Simulated Notifications Sent"
+  },
+  {
+   "card": "NileGov Reporting Snapshots"
+  }
+ ]
+}

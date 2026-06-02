@@ -607,3 +607,66 @@ python3 -m compileall → COMPILE OK
 - Reporting: no official government statistics claim (tests verify)
 - Escalation: no live Ministry MDA claim (tests verify)
 - No frappe.call in any of the four JS files
+
+---
+
+## Pass 11B-5A: Frappe Reports, Number Cards, Dashboard Charts and Dashboard
+
+**Verdict: Completed**
+
+### Audit Findings (Pass 11B-5-0)
+
+- Zero existing `report/`, `dashboard_chart/`, `number_card/`, `dashboard/` directories
+- Zero report/dashboard fixtures in hooks.py
+- All 9 target reports can be implemented as Report Builder JSON (no Script Reports needed)
+- Two field corrections applied: `service_type` (not `service_catalogue`); `completed_at` (not `resolved_at`)
+- All required fields confirmed present on all source DocTypes
+
+### Files Created (36 new files)
+
+**Reports (9 folders, 18 files):**
+- `nilegov_requests_by_status.json + .js` — Service Request by internal_status
+- `nilegov_requests_by_service.json + .js` — Service Request by service_type
+- `nilegov_sla_compliance.json + .js` — SLA Event with completed_at
+- `nilegov_officer_workload.json + .js` — Service Request by assigned_officer
+- `nilegov_evidence_completeness.json + .js` — Evidence Document by verification_status
+- `nilegov_payment_reconciliation.json + .js` — Payment Record (restricted roles, red alert)
+- `nilegov_notification_delivery.json + .js` — Citizen Notification by delivery_status
+- `nilegov_integration_simulation_report.json + .js` — Integration Simulation Log
+- `nilegov_reporting_snapshot_summary.json + .js` — Reporting Snapshot (frappe.msgprint disclaimer)
+
+**Number Cards (9):** Total Requests, Open Requests, Overdue SLA, Escalated Cases, Pending Payments (Simulated), Verified Payments (Simulated), Evidence Incomplete, Simulated Notifications Sent, Reporting Snapshots (Prototype)
+
+**Dashboard Charts (8):** Requests by Status, Requests by Service, SLA Compliance, Payment Status, Evidence Verification, Notification Delivery, Officer Workload, Integration Simulation
+
+**Dashboard (1):** NileGov Case Operations Dashboard (all 8 charts + 9 number cards)
+
+### Files Modified (2)
+
+| File | Change |
+|---|---|
+| `hooks.py` | Added Report, Number Card, Dashboard Chart, Dashboard fixtures (5 fixture types total) |
+| `tests/architecture/test_report_definitions.py` | NEW — 197 tests, 15 classes |
+
+### Safety Features
+
+- Every report `description` carries prototype/simulated disclaimer
+- Reporting Snapshot Summary uses `frappe.msgprint` (modal, not just toast) — highest risk
+- Payment Reconciliation JS shows `indicator: "red"` (not orange)
+- Payment Reconciliation roles restricted to Payments Officer, MDA Admin, System Auditor, System Manager only
+- No `frappe.call` in any report JS
+- No external URLs in any report JSON or JS
+
+### Test Results
+
+```
+1166 passed in 1.06s
+```
+
+**Previously: 941/941. Now: 1166/1166. +225 new tests.**
+
+### Compile Result
+
+```
+python3 -m compileall → COMPILE OK
+```

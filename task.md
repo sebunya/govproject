@@ -127,3 +127,16 @@
 - [x] Run full test suite: 941/941 passed
 - [x] Compile: CLEAN
 - [x] Commit + push to main
+
+## Pass 11B-5-0: Frappe Reporting and Dashboard Audit ✅ COMPLETE
+- [x] git status: clean (adbc52c)
+- [x] .env: untracked
+- [x] Checked report/, dashboard_chart/, number_card/, dashboard/ — all absent
+- [x] Checked hooks.py — no report or dashboard fixtures
+- [x] Audited 9 DocTypes for field existence
+- [x] Identified 2 field corrections (service_catalogue→service_type, resolved_at→completed_at)
+- [x] Assessed all 9 target reports → all Report Builder JSON, no blockers
+- [x] Assessed 9 number cards + 8 charts → all safe to implement
+- [x] Wrote implementation_plan.md
+- [ ] 11B-5A: Implement 9 reports + 9 number cards + 8 charts + 1 dashboard (36 files)
+- [ ] 11B-5B: Workspace report shortcuts, docs update

@@ -19,6 +19,7 @@ app_license = "mit"
 # as the primary model. They may be seeded as backward-compatible aliases only.
 # ─────────────────────────────────────────────────────────────────────────────
 fixtures = [
+    # ── Roles ─────────────────────────────────────────────────────────────────
     {"dt": "Role", "filters": [[
         "name", "in", [
             "NileGov Citizen Officer",
@@ -30,8 +31,56 @@ fixtures = [
             "NileGov System Auditor",
             "NileGov System Manager",
         ]
-    ]]}
+    ]]},
+    # ── Reports (Pass 11B-5A) ─────────────────────────────────────────────────
+    {"dt": "Report", "filters": [[
+        "name", "in", [
+            "NileGov Requests by Status",
+            "NileGov Requests by Service",
+            "NileGov SLA Compliance",
+            "NileGov Officer Workload",
+            "NileGov Evidence Completeness",
+            "NileGov Payment Reconciliation",
+            "NileGov Notification Delivery",
+            "NileGov Integration Simulation Report",
+            "NileGov Reporting Snapshot Summary",
+        ]
+    ]]},
+    # ── Number Cards (Pass 11B-5A) ────────────────────────────────────────────
+    {"dt": "Number Card", "filters": [[
+        "name", "in", [
+            "NileGov Total Requests",
+            "NileGov Open Requests",
+            "NileGov Overdue SLA Cases",
+            "NileGov Escalated Cases",
+            "NileGov Pending Payments",
+            "NileGov Verified Payments",
+            "NileGov Evidence Incomplete",
+            "NileGov Simulated Notifications Sent",
+            "NileGov Reporting Snapshots",
+        ]
+    ]]},
+    # ── Dashboard Charts (Pass 11B-5A) ────────────────────────────────────────
+    {"dt": "Dashboard Chart", "filters": [[
+        "name", "in", [
+            "NileGov Requests by Status Chart",
+            "NileGov Requests by Service Chart",
+            "NileGov SLA Compliance Chart",
+            "NileGov Payment Status Chart",
+            "NileGov Evidence Verification Chart",
+            "NileGov Notification Delivery Chart",
+            "NileGov Officer Workload Chart",
+            "NileGov Integration Simulation Chart",
+        ]
+    ]]},
+    # ── Dashboards (Pass 11B-5A) ──────────────────────────────────────────────
+    {"dt": "Dashboard", "filters": [[
+        "name", "in", [
+            "NileGov Case Operations Dashboard",
+        ]
+    ]]},
 ]
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Installation hook — runs after bench install to seed demo data
