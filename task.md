@@ -1,7 +1,7 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: PLANNING COMPLETE — Awaiting Approval
+## Status: 11B-2 COMPLETE — Next: 11B-1 (Reporting Snapshot DocType)
 
 ---
 
@@ -11,10 +11,22 @@
 - [ ] Create `nilegov_reporting_snapshot.js` form script
 - [ ] Create `__init__.py`
 - [ ] Update `test_doctype_schemas.py` EXPECTED_DOCTYPES
-- [ ] Run full test suite (must remain 525+/all green)
+- [ ] Run full test suite (must remain 620+/all green)
 - [ ] Commit
 
-## Pass 11B-2: Role Fixtures and Permission Rows
+## Pass 11B-2: Role Fixtures and Permission Rows ✅ COMPLETE
+- [x] Update `hooks.py` fixtures list → NileGov-prefixed roles
+- [x] Update `patches/seed_roles.py` → NileGov-prefixed roles (old names as legacy aliases)
+- [x] Update `patches/seed_demo_records.py` → new role names
+- [x] Update `interfaces/permissions.py` → NileGov-prefixed roles + canonical constants
+- [x] Update `workspace.json` roles array → canonical roles
+- [x] Update all 15 DocType JSON permission rows (4–9 NileGov roles each)
+- [x] Update `test_doctype_schemas.py` role assertions
+- [x] Create `tests/permissions/test_role_alignment.py` (94+ new tests)
+- [x] Run full test suite: **620/620 passed**
+- [x] Compile: **CLEAN**
+- [x] Commit + push to main
+
 - [ ] Update `hooks.py` fixtures list → NileGov-prefixed roles
 - [ ] Update `patches/seed_roles.py` → NileGov-prefixed roles
 - [ ] Update `patches/seed_demo_records.py` → new role names

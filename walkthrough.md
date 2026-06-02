@@ -175,5 +175,89 @@ Clean working tree. Committed as `2a5a5c6`.
 - No Frappe Web Form for citizen intake
 - No REST API endpoints (interfaces/frappe/api/ is empty)
 - No Frappe Query Reports, dashboards, or print formats
-- DocType permission rows not embedded in JSON schemas
+- DocType permission rows not embedded in JSON schemas ← **resolved in Pass 11B-2**
+
+---
+
+## Pass 11B-2: Role Fixtures Alignment and DocType Permission Rows
+
+**Verdict: Completed**
+
+### Root Problem Resolved
+
+Three independent sources used three different role naming conventions:
+
+| Source | Old state | New state |
+|---|---|---|
+| `hooks.py` fixtures | 7 old names: `Citizen`, `Service Desk Officer`… | 8 canonical NileGov-prefixed roles |
+| `seed_roles.py` | Seeded 7 old names | Seeds 8 canonical + old names as legacy aliases |
+| `interfaces/permissions.py` | Checked old role strings | Checks 8 canonical role constants |
+| All 15 DocType JSON `permissions` | `System Manager` only | 4–9 NileGov-prefixed rows per DocType |
+| `workspace.json` roles | 3 old roles | 9 roles (8 canonical + System Manager) |
+| `seed_demo_records.py` | `add_roles("Service Desk Officer")` | `add_roles("NileGov Citizen Officer")` |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `hooks.py` | Fixtures list → 8 canonical NileGov-prefixed roles |
+| `patches/seed_roles.py` | Seeds canonical roles; old names retained as legacy aliases |
+| `patches/seed_demo_records.py` | `add_roles()` updated to canonical names |
+| `interfaces/permissions.py` | All role string checks → canonical role constants |
+| All 15 DocType JSON files | `permissions` array → role-appropriate NileGov rows |
+| `workspace.json` | `roles` array → 9 canonical + System Manager |
+| `tests/unit/test_doctype_schemas.py` | Role assertions updated to canonical names |
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `tests/permissions/test_role_alignment.py` | 12 test classes, 94+ tests covering: seed roles, hooks, permissions.py, all 15 DocType permission rows, protected log write guards, Auditor read access, duty separation, M&E Viewer read-only, no live-gov role names, .env tracking |
+
+### Test Results
+
+```
+620 passed in 0.81s
+```
+
+**Previously: 525/525. Now: 620/620. +95 tests added.**
+
+### Compile Result
+
+```
+python3 -m compileall apps/nilegov_stack/nilegov_stack → COMPILE OK (100% clean)
+```
+
+### `.env` Status
+
+Untracked. Verified with `git ls-files .env` → no output.
+
+### No Live Integration Claims
+
+- No live NIRA, UGHub, URA, NITA-U, MDA or production payment integration introduced.
+- `interfaces/permissions.py` contains only the standard prototype disclaimer comment.
+- All role names are NileGov-prefixed operational titles only.
+
+### DocType Permission Model Summary
+
+| DocType | Operational Roles with Access |
+|---|---|
+| `nilegov_service_request` | Citizen Officer (rwc), Records Officer (r), Payments Officer (r), SLA Supervisor (rw), M&E Viewer (r), MDA Admin (rw), System Auditor (r) |
+| `nilegov_audit_event` | System Auditor (r), M&E Viewer (r) — write denied to all ordinary roles |
+| `nilegov_integration_simulation_log` | System Auditor (r), M&E Viewer (r) — write denied to all ordinary roles |
+| `nilegov_payment_record` | Payments Officer (rwc), M&E Viewer (r), System Auditor (r) |
+| `nilegov_evidence_document` | Records Officer (rwc), Citizen Officer (rc), SLA Supervisor (r), System Auditor (r) |
+| `nilegov_case_note` | Citizen Officer (rc), Records Officer (rwc), Payments Officer (rc), SLA Supervisor (rwc), MDA Admin (r), System Auditor (r) |
+| `nilegov_sla_rule` | SLA Supervisor (rwc), MDA Admin (rwc) |
+| `nilegov_sla_event` | SLA Supervisor (rw), M&E Viewer (r), System Auditor (r) |
+
+### Remaining Gaps (for later passes)
+
+- Reporting Snapshot DocType missing (Pass 11B-1)
+- JS form scripts for 14 DocTypes (Pass 11B-4)
+- Query Reports and dashboard charts (Pass 11B-5)
+- Print formats (Pass 11B-6)
+- Citizen Web Form and REST API scaffold (Pass 11B-7)
+- after_install hook (Pass 11B-8)
+
 

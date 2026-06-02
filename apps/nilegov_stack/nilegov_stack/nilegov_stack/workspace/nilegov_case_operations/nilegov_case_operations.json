@@ -16,13 +16,31 @@
  "public": 1,
  "roles": [
   {
-   "role": "Service Desk Officer"
+   "role": "NileGov Citizen Officer"
   },
   {
-   "role": "Supervisor"
+   "role": "NileGov Records Officer"
   },
   {
-   "role": "System Administrator"
+   "role": "NileGov Payments Officer"
+  },
+  {
+   "role": "NileGov SLA Supervisor"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  },
+  {
+   "role": "System Manager"
   }
  ],
  "shortcuts": [

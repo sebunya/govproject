@@ -21,7 +21,7 @@ def execute():
         user.insert(ignore_permissions=True)
         
         # Add Service Desk Officer role
-        user.add_roles("Service Desk Officer")
+        user.add_roles("NileGov Citizen Officer")  # Pass 11B-2: canonical role
         frappe.db.commit()
 
     # Seed Officer Review User
@@ -34,7 +34,7 @@ def execute():
         user.enabled = 1
         user.send_welcome_email = 0
         user.insert(ignore_permissions=True)
-        user.add_roles("Service Desk Officer")
+        user.add_roles("NileGov Citizen Officer")  # Pass 11B-2: canonical role
         frappe.db.commit()
 
     # Seed Supervisor Demo User
@@ -47,7 +47,7 @@ def execute():
         user.enabled = 1
         user.send_welcome_email = 0
         user.insert(ignore_permissions=True)
-        user.add_roles("Supervisor")
+        user.add_roles("NileGov SLA Supervisor")  # Pass 11B-2: canonical role
         frappe.db.commit()
 
     # Ensure service type exists

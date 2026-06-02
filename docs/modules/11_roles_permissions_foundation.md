@@ -10,6 +10,15 @@ This module is Frappe-native in design and prepares NileGov for runtime role con
 
 ## Current status
 
+**Pass 11B-2 aligned.** The following sources now consistently use the canonical NileGov-prefixed role names:
+
+- `hooks.py` fixtures
+- `patches/seed_roles.py`
+- `interfaces/permissions.py`
+- All 15 DocType JSON permission arrays
+- `workspace.json` roles block
+- `patches/seed_demo_records.py` demo user role assignments
+
 This is a prototype permission foundation.
 
 No live MDA users are configured.

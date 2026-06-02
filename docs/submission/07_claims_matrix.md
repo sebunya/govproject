@@ -48,7 +48,10 @@ This matrix classifies the verification status of NileGov Stack features. It dic
 | Claim | Status | Evidence | Boundary |
 |---|---|---|---|
 | NileGov role model defined | Implemented | `docs/modules/11_roles_permissions_foundation.md` and `permission_policy.py` | Runtime Frappe role setup pending |
+| Canonical NileGov role names aligned across repo | Implemented (Pass 11B-2) | `hooks.py`, `seed_roles.py`, `interfaces/permissions.py`, all 15 DocType JSON files and `workspace.json` now use 8 canonical NileGov-prefixed roles | Runtime Frappe permission validation pending |
+| DocType permission rows include NileGov operational roles | Implemented (Pass 11B-2) | All 15 DocType JSON files now carry role-appropriate read/write/create rows per canonical role | Runtime access control validation pending |
 | Sensitive DocTypes identified | Implemented | Permission policy helper lists sensitive DocTypes | Runtime permission validation pending |
-| Audit and integration logs protected by design | Implemented | Tests confirm ordinary roles cannot modify protected logs | Frappe Role Permission Manager validation pending |
-| Payment and evidence duties separated | Implemented | Permission tests separate payment and records responsibilities | Runtime role enforcement pending |
+| Audit and integration logs protected by design | Implemented (Pass 11B-2) | Tests in `test_role_alignment.py` confirm ordinary NileGov roles cannot write protected logs; DocType permission rows enforce read-only for System Auditor | Frappe Role Permission Manager validation pending |
+| Payment and evidence duties separated | Implemented (Pass 11B-2) | `test_role_alignment.py` and `test_permission_hardening.py` verify duty separation in both application policy and DocType permission rows | Runtime role enforcement pending |
+| M&E Viewer is read-only across operational DocTypes | Implemented (Pass 11B-2) | DocType permission rows grant M&E Viewer read access only; `test_role_alignment.py` verifies no write/create access | Runtime role enforcement pending |
 | Live MDA/government access configured | Not implemented | No live government directory or registry access configured | Formal onboarding required |

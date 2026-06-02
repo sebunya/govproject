@@ -164,33 +164,43 @@ def test_permission_helper_scaffolding_exists():
 
 
 def test_role_fixtures_and_patches_exist():
-    """Verifies that roles and custom query condition hook mappings are registered in hooks.py and patches.txt."""
+    """Verifies that canonical NileGov roles are registered in hooks.py and patches.txt."""
     hooks_path = os.path.join(PACKAGE_ROOT, "nilegov_stack", "hooks.py")
     assert os.path.isfile(hooks_path)
-    
+
     with open(hooks_path, "r", encoding="utf-8") as f:
         hooks_content = f.read()
-        
+
     # Check fixtures registration
     assert "fixtures" in hooks_content
-    assert "Citizen" in hooks_content
-    assert "Service Desk Officer" in hooks_content
-    assert "Supervisor" in hooks_content
-    assert "Registry Liaison Officer" in hooks_content
-    assert "MDA Leadership" in hooks_content
-    assert "MDA Administrator" in hooks_content
-    assert "System Administrator" in hooks_content
-    
+
+    # Canonical NileGov-prefixed roles (Pass 11B-2)
+    canonical_roles = [
+        "NileGov Citizen Officer",
+        "NileGov Records Officer",
+        "NileGov Payments Officer",
+        "NileGov SLA Supervisor",
+        "NileGov M&E Viewer",
+        "NileGov MDA Admin",
+        "NileGov System Auditor",
+        "NileGov System Manager",
+    ]
+    for role in canonical_roles:
+        assert role in hooks_content, (
+            f"Canonical role '{role}' not found in hooks.py fixtures. "
+            "Pass 11B-2 requires all NileGov-prefixed roles to be registered."
+        )
+
     # Check query permission mappings
     assert "permission_query_conditions" in hooks_content
     assert "has_permission" in hooks_content
-    
+
     # Check patches registration
     patches_path = os.path.join(PACKAGE_ROOT, "nilegov_stack", "patches.txt")
     assert os.path.isfile(patches_path)
     with open(patches_path, "r", encoding="utf-8") as f:
         patches_content = f.read()
-        
+
     assert "seed_roles" in patches_content
     assert "seed_service_types_and_sla_rules" in patches_content
 
