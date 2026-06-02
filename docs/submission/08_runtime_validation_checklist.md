@@ -261,3 +261,7 @@ Validate sequentially on a freshly provisioned bench:
 - [ ] Verify that the lockdown report recommends a "GO" status and lists all entry criteria.
 - [ ] Verify that all 10 custom fixtures are registered in `hooks.py` and compile without errors.
 
+## Phase 12A Runtime Validation Plan
+- [ ] Confirm that `docs/submission/16_hetzner_runtime_validation_log.md` exists and covers all 20 required status criteria.
+
+

@@ -1,7 +1,14 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-8E COMPLETE ✅
+## Status: Phase 12A COMPLETE ✅
+
+## Phase 12A: Hetzner/Frappe Bench Runtime Validation Plan ✅ COMPLETE
+- [x] Create Hetzner validation log `docs/submission/16_hetzner_runtime_validation_log.md` with 20 requested headings
+- [x] Audit local environment baseline and verify remote git settings
+- [x] Document deferred/staging commands and parameters
+- [x] Update checklist and index references
+- [x] Run full test suite (1410/1410 passed)
 
 ## Pass 11B-8E: Pre-Hetzner Runtime Lockdown ✅ COMPLETE
 - [x] Create runtime lockdown document `docs/submission/15_pre_hetzner_runtime_lockdown.md`
