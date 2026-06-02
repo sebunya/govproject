@@ -67,3 +67,32 @@ Current repo status before pausing AntiGravity:
 - Python compile check passed.
 - Next planned pass: Pass 8A-9A API / Interoperability Readiness audit and plan.
 
+
+## Pass 8A-9C: API / Interoperability Documentation and Evidence
+
+The API / Interoperability Readiness Foundation was documented for evaluator and runtime handover purposes.
+
+Documentation now covers:
+
+- API readiness principles;
+- response envelopes;
+- error envelopes;
+- correlation IDs;
+- idempotency keys;
+- simulated target systems;
+- safe payload contracts;
+- integration logging readiness;
+- data minimisation controls;
+- safe claims;
+- claims to avoid;
+- runtime validation requirements.
+
+Submission evidence was updated in:
+
+- `docs/submission/07_claims_matrix.md`
+- `docs/submission/13_evidence_index.md`
+- `docs/submission/08_runtime_validation_checklist.md`
+
+The implementation remains prototype-level and integration-ready only. No live UGHub, NIRA, URA, NITA-U, MDA or production payment system was contacted.
+
+Runtime validation remains deferred to Hetzner or another working Linux/Frappe host.

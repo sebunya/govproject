@@ -167,3 +167,26 @@ Access the Desk using standard local credentials (e.g. Username `Administrator`,
 - [ ] **M&E Snapshot detail check:** Open snapshot `SNAP-DAILY-SUMMARY` detail page. Confirm the mandatory fictional reporting disclaimer is displayed, start/end period bounds match generation parameters, and dynamic breakdowns (such as requests by queue and status) render without errors.
 
 
+
+## API / Interoperability Runtime Validation - Deferred
+
+The API / Interoperability Readiness Foundation is implemented at domain/application/test/documentation level.
+
+Runtime validation remains deferred until the system is deployed on Hetzner or another working Linux/Frappe host with public HTTPS.
+
+Validation still required:
+
+- confirm public API route strategy;
+- validate Frappe whitelisted endpoint exposure where appropriate;
+- validate response envelope structure in browser/API client;
+- validate simulated service request payload output;
+- validate simulated identity payload output;
+- validate simulated payment payload output;
+- validate simulated notification payload output;
+- validate reporting snapshot payload output;
+- confirm no raw NIN, card data, mobile money PINs or secrets are exposed;
+- confirm `.env` remains server-local and untracked;
+- confirm Pesapal remains sandbox-only unless live mode is explicitly approved later;
+- capture screenshots or API client evidence for evaluator pack.
+
+Do not claim live UGHub, NIRA, URA, NITA-U or MDA integration until formal onboarding and production endpoint validation are complete.

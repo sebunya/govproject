@@ -1,48 +1,44 @@
-# Pass 8A-9A Task List: API / Interoperability Readiness Audit and Plan
+# Pass 8A-9C Task List: API / Interoperability Documentation and Submission Evidence
 
-## Audit
+## Documentation
 
-- [x] Inspect interfaces/frappe/api
-- [x] Inspect existing whitelisted endpoints
-- [x] Inspect simulated identity gateway
-- [x] Inspect simulated payment gateway
-- [x] Inspect Pesapal sandbox adapter
-- [x] Inspect notification gateway
-- [x] Inspect reporting snapshot model
-- [x] Inspect service catalogue model
-- [x] Inspect audit event and integration simulation logs
-- [x] Inspect existing tests
-- [x] Inspect submission documentation
+- [x] Create docs/modules/10_api_interoperability_readiness.md
+- [x] Document API readiness principles
+- [x] Document response envelope
+- [x] Document error envelope
+- [x] Document correlation IDs
+- [x] Document idempotency keys
+- [x] Document simulated target systems
+- [x] Document safe payload contracts
+- [x] Document integration logging readiness
+- [x] Document data minimisation controls
+- [x] Document runtime limitations
+- [x] Document safe claims
+- [x] Document claims to avoid
 
-## Audit Findings
+## Submission evidence
 
-- Existing `interfaces/frappe/api` package is present but minimal.
-- Existing whitelisted Desk actions are concentrated in the `NileGov Service Request` DocType controller.
-- Simulated identity, payment and notification gateways are already implemented.
-- Pesapal API 3.0 sandbox adapter is implemented and must remain sandbox-first.
-- Reporting Snapshot and Service Catalogue foundations are implemented.
-- `NileGov Integration Simulation Log` already exists and can support future runtime logging.
-- No complete API envelope, error envelope, idempotency key or correlation ID layer exists yet.
-- No dedicated interoperability domain model exists yet.
-- No safe cross-module payload builder exists yet.
-- Runtime validation remains deferred to Hetzner.
-
-## Planning
-
-- [x] Define Pass 8A-9A objective
-- [x] Define honesty boundaries
-- [x] Define files not to touch
-- [x] Define proposed Pass 8A-9B scope
-- [x] Define proposed Pass 8A-9C scope
-- [x] Define validation gates
+- [x] Update claims matrix
+- [x] Update evidence index
+- [x] Update runtime validation checklist
+- [x] Update walkthrough notes
 
 ## Safety
 
-- [x] Confirm `.env` remains untracked
-- [x] Confirm no secrets appear in git diff
-- [x] Confirm no live payment mode is activated
-- [x] Confirm no runtime validation is attempted
+- [x] No `.env` changes
+- [x] No secrets logged
+- [x] No live payment mode activated
+- [x] No live government integration claimed
+- [x] No Docker or Hetzner runtime validation attempted
 
-## Next pass
+## Validation
 
-- [x] Proceed to Pass 8A-9B only after audit findings are reviewed
+- [ ] Run full pytest suite
+- [ ] Run Python compile check
+- [ ] Confirm `.env` remains untracked
+- [ ] Confirm working tree before commit
+
+## Completion
+
+- [ ] Commit documentation updates
+- [ ] Push to GitHub

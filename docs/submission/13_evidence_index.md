@@ -150,3 +150,18 @@ This document indexes the code deliverables, verification results, and operation
 * **Static Schema Verification:** Checked. All 15 schema definitions contain the required disclaimers.
 * **Gunicorn / MariaDB Execution:** Stalled. Live runtime validation is pending deployment on a working container host.
 * **Wording Audit:** Verified. No live integration claims are made in documentation or code.
+
+## API / Interoperability Readiness Evidence
+
+| Evidence Item | Location | Notes |
+|---|---|---|
+| Interoperability domain model | `apps/nilegov_stack/nilegov_stack/domain/interoperability.py` | Defines integration request, response, API envelope and API error structures |
+| API envelope helpers | `apps/nilegov_stack/nilegov_stack/application/build_api_envelope.py` | Builds success and error response envelopes |
+| Correlation/idempotency helpers | `apps/nilegov_stack/nilegov_stack/application/generate_integration_keys.py` | Generates trace and retry-safety keys |
+| Integration request use case | `apps/nilegov_stack/nilegov_stack/application/create_integration_request.py` | Creates simulated interoperability requests |
+| Integration result use cases | `apps/nilegov_stack/nilegov_stack/application/record_integration_result.py` | Records simulated success and failure outcomes |
+| Integration list use case | `apps/nilegov_stack/nilegov_stack/application/list_integration_requests.py` | Lists requests by target system, status and service request |
+| Safe payload builders | `apps/nilegov_stack/nilegov_stack/application/build_interoperability_payloads.py` | Builds minimised service, identity, payment, notification and reporting payloads |
+| In-memory repository | `apps/nilegov_stack/nilegov_stack/infrastructure/repositories/integration_request_repository.py` | Supports testable simulated integration workflows |
+| Unit tests | `apps/nilegov_stack/nilegov_stack/tests/unit/test_interoperability.py` | Validates domain model, envelopes, payload safety and repository behaviour |
+| Module documentation | `docs/modules/10_api_interoperability_readiness.md` | Explains purpose, boundaries, safe claims and runtime limitations |

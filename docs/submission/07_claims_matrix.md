@@ -28,3 +28,17 @@ This matrix classifies the verification status of NileGov Stack features. It dic
 | **Future UGHub Onboarding** | **Future Integration** | Pluggable design allows changing gateways without modifying domain logic. | "UGHub-compatible integration points." | "Connected to UGHub", "Onboarded on UGHub." |
 | **MDA Deployments** | **Simulated** | Prototype environment is standalone and lacks live connection. | "Prototype simulation only." | "Active pilot in Ntinda", "Live Ministry system." |
 
+
+## API / Interoperability Readiness Claims
+
+| Claim | Status | Evidence | Boundary |
+|---|---|---|---|
+| API readiness foundation implemented | Implemented | Domain models, envelope helpers and payload builders exist in the application/domain layer | Prototype only |
+| REST-ready payload contracts implemented | Implemented | Service request, identity simulation, payment simulation, notification and reporting payload builders exist | Not exposed as live public endpoints yet |
+| API success and error envelopes implemented | Implemented | `build_api_envelope.py` provides success and error envelope helpers | Runtime API validation deferred |
+| Correlation ID and idempotency key support implemented | Implemented | `generate_integration_keys.py` and domain helpers generate trace keys | No production gateway yet |
+| Simulated interoperability request model implemented | Implemented | `interoperability.py` defines `IntegrationRequest` and `IntegrationResponse` | No live government system contacted |
+| Integration request repository implemented | Implemented | In-memory repository supports testable simulated requests | Frappe runtime persistence deferred |
+| Safe payload builders implemented | Implemented | Builders intentionally exclude raw NIN, payment credentials and contact secrets | Requires runtime validation before production use |
+| UGHub/NIRA/URA integration active | Not implemented | No live endpoints or Data Sharing Agreements are configured | Formal onboarding required |
+| Pesapal live payment integration active | Not implemented | Sandbox adapter exists; live mode remains disabled | Production activation deferred |
