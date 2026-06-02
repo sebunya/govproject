@@ -96,3 +96,20 @@ Submission evidence was updated in:
 The implementation remains prototype-level and integration-ready only. No live UGHub, NIRA, URA, NITA-U, MDA or production payment system was contacted.
 
 Runtime validation remains deferred to Hetzner or another working Linux/Frappe host.
+
+## Pass 10A: Roles, Permissions and User Profiles Foundation
+
+The NileGov role and permission model was defined for Frappe-native runtime validation.
+
+This pass added:
+
+- role matrix documentation;
+- sensitive DocType identification;
+- protected audit and integration log assumptions;
+- duty separation between records and payments;
+- read-only audit role expectations;
+- runtime validation checklist for Frappe Role Permission Manager.
+
+No live users, MDA directories, NIRA, UGHub, URA or NITA-U integrations were configured.
+
+Runtime role and permission validation remains deferred to Hetzner/Frappe deployment.

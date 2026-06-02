@@ -1,35 +1,32 @@
-# Pass 8A-9C Task List: API / Interoperability Documentation and Submission Evidence
+# Pass 10A Task List: Roles, Permissions and User Profiles
 
 ## Documentation
 
-- [x] Create docs/modules/10_api_interoperability_readiness.md
-- [x] Document API readiness principles
-- [x] Document response envelope
-- [x] Document error envelope
-- [x] Document correlation IDs
-- [x] Document idempotency keys
-- [x] Document simulated target systems
-- [x] Document safe payload contracts
-- [x] Document integration logging readiness
-- [x] Document data minimisation controls
-- [x] Document runtime limitations
-- [x] Document safe claims
-- [x] Document claims to avoid
+- [x] Create roles and permissions foundation documentation
+- [x] Define NileGov Citizen Officer role
+- [x] Define NileGov Records Officer role
+- [x] Define NileGov Payments Officer role
+- [x] Define NileGov SLA Supervisor role
+- [x] Define NileGov M&E Viewer role
+- [x] Define NileGov MDA Admin role
+- [x] Define NileGov System Auditor role
+- [x] Define NileGov System Manager role
+- [x] Document sensitive DocTypes
+- [x] Document protected logs
+- [x] Document runtime validation requirements
+
+## Code
+
+- [x] Add permission policy helper
+- [x] Export permission policy helper
+- [x] Add permission policy tests
 
 ## Submission evidence
 
 - [x] Update claims matrix
 - [x] Update evidence index
 - [x] Update runtime validation checklist
-- [x] Update walkthrough notes
-
-## Safety
-
-- [x] No `.env` changes
-- [x] No secrets logged
-- [x] No live payment mode activated
-- [x] No live government integration claimed
-- [x] No Docker or Hetzner runtime validation attempted
+- [x] Update walkthrough
 
 ## Validation
 
@@ -40,5 +37,5 @@
 
 ## Completion
 
-- [ ] Commit documentation updates
-- [ ] Push to GitHub
+- [ ] Commit Pass 10A
+- [ ] Push Pass 10A

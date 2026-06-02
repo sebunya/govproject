@@ -42,3 +42,13 @@ This matrix classifies the verification status of NileGov Stack features. It dic
 | Safe payload builders implemented | Implemented | Builders intentionally exclude raw NIN, payment credentials and contact secrets | Requires runtime validation before production use |
 | UGHub/NIRA/URA integration active | Not implemented | No live endpoints or Data Sharing Agreements are configured | Formal onboarding required |
 | Pesapal live payment integration active | Not implemented | Sandbox adapter exists; live mode remains disabled | Production activation deferred |
+
+## Roles, Permissions and User Profiles Claims
+
+| Claim | Status | Evidence | Boundary |
+|---|---|---|---|
+| NileGov role model defined | Implemented | `docs/modules/11_roles_permissions_foundation.md` and `permission_policy.py` | Runtime Frappe role setup pending |
+| Sensitive DocTypes identified | Implemented | Permission policy helper lists sensitive DocTypes | Runtime permission validation pending |
+| Audit and integration logs protected by design | Implemented | Tests confirm ordinary roles cannot modify protected logs | Frappe Role Permission Manager validation pending |
+| Payment and evidence duties separated | Implemented | Permission tests separate payment and records responsibilities | Runtime role enforcement pending |
+| Live MDA/government access configured | Not implemented | No live government directory or registry access configured | Formal onboarding required |

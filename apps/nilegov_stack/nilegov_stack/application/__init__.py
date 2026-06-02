@@ -79,3 +79,17 @@ from nilegov_stack.application.build_interoperability_payloads import (
     build_reporting_snapshot_payload,
     assert_payload_excludes_sensitive_values,
 )
+
+from nilegov_stack.application.permission_policy import (
+    NILEGOV_ROLES,
+    PROTECTED_DOCTYPES,
+    SENSITIVE_DOCTYPES,
+    can_modify_protected_log,
+    can_read_protected_log,
+    can_review_evidence,
+    can_review_payment,
+    is_nilegov_role,
+    is_protected_doctype,
+    is_sensitive_doctype,
+    role_implies_live_government_access,
+)

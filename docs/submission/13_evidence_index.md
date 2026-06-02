@@ -165,3 +165,11 @@ This document indexes the code deliverables, verification results, and operation
 | In-memory repository | `apps/nilegov_stack/nilegov_stack/infrastructure/repositories/integration_request_repository.py` | Supports testable simulated integration workflows |
 | Unit tests | `apps/nilegov_stack/nilegov_stack/tests/unit/test_interoperability.py` | Validates domain model, envelopes, payload safety and repository behaviour |
 | Module documentation | `docs/modules/10_api_interoperability_readiness.md` | Explains purpose, boundaries, safe claims and runtime limitations |
+
+## Roles, Permissions and User Profiles Evidence
+
+| Evidence Item | Location | Notes |
+|---|---|---|
+| Role and permission documentation | `docs/modules/11_roles_permissions_foundation.md` | Defines NileGov role model and access assumptions |
+| Permission policy helper | `apps/nilegov_stack/nilegov_stack/application/permission_policy.py` | Provides testable permission assumptions |
+| Permission policy tests | `apps/nilegov_stack/nilegov_stack/tests/unit/test_permission_policy.py` | Confirms protected logs, role separation and no live access claims |

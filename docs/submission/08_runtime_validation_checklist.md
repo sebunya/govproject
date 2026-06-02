@@ -190,3 +190,20 @@ Validation still required:
 - capture screenshots or API client evidence for evaluator pack.
 
 Do not claim live UGHub, NIRA, URA, NITA-U or MDA integration until formal onboarding and production endpoint validation are complete.
+
+## Roles and Permissions Runtime Validation - Deferred
+
+Validate on Hetzner/Frappe runtime:
+
+- create NileGov role profiles;
+- assign test users to each role profile;
+- confirm Citizen Officer can create/view assigned service requests;
+- confirm Records Officer can review evidence but not verify payments;
+- confirm Payments Officer can review payments but not approve evidence;
+- confirm SLA Supervisor can review escalations;
+- confirm M&E Viewer can view reports but not edit operational records;
+- confirm System Auditor can view audit/integration logs but not edit them;
+- confirm ordinary users cannot delete audit logs;
+- confirm ordinary users cannot delete integration simulation logs;
+- confirm no role exposes `.env` secrets;
+- confirm no role implies live government registry access.
