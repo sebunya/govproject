@@ -93,3 +93,7 @@ from nilegov_stack.application.permission_policy import (
     is_sensitive_doctype,
     role_implies_live_government_access,
 )
+
+# Case Note Foundation use cases
+from nilegov_stack.application.create_case_note import CreateCaseNote
+from nilegov_stack.application.list_case_notes import ListCaseNotes

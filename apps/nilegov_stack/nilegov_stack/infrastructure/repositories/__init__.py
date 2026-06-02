@@ -35,3 +35,8 @@ from nilegov_stack.infrastructure.repositories.frappe_reporting_snapshot_reposit
 from nilegov_stack.infrastructure.repositories.integration_request_repository import (
     InMemoryIntegrationRequestRepository,
 )
+
+from nilegov_stack.infrastructure.repositories.case_note_repository import (
+    InMemoryCaseNoteRepository,
+    CaseNoteRepository,
+)
