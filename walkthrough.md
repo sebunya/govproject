@@ -113,3 +113,67 @@ This pass added:
 No live users, MDA directories, NIRA, UGHub, URA or NITA-U integrations were configured.
 
 Runtime role and permission validation remains deferred to Hetzner/Frappe deployment.
+
+## Pass 11A: Core Completion — Case Notes, Service Request Test Depth, Application Tests, Permission Hardening
+
+**Verdict: Completed**
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `domain/case_note.py` | CaseNote aggregate: 7 allowed note types, 4 visibility levels, citizen-safety rule, prototype disclaimer |
+| `infrastructure/repositories/case_note_repository.py` | CaseNoteRepository port + InMemoryCaseNoteRepository |
+| `application/create_case_note.py` | CreateCaseNote use case |
+| `application/list_case_notes.py` | ListCaseNotes use case with citizen-safe summary filter |
+| `tests/unit/test_case_note.py` | 40+ unit tests for CaseNote domain, repository, and use cases |
+| `tests/unit/test_service_request_deep.py` | 60+ deep tests for ServiceRequest covering all 9 status transitions, SLA, escalation, assignment, payment, identity, and no-live-gov claims |
+| `tests/application/test_case_note_application.py` | Application composition tests: service request + case note flow |
+| `tests/application/test_application_composition.py` | Cross-domain composition tests: evidence+notes, payment+notes, reporting snapshot, interoperability payload safety |
+| `tests/permissions/test_permission_hardening.py` | Permission hardening tests: role completeness, protected log access, duty separation, no-live-gov access, case note visibility consistency |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `application/__init__.py` | Registered CreateCaseNote and ListCaseNotes |
+| `infrastructure/repositories/__init__.py` | Registered InMemoryCaseNoteRepository |
+
+### Test Results
+
+```
+525 passed in 0.67s
+```
+
+**Previously: 332/332. Now: 525/525. +193 tests added.**
+
+### Compile Result
+
+```
+python3 -m compileall apps/nilegov_stack/nilegov_stack → COMPILE OK (100% clean)
+```
+
+### Git Status
+
+Clean working tree. Committed as `2a5a5c6`.
+
+### .env Tracking
+
+`.env` remains untracked. Verified with `git ls-files .env` → no output.
+
+### No Live Integration Claims
+
+- No live NIRA, UGHub, URA, NITA-U, MDA or production payment integration introduced.
+- CaseNote domain explicitly enforces prototype disclaimer on all records.
+- Identity verification test guards confirm only simulated results are accepted.
+
+### Remaining Gaps (for Pass 11B)
+
+- Reporting Snapshot DocType JSON missing
+- Role fixtures mismatch (old vs NileGov-prefixed roles)
+- 14 of 15 DocTypes lack JavaScript form scripts
+- No Frappe Web Form for citizen intake
+- No REST API endpoints (interfaces/frappe/api/ is empty)
+- No Frappe Query Reports, dashboards, or print formats
+- DocType permission rows not embedded in JSON schemas
+
