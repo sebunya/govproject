@@ -1,0 +1,64 @@
+{
+ "doctype": "Web Form",
+ "name": "NileGov Lost National ID Replacement Intake",
+ "title": "NileGov Lost National ID Replacement Intake",
+ "doc_type": "NileGov Service Request",
+ "module": "NileGov Stack",
+ "is_standard": 1,
+ "published": 0,
+ "login_required": 1,
+ "route": "nilegov-lost-nid-replacement-intake",
+ "introduction_text": "Prototype service journey only. No live NIRA, UGHub, URA, NITA-U, MDA or production payment system is connected.",
+ "web_form_fields": [
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "citizen_full_name",
+   "fieldtype": "Data",
+   "label": "Citizen Full Name",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "nin",
+   "fieldtype": "Data",
+   "label": "NIN",
+   "reqd": 0,
+   "description": "Prototype identifier input only. This is not checked against live NIRA or any government registry. Do not use real citizen data in demo mode."
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "reqd": 0
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "reason_for_request",
+   "fieldtype": "Small Text",
+   "label": "Reason For Request",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "consent_confirmed",
+   "fieldtype": "Check",
+   "label": "Consent Confirmed",
+   "reqd": 1
+  }
+ ]
+}

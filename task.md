@@ -1,7 +1,17 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-7A COMPLETE — Next: Pass 11B-7B (Web Form Metadata Scaffold)
+## Status: 11B-7B COMPLETE — Next: Pass 11B-7C (REST API Scaffold)
+
+## Pass 11B-7B: Citizen Web Form Metadata Scaffold ✅ COMPLETE
+- [x] Create 3 standard Web Form JSON files under `web_form/`
+- [x] Enforce unpublished status (`published=0`) and login requirements (`login_required=1`)
+- [x] Include mandatory prototype NIRA disclaimers and field warnings
+- [x] Add `Web Form` to fixtures in `hooks.py`
+- [x] Create static architecture test suite `test_web_form_definitions.py`
+- [x] Run unit tests with pytest to verify all tests pass (1354/1354 passed)
+- [x] Update documentation: `13_evidence_index.md`, `08_runtime_validation_checklist.md`, `walkthrough.md`
+- [x] Run compilation check and final verification command checks
 
 ## Pass 11B-7A: Web Form, Public Status Lookup and REST API Surface Audit ✅ COMPLETE
 - [x] Audit existing `web_form/`, `www/`, and `interfaces/frappe/api/` directories

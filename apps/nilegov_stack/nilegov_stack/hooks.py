@@ -116,6 +116,14 @@ fixtures = [
             "NileGov Closure Review Assignment",
         ]
     ]]},
+    # ── Web Forms (Pass 11B-7B) ───────────────────────────────────────────────
+    {"dt": "Web Form", "filters": [[
+        "name", "in", [
+            "NileGov Lost National ID Replacement Intake",
+            "NileGov Evidence Supplement Metadata",
+            "NileGov Citizen Consent Capture",
+        ]
+    ]]},
 ]
 
 

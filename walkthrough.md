@@ -815,4 +815,38 @@ Created 7 standard Assignment Rule templates under `assignment_rule/`:
 - `.env` status: Untracked and uncommitted.
 - Runtime validation: Deferred to Hetzner/Frappe bench.
 
+---
+
+## Pass 11B-7B: Citizen Web Form Metadata Scaffold
+
+This pass configures unpublished, login-gated Web Form schemas for citizen intake, supplementary evidence, and consent records.
+
+### Accomplished Deliverables
+
+#### Web Form Definitions
+Created 3 standard Web Form templates under `web_form/`:
+1. `NileGov Lost National ID Replacement Intake` (linked to `NileGov Service Request`, exposes safe intake fields, hides internal columns, and contains a prototype NIRA disclaimer with an optional `nin` description warning).
+2. `NileGov Evidence Supplement Metadata` (linked to `NileGov Evidence Document`, exposes only metadata fields, hides verification/officer columns, and contains an evidence metadata disclaimer).
+3. `NileGov Citizen Consent Capture` (linked to `NileGov Consent Record`, exposes profile/purpose fields, hides audit/expiry columns, and contains a consent disclaimer).
+
+#### Fixture and Security Controls
+- Registered `Web Form` in `hooks.py` fixtures.
+- Set `published = 0` (unpublished) and `login_required = 1` (login-gated) across all three templates for security.
+
+#### Web Form Architecture Tests
+- Created [test_web_form_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_web_form_definitions.py) to statically assert:
+  1. All 3 Web Form JSON files exist.
+  2. Every Web Form starts with `NileGov` and targets the correct DocType.
+  3. Every exposed field exists on the target DocType, and internal fields (assignment, SLA, payment, verification, officer notes, etc.) are excluded.
+  4. Banners contain mandatory prototype disclaimers.
+  5. Web Forms are unpublished (`published=0`) and login-gated (`login_required=1`).
+  6. `hooks.py` registers all 3 fixtures.
+
+### Final Verification Results
+
+- Pytest Suite: **1354/1354 passed** (100% green).
+- Python compile: **CLEAN** (zero syntax errors).
+- `.env` status: Untracked and uncommitted.
+- Runtime validation: Deferred to Hetzner/Frappe bench.
+
 
