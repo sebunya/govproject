@@ -1,9 +1,15 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-7D COMPLETE — Next: Pass 11B-8 (Installation Hooks and Final Audit)
+## Status: 11B-8A COMPLETE — Next: Pass 11B-8B (Safe Install Hooks and Setup Readiness)
 
-## Pass 11B-7D: Citizen Status Lookup and Redaction Layer ✅ COMPLETE
+## Pass 11B-8A: Installation, Fixtures, Migration and Runtime Readiness Audit ✅ COMPLETE
+- [x] Run Git status, log, and untracked checks
+- [x] Inspect hooks.py, patches, modules.txt, and fixture lists
+- [x] Assess install hook risks for seeding data, roles, and configuration
+- [x] Build fixture readiness master audit table
+- [x] Recommend the Pass 11B-8 split and next steps scope
+
 - [x] Create pure redaction helper module `application/redaction.py`
 - [x] Add status lookup API endpoint `get_redacted_case_status_preview` to `public_readiness.py`
 - [x] Export status lookup API endpoint in `interfaces/frappe/api/__init__.py`
