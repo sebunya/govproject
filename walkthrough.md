@@ -742,4 +742,41 @@ Created 7 standard Jinja Print Formats under `print_format/`:
 - `.env` status: Untracked and uncommitted.
 - Runtime validation: Deferred to Hetzner/Frappe bench.
 
+---
+
+## Pass 11B-6C: Simulated Notification Templates and Internal Alert Readiness
+
+This pass configures simulated notifications and internal alerts for the NileGov service request journey.
+
+### Accomplished Deliverables
+
+#### Notification Definitions
+Created 8 standard Notification templates under `notification/`:
+1. `NileGov Officer Assigned Alert` (triggers on `assigned_officer` change in `NileGov Service Request`)
+2. `NileGov Evidence Incomplete Alert` (triggers on verification status changes in `NileGov Evidence Document`)
+3. `NileGov Payment Pending Review Alert` (triggers on status updates in `NileGov Payment Record`)
+4. `NileGov SLA At Risk Alert` (triggers on `sla_state == 'At Risk'` in `NileGov Service Request`)
+5. `NileGov SLA Overdue Alert` (triggers on `sla_state == 'Overdue'` in `NileGov Service Request`)
+6. `NileGov Escalation Assigned Alert` (triggers on new escalation records)
+7. `NileGov Case Closed Alert` (triggers on internal status closure)
+8. `NileGov Simulated Citizen Status Update` (triggers on new citizen notifications)
+
+#### Hooks Fixtures Update
+- Modified `hooks.py` to register `Notification` as a standard fixture tracking all 8 simulated alert templates.
+
+#### Notification Architecture Tests
+- Created [test_notification_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_notification_definitions.py) to statically assert:
+  1. All 8 notification JSON files exist.
+  2. All files contain standard metadata (`is_standard: 1`, module `"NileGov Stack"`, correct target `document_type`, events, conditions).
+  3. Every alert message contains proper prototype / simulation / sandbox disclaimers.
+  4. All recipient roles are canonically prefixed with `NileGov`.
+  5. `hooks.py` correctly registers all 8 notification templates.
+
+### Final Verification Results
+
+- Pytest Suite: **1284/1284 passed** (100% green).
+- Python compile: **CLEAN** (zero syntax errors).
+- `.env` status: Untracked and uncommitted.
+- Runtime validation: Deferred to Hetzner/Frappe bench.
+
 

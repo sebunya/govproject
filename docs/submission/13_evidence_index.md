@@ -204,12 +204,22 @@ This document indexes the code deliverables, verification results, and operation
 ### Tests Added
 - `tests/unit/test_workspace_navigation.py` — 155 tests, 17 classes covering workspace links, shortcuts, no broken DocType names, no live labels, roles, section labels, search_fields, title_field, sort_field, list_view count, standard filters, JSON integrity, and spot-checks.
 
-### Test Suite After Pass 11B-5B
-- **1175 / 1175 passed** (includes Pass 11B-5A reports/dashboards tests and Pass 11B-5B workspace links tests)
+### Test Suite After Pass 11B-6C
+- **1284 / 1284 passed** (includes Pass 11B-6B print formats and Pass 11B-6C notification definitions static architecture tests)
 - Python compile: CLEAN
 - `.env`: untracked
 
 ### Pass 11B-5B Additions (Reporting Workspace Shortcuts and Evidence Update)
 - Added new section `I. Reports and Dashboards` to NileGov Case Operations Workspace links with 1 dashboard and 9 report shortcut links.
 - Created [test_workspace_reporting_links.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_workspace_reporting_links.py) verifying workspace links existence, dashboard and report definitions matching, and sandbox/prototype label disclaimers.
+
+### Pass 11B-6B Additions (Print Format Definitions)
+- Created 7 standard Print Format JSON files under `print_format/` for acknowledgements, replacement case summaries, simulated payment receipts, evidence reviews, SLA escalation memos, case closure certificates, and M&E briefs.
+- Registered print formats in `hooks.py` fixtures.
+- Created [test_print_format_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_print_format_definitions.py) to statically assert all definition schemas, HTML content, and mandatory simulation/sandbox disclaimers.
+
+### Pass 11B-6C Additions (Simulated Notification Templates)
+- Created 8 standard Notification JSON files under `notification/` for officers assigned, incomplete evidence, pending review payments, SLA risk/overdue alerts, escalation assignments, case closures, and status updates.
+- Registered notifications in `hooks.py` fixtures.
+- Created [test_notification_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_notification_definitions.py) to statically assert definitions, trigger conditions, recipient roles, and mandatory simulation disclaimers.
 

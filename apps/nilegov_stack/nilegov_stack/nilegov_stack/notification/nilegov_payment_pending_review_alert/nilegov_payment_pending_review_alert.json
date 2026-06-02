@@ -1,0 +1,26 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Notification",
+ "idx": 0,
+ "is_standard": 1,
+ "enabled": 1,
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Payment Pending Review Alert",
+ "owner": "Administrator",
+ "channel": "Email",
+ "document_type": "NileGov Payment Record",
+ "event": "Save",
+ "condition": "doc.payment_status in ['Pending', 'Submitted'] or doc.verification_status == 'Requires Review'",
+ "subject": "Payment Record {{ doc.name }} Pending Review",
+ "message": "Payment Record {{ doc.name }} linked to Service Request {{ doc.service_request }} has payment status: {{ doc.payment_status }} and verification status: {{ doc.verification_status }}.\n\nPayment status is simulated/sandbox-only. No real money movement or live payment clearance is claimed.",
+ "recipients": [
+  {
+   "doctype": "Notification Recipient",
+   "receiver_type": "By Role",
+   "receiver_by_role": "NileGov Payments Officer"
+  }
+ ]
+}

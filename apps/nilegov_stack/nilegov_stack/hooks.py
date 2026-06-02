@@ -91,6 +91,19 @@ fixtures = [
             "NileGov M&E Summary Brief",
         ]
     ]]},
+    # ── Notifications (Pass 11B-6C) ───────────────────────────────────────────
+    {"dt": "Notification", "filters": [[
+        "name", "in", [
+            "NileGov Officer Assigned Alert",
+            "NileGov Evidence Incomplete Alert",
+            "NileGov Payment Pending Review Alert",
+            "NileGov SLA At Risk Alert",
+            "NileGov SLA Overdue Alert",
+            "NileGov Escalation Assigned Alert",
+            "NileGov Case Closed Alert",
+            "NileGov Simulated Citizen Status Update",
+        ]
+    ]]},
 ]
 
 
