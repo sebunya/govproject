@@ -32,6 +32,12 @@ fixtures = [
             "NileGov System Manager",
         ]
     ]]},
+    # ── Workspace ─────────────────────────────────────────────────────────────
+    {"dt": "Workspace", "filters": [[
+        "name", "in", [
+            "nilegov_case_operations",
+        ]
+    ]]},
     # ── Reports (Pass 11B-5A) ─────────────────────────────────────────────────
     {"dt": "Report", "filters": [[
         "name", "in", [

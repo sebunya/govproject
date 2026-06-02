@@ -266,6 +266,12 @@ This document indexes the code deliverables, verification results, and operation
 - Updated [08_runtime_validation_checklist.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/08_runtime_validation_checklist.md) to log complete traceability steps.
 - **1401 / 1401 passed** in total test suite.
 
+### Pass 11B-8E Additions (Pre-Hetzner Runtime Lockdown)
+- Created [15_pre_hetzner_runtime_lockdown.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/15_pre_hetzner_runtime_lockdown.md) containing the final go/no-go audit checks and verification steps.
+- Created [test_pre_hetzner_lockdown.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_pre_hetzner_lockdown.py) to statically assert gitignore compliance, hooks registration, and configuration safety rules.
+- **1410 / 1410 passed** in total test suite.
+
+
 
 
 

@@ -901,5 +901,18 @@ This pass compiles a submit-ready manifest mapping all capabilities, assets, tes
 - Verified test suite: **1401 / 1401 passed** (100% green).
 - Confirmed compile check successful and local environment file remains untracked.
 
+---
+
+## Pass 11B-8E: Pre-Hetzner Runtime Lockdown
+
+This pass completes final validation, ensures environment configuration safety, checks fixture registration, and locks down the repository.
+
+### Accomplished Deliverables
+- Created `docs/submission/15_pre_hetzner_runtime_lockdown.md` outlining the final Go verdict, git status, and Hetzner entry criteria.
+- Created `test_pre_hetzner_lockdown.py` asserting environment safety, gitignore rules, fixtures, and disclaimers.
+- Updated `hooks.py` to register the `Workspace` fixture.
+- Verified test suite: **1410 / 1410 passed** (100% green).
+
+
 
 

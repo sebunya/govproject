@@ -1,7 +1,15 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-8D COMPLETE ✅
+## Status: 11B-8E COMPLETE ✅
+
+## Pass 11B-8E: Pre-Hetzner Runtime Lockdown ✅ COMPLETE
+- [x] Create runtime lockdown document `docs/submission/15_pre_hetzner_runtime_lockdown.md`
+- [x] Assert environment safety, fixture registration, install hooks, and claims validation
+- [x] Create verification test `test_pre_hetzner_lockdown.py`
+- [x] Register `Workspace` fixture in `hooks.py`
+- [x] Verify all 1410 tests pass successfully
+- [x] Ensure compile checks succeed and .env file remains untracked
 
 ## Pass 11B-8D: Final Frappe-Native Evidence Manifest ✅ COMPLETE
 - [x] Create final evidence manifest `docs/submission/14_frappe_native_evidence_manifest.md`

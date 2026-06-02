@@ -255,3 +255,9 @@ Validate sequentially on a freshly provisioned bench:
 - [ ] Confirm that `docs/submission/14_frappe_native_evidence_manifest.md` is present on the site.
 - [ ] Verify that the manifest contains accurate counts: 16 DocTypes, 9 Reports, 9 Number Cards, 8 Charts, 1 Dashboard, 7 Print Formats, 8 Notifications, 7 Assignment Rules, 3 Web Forms.
 - [ ] Verify that all 25 capability matrix items have corresponding repo artifact paths and unit/architecture tests.
+
+## Pre-Hetzner Lockdown Validation
+- [ ] Confirm that `docs/submission/15_pre_hetzner_runtime_lockdown.md` is present.
+- [ ] Verify that the lockdown report recommends a "GO" status and lists all entry criteria.
+- [ ] Verify that all 10 custom fixtures are registered in `hooks.py` and compile without errors.
+
