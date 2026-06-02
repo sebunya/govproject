@@ -25,12 +25,14 @@ EXPECTED_DOCTYPES = {
     "nilegov_audit_event": "NileGov Audit Event",
     "nilegov_integration_simulation_log": "NileGov Integration Simulation Log",
     "nilegov_payment_record": "NileGov Payment Record",
-    "nilegov_service_catalogue": "NileGov Service Catalogue"
+    "nilegov_service_catalogue": "NileGov Service Catalogue",
+    # Pass 11B-1: Reporting Snapshot DocType added
+    "nilegov_reporting_snapshot": "NileGov Reporting Snapshot",
 }
 
 
 def test_doctype_folders_and_files_exist():
-    """Verifies that all 13 DocType subdirectories and schema JSON files exist on disk."""
+    """Verifies that all 16 DocType subdirectories and schema JSON files exist on disk."""
     assert os.path.exists(DOCTYPE_ROOT), f"DocType root directory not found at {DOCTYPE_ROOT}"
     
     for folder, doctype_name in EXPECTED_DOCTYPES.items():
@@ -89,7 +91,20 @@ def test_schema_required_fields_exist():
         "nilegov_audit_event": {"event_type", "actor", "event_time", "action_summary"},
         "nilegov_integration_simulation_log": {"service_request", "integration_name", "simulation_type", "status", "simulated_at", "disclaimer"},
         "nilegov_payment_record": {"payment_record_id", "service_request", "amount", "payment_status", "verification_status", "disclaimer"},
-        "nilegov_service_catalogue": {"service_catalogue_id", "service_name", "service_code", "service_category", "default_payment_provider", "active_status", "workflow_template", "disclaimer"}
+        "nilegov_service_catalogue": {"service_catalogue_id", "service_name", "service_code", "service_category", "default_payment_provider", "active_status", "workflow_template", "disclaimer"},
+        # Pass 11B-1: Reporting Snapshot required fields
+        "nilegov_reporting_snapshot": {
+            "reporting_snapshot_id", "snapshot_name",
+            "reporting_period_start", "reporting_period_end",
+            "generated_at", "generated_by", "source_dataset",
+            "total_requests", "within_sla_count", "at_risk_count",
+            "overdue_count", "escalated_count",
+            "evidence_complete_count", "evidence_incomplete_count",
+            "payment_pending_count", "payment_verified_count", "payment_failed_count",
+            "notification_queued_count", "notification_simulated_sent_count",
+            "notification_failed_count", "officer_workload_summary",
+            "payment_value_summary", "disclaimer",
+        },
     }
     
     for folder, required_fields in required_fields_map.items():
@@ -108,17 +123,19 @@ def test_disclaimer_fields_in_simulation_records():
         "nilegov_simulated_identity_verification": "response_message",
         "nilegov_integration_simulation_log": "disclaimer",
         "nilegov_payment_record": "disclaimer",
-        "nilegov_service_catalogue": "disclaimer"
+        "nilegov_service_catalogue": "disclaimer",
+        # Pass 11B-1: Reporting Snapshot must have a prototype disclaimer
+        "nilegov_reporting_snapshot": "disclaimer",
     }
-    
+
     for folder, fieldname in disclaimer_records.items():
         json_path = os.path.join(DOCTYPE_ROOT, folder, f"{folder}.json")
         with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-            
+
         fields = {field["fieldname"]: field for field in data.get("fields", [])}
         assert fieldname in fields, f"Disclaimer field '{fieldname}' missing in '{folder}'"
-        
+
         # Verify default disclaimer message
         default_val = fields[fieldname].get("default", "")
         required_msg = "Prototype simulation only. No live Government registry access."
@@ -126,6 +143,8 @@ def test_disclaimer_fields_in_simulation_records():
             required_msg = "Prototype simulation only. No live payment was processed."
         elif folder == "nilegov_service_catalogue":
             required_msg = "Prototype service catalogue only. Not connected to a live government service registry."
+        elif folder == "nilegov_reporting_snapshot":
+            required_msg = "Prototype reporting snapshot only. Metrics are calculated from fictional demo data"
         assert required_msg in default_val, (
             f"Disclaimer message mismatch in '{folder}' for field '{fieldname}'. "
             f"Expected it to contain '{required_msg}'"

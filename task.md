@@ -1,18 +1,23 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-2 COMPLETE — Next: 11B-1 (Reporting Snapshot DocType)
+## Status: 11B-1 COMPLETE — Next: 11B-3 (Workspace Links) or 11B-4 (JS Form Scripts)
 
 ---
 
-## Pass 11B-1: Reporting Snapshot DocType
-- [ ] Create `nilegov_reporting_snapshot.json` DocType schema
-- [ ] Create `nilegov_reporting_snapshot.py` controller
-- [ ] Create `nilegov_reporting_snapshot.js` form script
-- [ ] Create `__init__.py`
-- [ ] Update `test_doctype_schemas.py` EXPECTED_DOCTYPES
-- [ ] Run full test suite (must remain 620+/all green)
-- [ ] Commit
+## Pass 11B-1: Reporting Snapshot DocType ✅ COMPLETE
+- [x] Create `nilegov_reporting_snapshot/` directory
+- [x] Create `nilegov_reporting_snapshot.json` — 40-field DocType with NileGov-prefixed permissions
+- [x] Create `nilegov_reporting_snapshot.py` controller (validates snapshot_name, disclaimer, no live-gov claims)
+- [x] Create `__init__.py`
+- [x] Update `test_doctype_schemas.py` EXPECTED_DOCTYPES (16 DocTypes total)
+- [x] Update `test_role_alignment.py` ALL_DOCTYPES (16 DocTypes total)
+- [x] Create `tests/unit/test_reporting_snapshot_doctype.py` (41 new tests, 14 classes)
+- [x] Add workspace shortcut for M&E Reporting Snapshots
+- [x] Run full test suite: **668/668 passed** (+48 vs Pass 11B-2 baseline)
+- [x] Compile: **CLEAN**
+- [x] Commit + push to main
+
 
 ## Pass 11B-2: Role Fixtures and Permission Rows ✅ COMPLETE
 - [x] Update `hooks.py` fixtures list → NileGov-prefixed roles

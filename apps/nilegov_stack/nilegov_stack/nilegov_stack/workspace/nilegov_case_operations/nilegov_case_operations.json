@@ -71,6 +71,13 @@
    "type": "DocType",
    "docstatus": 0,
    "filters": "[[\"NileGov Service Request\",\"internal_status\",\"=\",\"Ready for Collection\"]]"
+  },
+  {
+   "label": "M&E Reporting Snapshots",
+   "link_to": "NileGov Reporting Snapshot",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
   }
  ]
 }

@@ -2,6 +2,9 @@
 
 The M&E / Reporting Foundation compiles deterministic performance indicators across service requests, catalog configurations, payment receipts, uploaded evidence documents, and notifications. It provides daily/periodic snapshots representing the state of the service delivery pipeline without loading heavy raw database joins at runtime.
 
+> [!NOTE]
+> **Pass 11B-1 complete.** `NileGov Reporting Snapshot` DocType JSON, controller, and `__init__.py` are now present in `nilegov_stack/doctype/nilegov_reporting_snapshot/`. M&E Viewer and System Auditor have read-only permission rows. Runtime Desk persistence remains deferred to Hetzner/Frappe bench.
+
 ---
 
 ## 1. Domain Architecture & Models
@@ -35,15 +38,41 @@ A read-only compiled performance state tracking:
 
 ## 2. DocType Schema & Controller
 
-The `NileGov Reporting Snapshot` DocType represents the database structure for compiled records.
+The `NileGov Reporting Snapshot` DocType (Pass 11B-1) provides the Frappe-native schema layer.
 
-### Controller Validations
+### 2.1 Files created in Pass 11B-1
+- `nilegov_stack/doctype/nilegov_reporting_snapshot/nilegov_reporting_snapshot.json` — 40-field schema
+- `nilegov_stack/doctype/nilegov_reporting_snapshot/nilegov_reporting_snapshot.py` — controller
+- `nilegov_stack/doctype/nilegov_reporting_snapshot/__init__.py`
+
+### 2.2 DocType fields
+- **Core identity**: `reporting_snapshot_id` (autoname), `snapshot_name` (required), `generated_at` (Datetime), `generated_by`, `source_dataset`
+- **Period**: `reporting_period_start`, `reporting_period_end` (Date)
+- **Executive metrics**: `total_requests`, `total_services`, `active_services`, `demo_services` (all Int)
+- **Summaries**: `requests_by_status`, `requests_by_service`, `requests_by_queue`, `requests_by_location` (Code/JSON)
+- **SLA**: `within_sla_count`, `at_risk_count`, `overdue_count`, `escalated_count` (Int)
+- **Evidence**: `evidence_complete_count`, `evidence_incomplete_count` (Int)
+- **Payment**: `payment_pending_count`, `payment_verified_count`, `payment_failed_count` (Int), `payment_value_summary` (Code/JSON)
+- **Notifications**: `notification_queued_count`, `notification_simulated_sent_count`, `notification_failed_count` (Int)
+- **Workload**: `officer_workload_summary` (Code/JSON)
+- **Governance**: `disclaimer` (Small Text, required)
+
+### 2.3 Controller Validations
 The controller in `nilegov_reporting_snapshot.py` enforces:
-*   Presence of `reporting_snapshot_id` and `snapshot_name`.
-*   Start timestamp must occur before the end timestamp.
-*   Total request and service counts cannot be negative.
-*   Serialization/deserialization of JSON summary dicts (`requests_by_status`, `requests_by_service`, `requests_by_queue`, `requests_by_location`, `officer_workload_summary`, `payment_value_summary`).
-*   Enforcement of the disclaimer text: `"Prototype reporting snapshot only. Metrics are calculated from fictional demo data and are not official government statistics."`
+*   Presence of `snapshot_name`.
+*   Disclaimer is always set to the required prototype text (defaulted if blank, reset if altered).
+*   Forbidden live-integration keywords are blocked in user-editable text fields.
+
+### 2.4 Permission model
+| Role | Access |
+|---|---|
+| NileGov M&E Viewer | Read, Export, Print, Report |
+| NileGov SLA Supervisor | Read, Print |
+| NileGov MDA Admin | Read, Print |
+| NileGov System Auditor | Read, Export, Print, Report |
+| NileGov System Manager | Full |
+| System Manager | Full |
+| Ordinary operational roles | No access |
 
 ---
 
@@ -52,7 +81,7 @@ The controller in `nilegov_reporting_snapshot.py` enforces:
 ### 3.1 Repositories
 *   **ReportingSnapshotRepository**: Abstract port definition.
 *   **InMemoryReportingSnapshotRepository**: Volatile repository for unit test isolation.
-*   **FrappeReportingSnapshotRepository**: Database integration mapping JSON strings to dict properties.
+*   **FrappeReportingSnapshotRepository**: Database integration mapping JSON strings to dict properties. Now aligned to the `NileGov Reporting Snapshot` DocType created in Pass 11B-1.
 
 ### 3.2 Use Cases
 *   **GenerateReportingSnapshot**:
@@ -83,5 +112,7 @@ The patch `patches/seed_demo_records.py` seeds 4 distinct snapshots:
 
 ## 6. Verification
 
-*   **Unit Tests**: `tests/unit/test_reporting_snapshot.py` verifies all validations, aggregate compile logic, empty dataset safety, and repository mappings.
-*   **Compliance check**: Checked against the complete 299-test suite.
+*   **Unit Tests**: `tests/unit/test_reporting_snapshot.py` verifies domain model validations and aggregate logic.
+*   **DocType Tests (Pass 11B-1)**: `tests/unit/test_reporting_snapshot_doctype.py` verifies DocType JSON structure, all required fields, disclaimer text, permission rows (14 test classes).
+*   **Role Alignment Tests (Pass 11B-2)**: `tests/permissions/test_role_alignment.py` verifies NileGov Reporting Snapshot has at least one NileGov-prefixed role and no Guest access.
+*   **Compliance check**: Full suite 668/668 passed.

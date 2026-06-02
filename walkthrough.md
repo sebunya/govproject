@@ -260,4 +260,95 @@ Untracked. Verified with `git ls-files .env` → no output.
 - Citizen Web Form and REST API scaffold (Pass 11B-7)
 - after_install hook (Pass 11B-8)
 
+---
 
+## Pass 11B-1: Reporting Snapshot DocType JSON, Controller and Desk Visibility
+
+**Verdict: Completed**
+
+### Gap Closed
+
+`domain/reporting_snapshot.py`, `application/generate_reporting_snapshot.py`, and `FrappeReportingSnapshotRepository` all existed. But there was no Frappe DocType JSON for `NileGov Reporting Snapshot`, meaning M&E data could not be persisted or viewed in the Frappe Desk. Pass 11B-1 creates the missing structural layer.
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `nilegov_stack/doctype/nilegov_reporting_snapshot/nilegov_reporting_snapshot.json` | 40-field Frappe DocType — all M&E metrics from the domain model |
+| `nilegov_stack/doctype/nilegov_reporting_snapshot/nilegov_reporting_snapshot.py` | Controller: validates snapshot_name, enforces prototype disclaimer, blocks live-gov claim keywords |
+| `nilegov_stack/doctype/nilegov_reporting_snapshot/__init__.py` | Standard Frappe DocType package init |
+| `tests/unit/test_reporting_snapshot_doctype.py` | 41 tests, 14 test classes: file existence, JSON structure, all required fields, field types, disclaimer text and requirement, permission rows (9 roles), Frappe repo alignment, controller import/validate, no live-gov claims |
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `tests/unit/test_doctype_schemas.py` | Added `nilegov_reporting_snapshot` to `EXPECTED_DOCTYPES` (16 total), required fields map, and disclaimer check |
+| `tests/permissions/test_role_alignment.py` | Added `nilegov_reporting_snapshot` to `ALL_DOCTYPES` (16 total) |
+| `workspace.json` | Added "M&E Reporting Snapshots" shortcut linking to `NileGov Reporting Snapshot` |
+| `docs/modules/09_me_reporting_foundation.md` | Updated with Pass 11B-1 status, DocType field table, permission model, verification references |
+| `docs/submission/07_claims_matrix.md` | Updated M&E / Reporting Foundation row to reflect DocType implementation |
+
+### DocType Field Summary
+
+| Category | Fields | Type |
+|---|---|---|
+| Core identity | `reporting_snapshot_id`, `snapshot_name`, `generated_at`, `generated_by`, `source_dataset` | Data/Datetime |
+| Period | `reporting_period_start`, `reporting_period_end` | Date |
+| Executive metrics | `total_requests`, `total_services`, `active_services`, `demo_services` | Int |
+| Status summaries | `requests_by_status`, `requests_by_service`, `requests_by_queue`, `requests_by_location` | Code (JSON) |
+| SLA metrics | `within_sla_count`, `at_risk_count`, `overdue_count`, `escalated_count` | Int |
+| Evidence metrics | `evidence_complete_count`, `evidence_incomplete_count` | Int |
+| Payment metrics | `payment_pending_count`, `payment_verified_count`, `payment_failed_count`, `payment_value_summary` | Int/Code |
+| Notification metrics | `notification_queued_count`, `notification_simulated_sent_count`, `notification_failed_count` | Int |
+| Workload | `officer_workload_summary` | Code (JSON) |
+| Governance | `disclaimer` (required) | Small Text |
+
+### Permission Model
+
+| Role | Access |
+|---|---|
+| NileGov M&E Viewer | Read, Export, Print, Report |
+| NileGov SLA Supervisor | Read, Print |
+| NileGov MDA Admin | Read, Print |
+| NileGov System Auditor | Read, Export, Print, Report |
+| NileGov System Manager | Full |
+| System Manager | Full |
+| Ordinary operational roles (Citizen Officer, Records Officer, Payments Officer) | No access |
+
+### Repository Alignment
+
+`FrappeReportingSnapshotRepository` already referenced `"NileGov Reporting Snapshot"` and mapped all required fields — no changes needed. DocType JSON was the only missing piece.
+
+### Test Results
+
+```
+668 passed in 6.13s
+```
+
+**Previously: 620/620. Now: 668/668. +48 new tests.**
+
+### Compile Result
+
+```
+python3 -m compileall apps/nilegov_stack/nilegov_stack → COMPILE OK (100% clean)
+```
+
+### `.env` Status
+
+Untracked. Verified with `git ls-files .env` → no output.
+
+### No Live Integration Claims
+
+- Disclaimer field is required in DocType JSON with the canonical prototype text.
+- Controller resets disclaimer if altered.
+- Controller blocks live-integration keyword patterns in editable text fields.
+- No NIRA, UGHub, URA, NITA-U or production connection introduced.
+
+### Remaining Gaps (for later passes)
+
+- JS form scripts for 14 DocTypes (Pass 11B-4)
+- Query Reports and dashboard charts (Pass 11B-5)
+- Print formats (Pass 11B-6)
+- Citizen Web Form and REST API scaffold (Pass 11B-7)
+- after_install hook (Pass 11B-8)

@@ -50,7 +50,7 @@ PROTECTED_DOCTYPES = {
     "nilegov_integration_simulation_log",
 }
 
-# All 15 expected DocType directories
+# All 16 expected DocType directories (Pass 11B-1: added nilegov_reporting_snapshot)
 ALL_DOCTYPES = [
     "nilegov_audit_event",
     "nilegov_case_note",
@@ -61,6 +61,7 @@ ALL_DOCTYPES = [
     "nilegov_evidence_document",
     "nilegov_integration_simulation_log",
     "nilegov_payment_record",
+    "nilegov_reporting_snapshot",
     "nilegov_service_catalogue",
     "nilegov_service_request",
     "nilegov_service_type",
