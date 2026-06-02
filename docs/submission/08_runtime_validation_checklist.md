@@ -236,5 +236,21 @@ Validate on fresh bench install:
 - [ ] Confirm after install hook outputs setup logs confirming successful execution.
 - [ ] Confirm the 8 canonical roles exist in DB immediately after installation.
 
+## Fresh Bench Runtime Smoke Checklist
+Validate sequentially on a freshly provisioned bench:
+1. **Fixture Loading Verification:**
+   - [ ] Check if the NileGov dashboard, number cards, reports, printing layouts, and notification structures import successfully.
+   - [ ] Verify that workspace navigation items render and all 16 DocTypes are visible.
+2. **Setup Safety Verification:**
+   - [ ] Verify that `after_install()` executes without matching `.env` or Pesapal production consumer secrets.
+   - [ ] Verify that all 8 canonical roles are created and available for user assignment.
+3. **Casework Queue Verification:**
+   - [ ] Check if assignment rules correctly import and route requests using demo user assignments only.
+   - [ ] Verify that Web Forms are initialized as unpublished (`published=0`) and login-gated (`login_required=1`).
+4. **API Safety Verification:**
+   - [ ] Call `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_redacted_case_status_preview?reference_number=req_pass3_001` and verify that NIN, Phone, and Email values are masked (asterisks only).
+   - [ ] Confirm that no raw NIRA, URA, or live external database connection calls are triggered.
+
+
 
 

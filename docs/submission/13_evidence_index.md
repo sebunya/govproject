@@ -252,8 +252,14 @@ This document indexes the code deliverables, verification results, and operation
 ### Pass 11B-8B Additions (Safe Install Hook and Setup Readiness)
 - Created [install.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/install.py) implementing the safe, conservative `after_install` setup validation hook.
 - Registered the install hook in [hooks.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/hooks.py).
-- Created [test_install_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_install_readiness.py) to statically assert hook registration, role validation, and lack of live/secret claims.
 - Created [test_install_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_install_readiness.py) unit testing `get_canonical_roles()` and `get_install_readiness_summary()`.
+- **1396 / 1396 passed** in total test suite.
+
+### Pass 11B-8C Additions (Demo Seed Data, Migration Readiness and Runtime Smoke Checklist)
+- Created [test_seed_data_safety.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_seed_data_safety.py) asserting that the seed scripts contain no secrets, live URLs, real-looking PII, or live registry connection claims.
+- Created [test_patch_migration_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_patch_migration_readiness.py) validating the structure, existence, and `execute()` callbacks of all patches in `patches.txt`.
+- Appended the "Fresh Bench Runtime Smoke Checklist" detailing post-install diagnostics to [08_runtime_validation_checklist.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/08_runtime_validation_checklist.md).
+
 
 
 

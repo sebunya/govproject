@@ -1,7 +1,15 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-8B COMPLETE — Next: Pass 11B-8C (Demo Seed Data and Runtime Smoke Checklist)
+## Status: 11B-8C COMPLETE — Next: Pass 11B-8D (Final Submission Evidence Pack)
+
+## Pass 11B-8C: Demo Seed Data, Migration Readiness and Runtime Smoke Checklist ✅ COMPLETE
+- [x] Create seed data safety architecture tests `test_seed_data_safety.py`
+- [x] Create patch migration readiness architecture tests `test_patch_migration_readiness.py`
+- [x] Add "Fresh Bench Runtime Smoke Checklist" to `docs/submission/08_runtime_validation_checklist.md`
+- [x] Run unit tests to verify all tests pass (1396/1396 passed)
+- [x] Update documentation: `13_evidence_index.md`, `walkthrough.md`
+- [x] Run compilation check and final verification command checks
 
 ## Pass 11B-8B: Safe Install Hook and Setup Readiness ✅ COMPLETE
 - [x] Create install module `install.py`
