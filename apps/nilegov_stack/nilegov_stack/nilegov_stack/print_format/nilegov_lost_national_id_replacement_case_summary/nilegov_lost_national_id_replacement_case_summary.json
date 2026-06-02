@@ -1,0 +1,16 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Print Format",
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Lost National ID Replacement Case Summary",
+ "owner": "Administrator",
+ "doc_type": "NileGov Service Request",
+ "print_format_type": "Jinja",
+ "disabled": 0,
+ "html": "<div style=\"font-family: Arial, sans-serif; padding: 25px; border: 1px solid #ddd; border-radius: 8px; max-width: 750px; margin: auto; color: #333;\">\n  <div style=\"text-align: center; border-bottom: 3px double #0056b3; padding-bottom: 12px; margin-bottom: 25px;\">\n    <h2 style=\"color: #0056b3; margin: 0; text-transform: uppercase;\">Lost National ID Case Summary</h2>\n    <h5 style=\"color: #666; margin: 5px 0 0 0; font-weight: normal;\">NileGov Operational Worksheet (Prototype Only)</h5>\n  </div>\n\n  <div style=\"display: flex; justify-content: space-between; margin-bottom: 20px;\">\n    <div style=\"width: 48%;\">\n      <h4 style=\"color: #0056b3; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 0;\">Citizen Details</h4>\n      <p style=\"margin: 5px 0;\"><strong>Full Name:</strong> {{ doc.citizen_full_name }}</p>\n      <p style=\"margin: 5px 0;\"><strong>NIN:</strong> {{ doc.nin or 'N/A' }}</p>\n      <p style=\"margin: 5px 0;\"><strong>Phone:</strong> {{ doc.phone or 'N/A' }}</p>\n      <p style=\"margin: 5px 0;\"><strong>Email:</strong> {{ doc.email or 'N/A' }}</p>\n      <p style=\"margin: 5px 0;\"><strong>Location:</strong> {{ doc.location }}</p>\n    </div>\n    <div style=\"width: 48%;\">\n      <h4 style=\"color: #0056b3; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 0;\">Case Lifecycle</h4>\n      <p style=\"margin: 5px 0;\"><strong>Case Ref:</strong> {{ doc.name }}</p>\n      <p style=\"margin: 5px 0;\"><strong>Submitted At:</strong> {{ doc.submitted_at or 'N/A' }}</p>\n      <p style=\"margin: 5px 0;\"><strong>Assigned Officer:</strong> {{ doc.assigned_officer or 'Unassigned' }}</p>\n      <p style=\"margin: 5px 0;\"><strong>SLA State:</strong> {{ doc.sla_state }}</p>\n      <p style=\"margin: 5px 0;\"><strong>Escalation State:</strong> {{ doc.escalation_state }}</p>\n    </div>\n  </div>\n\n  <div style=\"margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;\">\n    <p style=\"margin: 5px 0;\"><strong>Reason for Request:</strong></p>\n    <blockquote style=\"margin: 5px 0 15px 0; padding: 10px; background-color: #f9f9f9; border-left: 4px solid #ccc; font-style: italic;\">\n      {{ doc.reason_for_request }}\n    </blockquote>\n    <p style=\"margin: 5px 0;\"><strong>Police Reference Number:</strong> {{ doc.police_reference_number or 'N/A' }}</p>\n  </div>\n\n  <div style=\"margin-top: 30px; background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 15px; font-size: 11px; color: #b45309; text-align: center;\">\n    <strong>Disclaimer:</strong> Prototype simulation only. This document is part of a design mock workflow. No live integration is established with NIRA, URA, or any government service system.\n  </div>\n</div>"
+}

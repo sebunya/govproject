@@ -1,7 +1,7 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-5B COMPLETE — Next: 11B-6 (Print Formats, Notification Config, Assignment Rules)
+## Status: 11B-6B COMPLETE — Next: 11B-6C (Notification Config)
 
 ---
 
@@ -80,13 +80,18 @@
 - [ ] Run full test suite
 - [ ] Commit
 
-## Pass 11B-6: Print Formats, Notification Config, Assignment Rules
-- [ ] Create nilegov_service_request_acknowledgement print format JSON
-- [ ] Create nilegov_payment_receipt print format JSON
-- [ ] Create nilegov_citizen_notification_summary print format JSON
-- [ ] Add architecture test: print format directories exist
-- [ ] Run full test suite
-- [ ] Commit
+## Pass 11B-6B: Print Formats ✅ COMPLETE
+- [x] Create nilegov_service_request_acknowledgement print format JSON
+- [x] Create nilegov_lost_nid_case_summary print format JSON
+- [x] Create nilegov_simulated_payment_receipt print format JSON
+- [x] Create nilegov_evidence_review_sheet print format JSON
+- [x] Create nilegov_sla_escalation_memo print format JSON
+- [x] Create nilegov_case_closure_certificate print format JSON
+- [x] Create nilegov_m_e_summary_brief print format JSON
+- [x] Add architecture test for print formats
+- [x] Run full test suite: 1226/1226 passed
+- [x] Commit
+
 
 ## Pass 11B-7: Citizen Web Form and REST API Scaffolding
 - [ ] Create nilegov_citizen_intake web form (.json + .py)

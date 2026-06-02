@@ -1,0 +1,16 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Print Format",
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Service Request Acknowledgement Slip",
+ "owner": "Administrator",
+ "doc_type": "NileGov Service Request",
+ "print_format_type": "Jinja",
+ "disabled": 0,
+ "html": "<div style=\"font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ccc; border-radius: 8px; max-width: 600px; margin: auto;\">\n  <div style=\"text-align: center; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px;\">\n    <h2 style=\"color: #0056b3; margin: 0;\">NileGov Service Request</h2>\n    <h4 style=\"color: #555; margin: 5px 0 0 0;\">Acknowledgement Slip (Prototype)</h4>\n  </div>\n  <table style=\"width: 100%; border-collapse: collapse; margin-bottom: 20px;\">\n    <tr>\n      <td style=\"padding: 8px; font-weight: bold; width: 40%;\">Request ID:</td>\n      <td style=\"padding: 8px;\">{{ doc.name }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 8px; font-weight: bold;\">Service Type:</td>\n      <td style=\"padding: 8px;\">{{ doc.service_type }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 8px; font-weight: bold;\">Citizen Name:</td>\n      <td style=\"padding: 8px;\">{{ doc.citizen_full_name }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 8px; font-weight: bold;\">National ID (NIN):</td>\n      <td style=\"padding: 8px;\">{{ doc.nin or 'N/A' }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 8px; font-weight: bold;\">Submitted At:</td>\n      <td style=\"padding: 8px;\">{{ doc.submitted_at or 'N/A' }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 8px; font-weight: bold;\">Internal Status:</td>\n      <td style=\"padding: 8px;\">\n        <span style=\"background-color: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-size: 14px;\">{{ doc.internal_status }}</span>\n      </td>\n    </tr>\n  </table>\n  <div style=\"background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px; font-size: 12px; color: #b91c1c; text-align: center; font-weight: bold;\">\n    Disclaimer: Prototype simulation only. No live Government registry access or official documents are issued.\n  </div>\n</div>"
+}

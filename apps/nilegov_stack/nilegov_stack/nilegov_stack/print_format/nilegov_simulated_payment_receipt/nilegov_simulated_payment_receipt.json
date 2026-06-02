@@ -1,0 +1,16 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Print Format",
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Simulated Payment Receipt",
+ "owner": "Administrator",
+ "doc_type": "NileGov Payment Record",
+ "print_format_type": "Jinja",
+ "disabled": 0,
+ "html": "<div style=\"font-family: Arial, sans-serif; padding: 25px; border: 1px dashed #bbb; border-radius: 8px; max-width: 500px; margin: auto; color: #333; background-color: #fafafa;\">\n  <div style=\"text-align: center; border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 20px;\">\n    <h3 style=\"color: #22c55e; margin: 0; text-transform: uppercase;\">Payment Receipt</h3>\n    <h5 style=\"color: #666; margin: 5px 0 0 0; font-weight: normal;\">Sandbox Transaction Confirmation</h5>\n  </div>\n\n  <table style=\"width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;\">\n    <tr>\n      <td style=\"padding: 6px 0; font-weight: bold; color: #666;\">Receipt Ref:</td>\n      <td style=\"padding: 6px 0; text-align: right;\">{{ doc.receipt_reference or 'N/A' }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 6px 0; font-weight: bold; color: #666;\">Payment Record:</td>\n      <td style=\"padding: 6px 0; text-align: right;\">{{ doc.name }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 6px 0; font-weight: bold; color: #666;\">Service Request:</td>\n      <td style=\"padding: 6px 0; text-align: right;\">{{ doc.service_request }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 6px 0; font-weight: bold; color: #666;\">Transaction Reference:</td>\n      <td style=\"padding: 6px 0; text-align: right; font-family: monospace;\">{{ doc.simulated_transaction_reference or 'N/A' }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 6px 0; font-weight: bold; color: #666;\">Purpose:</td>\n      <td style=\"padding: 6px 0; text-align: right;\">{{ doc.payment_purpose }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 6px 0; font-weight: bold; color: #666;\">Payment Channel:</td>\n      <td style=\"padding: 6px 0; text-align: right;\">{{ doc.payment_channel }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 6px 0; font-weight: bold; color: #666;\">Verified Timestamp:</td>\n      <td style=\"padding: 6px 0; text-align: right;\">{{ doc.verification_timestamp or 'N/A' }}</td>\n    </tr>\n    <tr style=\"border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;\">\n      <td style=\"padding: 10px 0; font-weight: bold; font-size: 16px; color: #000;\">Total Paid:</td>\n      <td style=\"padding: 10px 0; text-align: right; font-weight: bold; font-size: 16px; color: #16a34a;\">{{ doc.currency }} {{ \"{:,.2f}\".format(doc.amount) }}</td>\n    </tr>\n  </table>\n\n  <div style=\"background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px; font-size: 11px; color: #b91c1c; text-align: center; font-weight: bold;\">\n    Disclaimer: {{ doc.disclaimer or 'Prototype simulation only. No live payment was processed.' }}\n  </div>\n</div>"
+}

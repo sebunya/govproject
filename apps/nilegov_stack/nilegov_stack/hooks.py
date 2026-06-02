@@ -79,6 +79,18 @@ fixtures = [
             "NileGov Case Operations Dashboard",
         ]
     ]]},
+    # ── Print Formats (Pass 11B-6B) ───────────────────────────────────────────
+    {"dt": "Print Format", "filters": [[
+        "name", "in", [
+            "NileGov Service Request Acknowledgement Slip",
+            "NileGov Lost National ID Replacement Case Summary",
+            "NileGov Simulated Payment Receipt",
+            "NileGov Evidence Review Sheet",
+            "NileGov SLA Escalation Memo",
+            "NileGov Case Closure Certificate",
+            "NileGov M&E Summary Brief",
+        ]
+    ]]},
 ]
 
 
