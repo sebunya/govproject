@@ -173,3 +173,38 @@ This document indexes the code deliverables, verification results, and operation
 | Role and permission documentation | `docs/modules/11_roles_permissions_foundation.md` | Defines NileGov role model and access assumptions |
 | Permission policy helper | `apps/nilegov_stack/nilegov_stack/application/permission_policy.py` | Provides testable permission assumptions |
 | Permission policy tests | `apps/nilegov_stack/nilegov_stack/tests/unit/test_permission_policy.py` | Confirms protected logs, role separation and no live access claims |
+
+---
+
+## Pass 11B-3 Additions (Workspace Navigation, Search Fields)
+
+### Workspace
+- `workspace/nilegov_case_operations/nilegov_case_operations.json` updated with 8 labelled sections (A–H), 20 shortcuts, and 24 links covering all 16 NileGov DocTypes.
+
+### DocType Search/List Enhancements (all 16 DocTypes)
+| DocType | search_fields | in_list_view count | sort_field |
+|---|---|---|---|
+| NileGov Service Request | service_request_id, citizen_full_name, service_type, assigned_officer, internal_status | 6 | submitted_at DESC |
+| NileGov Citizen Profile | citizen_profile_id, full_name, phone, nin | 5 | full_name ASC |
+| NileGov Evidence Document | evidence_document_id, service_request, document_type, verification_status | 5 | uploaded_at DESC |
+| NileGov Payment Record | payment_record_id, service_request, payment_purpose, payment_status, provider_merchant_reference | 5 | verification_timestamp DESC |
+| NileGov Case Note | service_request, note_type, created_by_user | 4 | created_at DESC |
+| NileGov Citizen Notification | notification_event_id, service_request, channel, delivery_status | 5 | scheduled_at DESC |
+| NileGov SLA Event | service_request, event_type, status | 5 | due_at ASC |
+| NileGov Escalation Record | service_request, escalated_by, escalated_to, status | 5 | escalated_at DESC |
+| NileGov Service Catalogue | service_code, service_name, service_category | 5 | service_name ASC |
+| NileGov Reporting Snapshot | snapshot_name, source_dataset, generated_by | 5 | generated_at DESC |
+| NileGov Integration Simulation Log | service_request, integration_name, simulation_type, status | 5 | simulated_at DESC |
+| NileGov Audit Event | service_request, event_type, actor, actor_role | 6 | event_time DESC |
+| NileGov SLA Rule | sla_rule_id, service_type | 5 | sla_rule_id ASC |
+| NileGov Service Type | service_code, service_name | 5 | service_name ASC |
+| NileGov Consent Record | consent_record_id, citizen_profile, service_request, consent_status | 5 | consent_given_at DESC |
+| NileGov Simulated Identity Verification | service_request, simulation_status, verification_source | 4 | simulated_at DESC |
+
+### Tests Added
+- `tests/unit/test_workspace_navigation.py` — 155 tests, 17 classes covering workspace links, shortcuts, no broken DocType names, no live labels, roles, section labels, search_fields, title_field, sort_field, list_view count, standard filters, JSON integrity, and spot-checks.
+
+### Test Suite After Pass 11B-3
+- **824 / 824 passed** (was 668 — +156 new tests)
+- Python compile: CLEAN
+- `.env`: untracked

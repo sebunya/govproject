@@ -15,7 +15,9 @@
    "fieldtype": "Data",
    "label": "Evidence Document ID",
    "reqd": 1,
-   "unique": 1
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "citizen_profile",
@@ -29,7 +31,8 @@
    "fieldtype": "Link",
    "label": "Service Request",
    "options": "NileGov Service Request",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "consent_record",
@@ -42,7 +45,10 @@
    "fieldtype": "Select",
    "label": "Document Type",
    "options": "Police Letter Placeholder\nAffidavit Placeholder\nSupporting ID Placeholder\nPayment Receipt Placeholder\nApplication Form Placeholder\nOther Supporting Document",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
   },
   {
    "fieldname": "document_title",
@@ -69,7 +75,8 @@
    "fieldtype": "Link",
    "label": "Uploaded By",
    "options": "User",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "uploaded_at",
@@ -83,7 +90,9 @@
    "label": "Verification Status",
    "options": "Submitted\nUnder Review\nAccepted\nRejected\nRequires Replacement\nNot Required\nDemo Placeholder",
    "reqd": 1,
-   "default": "Submitted"
+   "default": "Submitted",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "verified_by",
@@ -101,7 +110,8 @@
    "label": "Visibility",
    "options": "Citizen and Officer\nOfficer Only\nSupervisor Only",
    "reqd": 1,
-   "default": "Citizen and Officer"
+   "default": "Citizen and Officer",
+   "in_standard_filter": 1
   },
   {
    "fieldname": "officer_notes",
@@ -188,5 +198,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "evidence_document_id,service_request,document_type,verification_status",
+ "title_field": "evidence_document_id",
+ "sort_field": "uploaded_at",
+ "sort_order": "DESC"
 }

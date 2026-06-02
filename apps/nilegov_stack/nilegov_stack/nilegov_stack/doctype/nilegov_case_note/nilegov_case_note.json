@@ -15,14 +15,19 @@
    "fieldtype": "Link",
    "label": "Service Request",
    "options": "NileGov Service Request",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "note_type",
    "fieldtype": "Select",
    "label": "Note Type",
    "options": "Officer Assessment\nSupervisor Directive\nMDA Administration Note\nGeneral Comment",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
   },
   {
    "fieldname": "note",
@@ -35,7 +40,8 @@
    "fieldtype": "Link",
    "label": "Created By User",
    "options": "User",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "created_at",
@@ -46,7 +52,9 @@
   {
    "fieldname": "visible_to_citizen",
    "fieldtype": "Check",
-   "label": "Visible To Citizen"
+   "label": "Visible To Citizen",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -132,5 +140,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "service_request,note_type,created_by_user",
+ "title_field": "service_request",
+ "sort_field": "created_at",
+ "sort_order": "DESC"
 }

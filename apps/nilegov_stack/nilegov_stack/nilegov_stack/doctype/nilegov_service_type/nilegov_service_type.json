@@ -14,14 +14,18 @@
    "fieldname": "service_name",
    "fieldtype": "Data",
    "label": "Service Name",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "service_code",
    "fieldtype": "Data",
    "label": "Service Code",
    "reqd": 1,
-   "unique": 1
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "description",
@@ -42,12 +46,15 @@
   {
    "fieldname": "requires_identity_check",
    "fieldtype": "Check",
-   "label": "Requires Identity Check"
+   "label": "Requires Identity Check",
+   "in_list_view": 1
   },
   {
    "fieldname": "requires_payment",
    "fieldtype": "Check",
-   "label": "Requires Payment"
+   "label": "Requires Payment",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "requires_supporting_documents",
@@ -58,7 +65,9 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active",
-   "default": "1"
+   "default": "1",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -111,5 +120,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "service_code,service_name",
+ "title_field": "service_name",
+ "sort_field": "service_name",
+ "sort_order": "ASC"
 }

@@ -1,7 +1,7 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-1 COMPLETE — Next: 11B-3 (Workspace Links) or 11B-4 (JS Form Scripts)
+## Status: 11B-3 COMPLETE — Next: 11B-4 (JS Form Scripts)
 
 ---
 

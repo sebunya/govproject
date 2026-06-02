@@ -7,7 +7,7 @@
  "is_default": 0,
  "is_standard": 1,
  "label": "NileGov Case Operations",
- "modified": "2026-06-02 00:45:00.000000",
+ "modified": "2026-06-02 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "NileGov Stack",
  "name": "NileGov Case Operations",
@@ -15,33 +15,15 @@
  "parent_page": "",
  "public": 1,
  "roles": [
-  {
-   "role": "NileGov Citizen Officer"
-  },
-  {
-   "role": "NileGov Records Officer"
-  },
-  {
-   "role": "NileGov Payments Officer"
-  },
-  {
-   "role": "NileGov SLA Supervisor"
-  },
-  {
-   "role": "NileGov M&E Viewer"
-  },
-  {
-   "role": "NileGov MDA Admin"
-  },
-  {
-   "role": "NileGov System Auditor"
-  },
-  {
-   "role": "NileGov System Manager"
-  },
-  {
-   "role": "System Manager"
-  }
+  {"role": "NileGov Citizen Officer"},
+  {"role": "NileGov Records Officer"},
+  {"role": "NileGov Payments Officer"},
+  {"role": "NileGov SLA Supervisor"},
+  {"role": "NileGov M&E Viewer"},
+  {"role": "NileGov MDA Admin"},
+  {"role": "NileGov System Auditor"},
+  {"role": "NileGov System Manager"},
+  {"role": "System Manager"}
  ],
  "shortcuts": [
   {
@@ -73,11 +55,318 @@
    "filters": "[[\"NileGov Service Request\",\"internal_status\",\"=\",\"Ready for Collection\"]]"
   },
   {
+   "label": "Overdue Cases (SLA Breached)",
+   "link_to": "NileGov Service Request",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": "[[\"NileGov Service Request\",\"sla_state\",\"=\",\"Overdue\"]]"
+  },
+  {
+   "label": "Citizen Profiles",
+   "link_to": "NileGov Citizen Profile",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Consent Records",
+   "link_to": "NileGov Consent Record",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Case Notes",
+   "link_to": "NileGov Case Note",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Evidence Documents",
+   "link_to": "NileGov Evidence Document",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Identity Verifications (Simulated)",
+   "link_to": "NileGov Simulated Identity Verification",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Payment Records",
+   "link_to": "NileGov Payment Record",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "SLA Rules",
+   "link_to": "NileGov SLA Rule",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "SLA Events",
+   "link_to": "NileGov SLA Event",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Escalation Records",
+   "link_to": "NileGov Escalation Record",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Service Catalogue",
+   "link_to": "NileGov Service Catalogue",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Service Types",
+   "link_to": "NileGov Service Type",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Citizen Notifications",
+   "link_to": "NileGov Citizen Notification",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
    "label": "M&E Reporting Snapshots",
    "link_to": "NileGov Reporting Snapshot",
    "type": "DocType",
    "docstatus": 0,
    "filters": ""
+  },
+  {
+   "label": "Audit Events",
+   "link_to": "NileGov Audit Event",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  },
+  {
+   "label": "Integration Simulation Logs",
+   "link_to": "NileGov Integration Simulation Log",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": ""
+  }
+ ],
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "A. Frontline Case Operations",
+   "onboard": 1,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Requests",
+   "link_to": "NileGov Service Request",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Citizen Profiles",
+   "link_to": "NileGov Citizen Profile",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Consent Records",
+   "link_to": "NileGov Consent Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Case Notes",
+   "link_to": "NileGov Case Note",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "B. Evidence and Records",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Evidence Documents",
+   "link_to": "NileGov Evidence Document",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Identity Verifications (Simulated)",
+   "link_to": "NileGov Simulated Identity Verification",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "C. Payments and Receipts",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Records",
+   "link_to": "NileGov Payment Record",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "D. SLA and Escalations",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SLA Rules",
+   "link_to": "NileGov SLA Rule",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SLA Events",
+   "link_to": "NileGov SLA Event",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Escalation Records",
+   "link_to": "NileGov Escalation Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "E. Service Configuration",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Catalogue",
+   "link_to": "NileGov Service Catalogue",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Types",
+   "link_to": "NileGov Service Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "F. Communications",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Citizen Notifications",
+   "link_to": "NileGov Citizen Notification",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "G. M&E and Reporting",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reporting Snapshots",
+   "link_to": "NileGov Reporting Snapshot",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "H. Audit and Interoperability",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Audit Events",
+   "link_to": "NileGov Audit Event",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Integration Simulation Logs",
+   "link_to": "NileGov Integration Simulation Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ]
 }

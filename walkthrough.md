@@ -352,3 +352,110 @@ Untracked. Verified with `git ls-files .env` → no output.
 - Print formats (Pass 11B-6)
 - Citizen Web Form and REST API scaffold (Pass 11B-7)
 - after_install hook (Pass 11B-8)
+
+---
+
+## Pass 11B-3: Workspace Navigation, Search Fields and Evaluator Desk Map
+
+**Verdict: Completed**
+
+### Audit Findings (Pre-Code)
+
+| Category | Before | After |
+|---|---|---|
+| Workspace links[] | Empty (0 entries) | 24 entries across 8 labelled sections |
+| Workspace shortcuts[] | 5 (all pointing to Service Request) | 20 (all 16 DocTypes represented) |
+| search_fields | Empty on all 16 DocTypes | Set on all 16 DocTypes (fields validated) |
+| title_field | Empty on all 16 DocTypes | Set on all 16 DocTypes |
+| in_list_view | 0 fields across all DocTypes | 4–6 per DocType |
+| in_standard_filter | 0 fields across all DocTypes | 2–5 per DocType |
+| sort_field / sort_order | Empty on all DocTypes | Set on all 16 (DESC for date-sorted, ASC for name-sorted) |
+
+### Workspace Sections
+
+| Section | DocTypes |
+|---|---|
+| A. Frontline Case Operations | Service Request, Citizen Profile, Consent Record, Case Note |
+| B. Evidence and Records | Evidence Document, Simulated Identity Verification |
+| C. Payments and Receipts | Payment Record |
+| D. SLA and Escalations | SLA Rule, SLA Event, Escalation Record |
+| E. Service Configuration | Service Catalogue, Service Type |
+| F. Communications | Citizen Notification |
+| G. M&E and Reporting | Reporting Snapshot |
+| H. Audit and Interoperability | Audit Event, Integration Simulation Log |
+
+### Evaluator Navigation Guide
+
+An evaluator or officer opening the Frappe Desk would navigate as follows:
+
+1. **Start at Section A (Frontline Case Operations)**
+   - Open *New Requests* shortcut → filtered to `internal_status = Submitted`
+   - Open a Service Request → see citizen name, NIN, service type, SLA state in the list view
+   - Search by `citizen_full_name`, `service_request_id`, or `assigned_officer`
+
+2. **Section B (Evidence and Records)**
+   - Navigate to Evidence Documents for the request
+   - Filter by `verification_status`, `document_type`, `visibility`
+
+3. **Section C (Payments and Receipts)**
+   - Navigate to Payment Records
+   - Filter by `payment_status`, `verification_status`
+   - Search by `payment_record_id` or `provider_merchant_reference`
+
+4. **Section D (SLA and Escalations)**
+   - Navigate to SLA Events sorted by `due_at ASC` to see most urgent first
+   - Navigate to Escalation Records sorted by `escalated_at DESC`
+
+5. **Section G (M&E and Reporting)**
+   - Navigate to Reporting Snapshots sorted by `generated_at DESC`
+   - See `snapshot_name`, period range, and `total_requests` in list view
+
+6. **Section H (Audit and Interoperability)**
+   - Navigate to Audit Events sorted by `event_time DESC`
+   - Search by `actor`, `event_type`, `actor_role`
+   - Navigate to Integration Simulation Logs to verify simulated NIRA/API calls
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `workspace/nilegov_case_operations/nilegov_case_operations.json` | Full overhaul: 8 sections, 20 shortcuts, 24 links |
+| All 16 DocType JSON files | search_fields, title_field, sort_field, sort_order, in_list_view, in_standard_filter, bold |
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `tests/unit/test_workspace_navigation.py` | 155 tests, 17 classes |
+
+### Test Results
+
+```
+824 passed in 1.85s
+```
+
+**Previously: 668/668. Now: 824/824. +156 new tests.**
+
+### Compile Result
+
+```
+python3 -m compileall apps/nilegov_stack/nilegov_stack → COMPILE OK (100% clean)
+```
+
+### `.env` Status
+
+Untracked. `git ls-files .env` → no output.
+
+### No Live Integration Claims
+
+- No workspace label references live NIRA, URA, UGHub, or production payment integration.
+- All shortcuts and links point to prototype DocTypes only.
+- Forbidden label keywords explicitly tested.
+
+### Remaining Gaps (for later passes)
+
+- JS form scripts for 14 DocTypes (Pass 11B-4)
+- Query Reports and dashboard charts (Pass 11B-5)
+- Print formats (Pass 11B-6)
+- Citizen Web Form and REST API scaffold (Pass 11B-7)
+- after_install hook (Pass 11B-8)

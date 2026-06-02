@@ -14,31 +14,40 @@
    "fieldname": "service_request",
    "fieldtype": "Link",
    "label": "Service Request",
-   "options": "NileGov Service Request"
+   "options": "NileGov Service Request",
+   "in_list_view": 1
   },
   {
    "fieldname": "event_type",
    "fieldtype": "Data",
    "label": "Event Type",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
   },
   {
    "fieldname": "actor",
    "fieldtype": "Link",
    "label": "Actor",
    "options": "User",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "actor_role",
    "fieldtype": "Data",
-   "label": "Actor Role"
+   "label": "Actor Role",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "event_time",
    "fieldtype": "Datetime",
    "label": "Event Time",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "previous_status",
@@ -54,7 +63,8 @@
    "fieldname": "action_summary",
    "fieldtype": "Small Text",
    "label": "Action Summary",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "metadata_json",
@@ -114,5 +124,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "service_request,event_type,actor,actor_role",
+ "title_field": "event_type",
+ "sort_field": "event_time",
+ "sort_order": "DESC"
 }

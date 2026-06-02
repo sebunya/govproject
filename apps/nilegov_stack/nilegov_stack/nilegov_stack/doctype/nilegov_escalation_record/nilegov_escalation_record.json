@@ -15,13 +15,16 @@
    "fieldtype": "Link",
    "label": "Service Request",
    "options": "NileGov Service Request",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "escalation_reason",
    "fieldtype": "Small Text",
    "label": "Escalation Reason",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "escalated_by",
@@ -35,20 +38,26 @@
    "fieldtype": "Link",
    "label": "Escalated To",
    "options": "User",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "escalated_at",
    "fieldtype": "Datetime",
    "label": "Escalated At",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
    "options": "Pending\nResolved",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
   },
   {
    "fieldname": "supervisor_decision",
@@ -123,5 +132,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "service_request,escalated_by,escalated_to,status",
+ "title_field": "service_request",
+ "sort_field": "escalated_at",
+ "sort_order": "DESC"
 }

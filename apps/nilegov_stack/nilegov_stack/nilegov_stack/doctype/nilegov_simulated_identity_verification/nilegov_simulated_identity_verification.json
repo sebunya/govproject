@@ -15,7 +15,9 @@
    "fieldtype": "Link",
    "label": "Service Request",
    "options": "NileGov Service Request",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "simulation_status",
@@ -23,7 +25,10 @@
    "label": "Simulation Status",
    "options": "Verified\nFailed\nUnverified",
    "reqd": 1,
-   "default": "Unverified"
+   "default": "Unverified",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
   },
   {
    "fieldname": "nin_found",
@@ -45,7 +50,9 @@
    "fieldtype": "Data",
    "label": "Verification Source",
    "reqd": 1,
-   "default": "Simulated NIRA Verification API"
+   "default": "Simulated NIRA Verification API",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "response_message",
@@ -58,7 +65,8 @@
    "fieldname": "simulated_at",
    "fieldtype": "Datetime",
    "label": "Simulated At",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -120,5 +128,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "service_request,simulation_status,verification_source",
+ "title_field": "service_request",
+ "sort_field": "simulated_at",
+ "sort_order": "DESC"
 }

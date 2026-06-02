@@ -15,20 +15,25 @@
    "fieldtype": "Link",
    "label": "Service Request",
    "options": "NileGov Service Request",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "event_type",
    "fieldtype": "Select",
    "label": "Event Type",
    "options": "SLA Response Created\nSLA Resolution Nearing\nSLA Escalated",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "due_at",
    "fieldtype": "Datetime",
    "label": "Due At",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "completed_at",
@@ -40,13 +45,18 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "Pending\nCompleted\nBreached",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
   },
   {
    "fieldname": "breach_risk",
    "fieldtype": "Select",
    "label": "Breach Risk",
-   "options": "None\nLow\nHigh\nBreached"
+   "options": "None\nLow\nHigh\nBreached",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "notes",
@@ -114,5 +124,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "service_request,event_type,status",
+ "title_field": "service_request",
+ "sort_field": "due_at",
+ "sort_order": "ASC"
 }

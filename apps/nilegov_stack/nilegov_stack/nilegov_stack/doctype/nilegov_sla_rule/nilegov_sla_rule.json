@@ -15,26 +15,32 @@
    "fieldtype": "Data",
    "label": "SLA Rule ID",
    "reqd": 1,
-   "unique": 1
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "service_type",
    "fieldtype": "Link",
    "label": "Service Type",
    "options": "NileGov Service Type",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "response_hours",
    "fieldtype": "Int",
    "label": "Response Hours",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "resolution_hours",
    "fieldtype": "Int",
    "label": "Resolution Hours",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "at_risk_threshold_percent",
@@ -68,7 +74,9 @@
    "fieldname": "active",
    "fieldtype": "Check",
    "label": "Active",
-   "default": "1"
+   "default": "1",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "notes",
@@ -133,5 +141,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "sla_rule_id,service_type",
+ "title_field": "sla_rule_id",
+ "sort_field": "sla_rule_id",
+ "sort_order": "ASC"
 }

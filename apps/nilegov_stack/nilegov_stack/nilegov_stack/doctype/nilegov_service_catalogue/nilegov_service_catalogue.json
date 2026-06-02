@@ -21,14 +21,18 @@
    "fieldname": "service_name",
    "fieldtype": "Data",
    "label": "Service Name",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "service_code",
    "fieldtype": "Data",
    "label": "Service Code",
    "reqd": 1,
-   "unique": 1
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1
   },
   {
    "fieldname": "responsible_mda_placeholder",
@@ -41,7 +45,9 @@
    "label": "Service Category",
    "options": "Identity Services\nCitizen Complaints\nPermit Applications\nInspection Services\nInformation Requests\nOther Government Services",
    "default": "Identity Services",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "service_description",
@@ -57,7 +63,9 @@
    "fieldname": "fee_required",
    "fieldtype": "Check",
    "label": "Fee Required",
-   "default": "0"
+   "default": "0",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "default_fee_amount",
@@ -116,7 +124,9 @@
    "label": "Active Status",
    "options": "Active\nInactive\nDemo Only\nRetired",
    "default": "Active",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "public_visibility",
@@ -191,5 +201,9 @@
    "report": 1
   }
  ],
- "states": []
+ "states": [],
+ "search_fields": "service_code,service_name,service_category",
+ "title_field": "service_name",
+ "sort_field": "service_name",
+ "sort_order": "ASC"
 }
