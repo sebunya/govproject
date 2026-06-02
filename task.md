@@ -1,7 +1,15 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-6C COMPLETE — Next: Pass 11B-7 (Web Form and API)
+## Status: 11B-6D COMPLETE — Next: Pass 11B-7 (Web Form and API)
+
+## Pass 11B-6D: Assignment Rules and ToDo Readiness ✅ COMPLETE
+- [x] Create 7 standard Assignment Rule JSON files under `assignment_rule/`
+- [x] Add `Assignment Rule` to fixtures in `hooks.py`
+- [x] Create static architecture test suite `test_assignment_rule_definitions.py`
+- [x] Run unit tests with pytest to verify all tests pass (1328/1328 passed)
+- [x] Update documentation: `13_evidence_index.md`, `08_runtime_validation_checklist.md`, `walkthrough.md`
+- [x] Run compilation check and final verification command checks
 
 ## Pass 11B-6C: Simulated Notification Templates ✅ COMPLETE
 - [x] Create 8 standard Notification JSON files under `notification/`

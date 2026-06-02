@@ -204,8 +204,8 @@ This document indexes the code deliverables, verification results, and operation
 ### Tests Added
 - `tests/unit/test_workspace_navigation.py` — 155 tests, 17 classes covering workspace links, shortcuts, no broken DocType names, no live labels, roles, section labels, search_fields, title_field, sort_field, list_view count, standard filters, JSON integrity, and spot-checks.
 
-### Test Suite After Pass 11B-6C
-- **1284 / 1284 passed** (includes Pass 11B-6B print formats and Pass 11B-6C notification definitions static architecture tests)
+### Test Suite After Pass 11B-6D
+- **1328 / 1328 passed** (includes Pass 11B-6B print formats, Pass 11B-6C notifications, and Pass 11B-6D assignment rules static architecture tests)
 - Python compile: CLEAN
 - `.env`: untracked
 
@@ -222,4 +222,10 @@ This document indexes the code deliverables, verification results, and operation
 - Created 8 standard Notification JSON files under `notification/` for officers assigned, incomplete evidence, pending review payments, SLA risk/overdue alerts, escalation assignments, case closures, and status updates.
 - Registered notifications in `hooks.py` fixtures.
 - Created [test_notification_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_notification_definitions.py) to statically assert definitions, trigger conditions, recipient roles, and mandatory simulation disclaimers.
+
+### Pass 11B-6D Additions (Assignment Rules and ToDo Readiness)
+- Created 7 standard Assignment Rule JSON files under `assignment_rule/` for submitted queues, evidence reviews, payment reviews, SLA risks, SLA breaches, SLA escalations, and case closure reviews.
+- Registered assignment rules in `hooks.py` fixtures.
+- Created [test_assignment_rule_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_assignment_rule_definitions.py) to statically assert all definition schemas, priority rules, target roles, and conditions.
+
 

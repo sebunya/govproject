@@ -1,0 +1,14 @@
+{
+ "doctype": "Assignment Rule",
+ "name": "NileGov Closure Review Assignment",
+ "document_type": "NileGov Service Request",
+ "assign_condition": "doc.internal_status == 'Closed' or doc.decision != 'None'",
+ "unassign_condition": "",
+ "close_condition": "",
+ "rule": "Round Robin",
+ "disabled": 0,
+ "priority": 1,
+ "is_standard": 1,
+ "assign_to_role": "NileGov SLA Supervisor",
+ "description": "Create closure review task when case is ready for closure. Prototype rule only."
+}

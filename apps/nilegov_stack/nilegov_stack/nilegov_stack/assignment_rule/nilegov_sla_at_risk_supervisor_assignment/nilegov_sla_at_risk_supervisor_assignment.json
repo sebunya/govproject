@@ -1,0 +1,14 @@
+{
+ "doctype": "Assignment Rule",
+ "name": "NileGov SLA At Risk Supervisor Assignment",
+ "document_type": "NileGov Service Request",
+ "assign_condition": "doc.sla_state == 'At Risk'",
+ "unassign_condition": "",
+ "close_condition": "",
+ "rule": "Round Robin",
+ "disabled": 0,
+ "priority": 2,
+ "is_standard": 1,
+ "assign_to_role": "NileGov SLA Supervisor",
+ "description": "Assign SLA supervisor when case is at risk. Prototype rule only."
+}

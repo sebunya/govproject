@@ -779,4 +779,40 @@ Created 8 standard Notification templates under `notification/`:
 - `.env` status: Untracked and uncommitted.
 - Runtime validation: Deferred to Hetzner/Frappe bench.
 
+---
+
+## Pass 11B-6D: Assignment Rules and ToDo Readiness
+
+This pass configures simulated assignment rules for the NileGov service request journey.
+
+### Accomplished Deliverables
+
+#### Assignment Rule Definitions
+Created 7 standard Assignment Rule templates under `assignment_rule/`:
+1. `NileGov Submitted Request Queue Assignment` (triggers on `doc.internal_status == 'Submitted'` in `NileGov Service Request`)
+2. `NileGov Evidence Review Assignment` (triggers on `verification_status` pending/review in `NileGov Evidence Document`)
+3. `NileGov Payment Review Assignment` (triggers on pending status in `NileGov Payment Record`)
+4. `NileGov SLA At Risk Supervisor Assignment` (triggers on `doc.sla_state == 'At Risk'` in `NileGov Service Request`)
+5. `NileGov SLA Overdue Supervisor Assignment` (triggers on `doc.sla_state == 'Overdue'` in `NileGov Service Request`)
+6. `NileGov Escalation Review Assignment` (triggers on pending/escalated status in `NileGov Escalation Record`)
+7. `NileGov Closure Review Assignment` (triggers on closed status or decision != 'None' in `NileGov Service Request`)
+
+#### Hooks Fixtures Update
+- Modified `hooks.py` to register `Assignment Rule` as a standard fixture tracking all 7 simulated assignment rules.
+
+#### Assignment Rule Architecture Tests
+- Created [test_assignment_rule_definitions.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_assignment_rule_definitions.py) to statically assert:
+  1. All 7 assignment rule JSON files exist.
+  2. All files contain standard metadata (`is_standard: 1`, module/doctype, correct target documents, priority).
+  3. Every assignment target uses canonical NileGov role names only.
+  4. No assignment rule references real personal emails, secrets, or live government system claims.
+  5. `hooks.py` correctly registers all 7 assignment rule templates.
+
+### Final Verification Results
+
+- Pytest Suite: **1328/1328 passed** (100% green).
+- Python compile: **CLEAN** (zero syntax errors).
+- `.env` status: Untracked and uncommitted.
+- Runtime validation: Deferred to Hetzner/Frappe bench.
+
 

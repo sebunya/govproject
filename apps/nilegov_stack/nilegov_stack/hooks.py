@@ -104,6 +104,18 @@ fixtures = [
             "NileGov Simulated Citizen Status Update",
         ]
     ]]},
+    # ── Assignment Rules (Pass 11B-6D) ────────────────────────────────────────
+    {"dt": "Assignment Rule", "filters": [[
+        "name", "in", [
+            "NileGov Submitted Request Queue Assignment",
+            "NileGov Evidence Review Assignment",
+            "NileGov Payment Review Assignment",
+            "NileGov SLA At Risk Supervisor Assignment",
+            "NileGov SLA Overdue Supervisor Assignment",
+            "NileGov Escalation Review Assignment",
+            "NileGov Closure Review Assignment",
+        ]
+    ]]},
 ]
 
 
