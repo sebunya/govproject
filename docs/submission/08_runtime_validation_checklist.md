@@ -230,4 +230,11 @@ Validate on Hetzner/Frappe runtime:
 - [ ] Verify `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_redacted_case_status_preview?reference_number=REQ-2026-9999` returns a fully-redacted status dictionary matching the application level redaction rules.
 - [ ] Verify that no internal workflow detail (assigned officer, supervisor comments, raw notes) is ever leaked.
 
+## App Installation Hook Validation - Deferred
+Validate on fresh bench install:
+- [ ] Confirm `bench install-app nilegov_stack` runs without errors.
+- [ ] Confirm after install hook outputs setup logs confirming successful execution.
+- [ ] Confirm the 8 canonical roles exist in DB immediately after installation.
+
+
 

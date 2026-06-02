@@ -247,6 +247,14 @@ This document indexes the code deliverables, verification results, and operation
 - Exported the new API endpoint in [__init__.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/interfaces/frappe/api/__init__.py).
 - Created [test_redaction.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_redaction.py) to independently unit-test all masking and redaction behaviors.
 - Updated unit and architecture tests in `test_public_api_scaffold.py` and `test_public_api_scaffold_outputs.py` to cover safety constraints and the lookup endpoints.
+- **1388 / 1388 passed** in total test suite.
+
+### Pass 11B-8B Additions (Safe Install Hook and Setup Readiness)
+- Created [install.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/install.py) implementing the safe, conservative `after_install` setup validation hook.
+- Registered the install hook in [hooks.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/hooks.py).
+- Created [test_install_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_install_readiness.py) to statically assert hook registration, role validation, and lack of live/secret claims.
+- Created [test_install_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_install_readiness.py) unit testing `get_canonical_roles()` and `get_install_readiness_summary()`.
+
 
 
 

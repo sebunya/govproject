@@ -130,7 +130,7 @@ fixtures = [
 # ─────────────────────────────────────────────────────────────────────────────
 # Installation hook — runs after bench install to seed demo data
 # ─────────────────────────────────────────────────────────────────────────────
-# after_install = "nilegov_stack.install.after_install"  # Pass 11B-8
+after_install = "nilegov_stack.install.after_install"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Row-Level Permission Conditions (query-level isolation by role)
