@@ -102,7 +102,10 @@ app.get('/api/applications', (req, res) => {
   const { persona, nin } = req.query;
   let rows: unknown[];
 
-  if (persona === 'citizen' && nin) {
+  if (persona === 'citizen') {
+    if (!nin || typeof nin !== 'string' || nin.trim().length < 5) {
+      return res.json([]); // Never return all apps for citizen — NIN is required
+    }
     rows = db.prepare(`
       SELECT a.*, GROUP_CONCAT(d.originalName, '||') as docNames
       FROM applications a
@@ -110,7 +113,7 @@ app.get('/api/applications', (req, res) => {
       WHERE a.nin = ?
       GROUP BY a.id
       ORDER BY a.submittedAt DESC
-    `).all(nin as string);
+    `).all(nin.trim());
   } else if (persona === 'officer') {
     // Sort by SLA urgency: least time remaining (submittedAt + slaResponseHours) first
     rows = db.prepare(`
@@ -317,10 +320,11 @@ app.get('/api/dashboard', (_req, res) => {
   `).all();
 
   const weeklyTrend = [];
+  const weekLabels = ['4 wks ago', '3 wks ago', '2 wks ago', 'Last week', 'This week'];
   for (let w = 4; w >= 0; w--) {
     const weekStart = new Date(today.getTime() - (w + 1) * 7 * 86400000).toISOString();
     const weekEnd = new Date(today.getTime() - w * 7 * 86400000).toISOString();
-    const label = `Week -${w}`;
+    const label = weekLabels[4 - w];
     const submitted = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE submittedAt >= ? AND submittedAt < ?`).get(weekStart, weekEnd) as { c: number }).c;
     const resolved = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE resolvedAt >= ? AND resolvedAt < ?`).get(weekStart, weekEnd) as { c: number }).c;
     const breached = (db.prepare(`
@@ -351,6 +355,78 @@ app.get('/api/dashboard', (_req, res) => {
   });
 });
 
+// ─── RESPONSIBLE OFFICERS ─────────────────────────────────────────────────
+
+app.get('/api/dashboard/officers', (_req, res) => {
+  const officers = db.prepare(`SELECT id, name, role, district FROM officers`).all() as { id: number; name: string; role: string; district: string }[];
+
+  const result = officers.map(o => {
+    const total = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE assignedOfficerId = ?`).get(o.id) as { c: number }).c;
+    const resolved = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE assignedOfficerId = ? AND resolvedAt IS NOT NULL`).get(o.id) as { c: number }).c;
+    const onTime = (db.prepare(`
+      SELECT COUNT(*) as c FROM applications
+      WHERE assignedOfficerId = ? AND resolvedAt IS NOT NULL
+        AND (julianday(resolvedAt) - julianday(submittedAt)) * 24 <= slaResolveHours
+    `).get(o.id) as { c: number }).c;
+    const active = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE assignedOfficerId = ? AND status NOT IN ('approved','rejected')`).get(o.id) as { c: number }).c;
+    const avgRes = (db.prepare(`
+      SELECT AVG((julianday(resolvedAt) - julianday(submittedAt)) * 24) as avg
+      FROM applications WHERE assignedOfficerId = ? AND resolvedAt IS NOT NULL
+    `).get(o.id) as { avg: number | null }).avg;
+    const breached = resolved - onTime;
+
+    return {
+      id: o.id,
+      name: o.name,
+      role: o.role,
+      district: o.district,
+      total,
+      resolved,
+      active,
+      onTime,
+      slaBreached: breached,
+      slaCompliance: resolved > 0 ? Math.round((onTime / resolved) * 100) : 100,
+      avgResolutionHours: Math.round(avgRes || 0),
+    };
+  });
+
+  res.json(result);
+});
+
+// ─── CITIZEN RESPONSE TO MORE INFO REQUEST ─────────────────────────────────
+
+app.patch('/api/applications/:id/citizen-response', upload.single('additionalDoc'), (req, res) => {
+  const { message } = req.body;
+  const now = new Date().toISOString();
+  const file = req.file;
+
+  const row = db.prepare(`SELECT status, fullName FROM applications WHERE id = ?`).get(req.params.id) as { status: string; fullName: string } | undefined;
+  if (!row) return res.status(404).json({ error: 'Not found' });
+  if (row.status !== 'more_info_requested') {
+    return res.status(400).json({ error: 'Application is not in "more information requested" status.' });
+  }
+
+  db.prepare(`UPDATE applications SET status = 'submitted' WHERE id = ?`).run(req.params.id);
+
+  if (file) {
+    db.prepare(`
+      INSERT INTO documents (applicationId, originalName, storedName, fileType, uploadedAt)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(req.params.id, file.originalname, file.filename, file.mimetype, now);
+  }
+
+  db.prepare(`
+    INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt)
+    VALUES (?, 'Citizen provided additional information', 'citizen', ?, ?, ?)
+  `).run(req.params.id, row.fullName, message || 'Additional information provided', now);
+
+  const updated = db.prepare(`SELECT * FROM applications WHERE id = ?`).get(req.params.id);
+  const docs = db.prepare(`SELECT * FROM documents WHERE applicationId = ?`).all(req.params.id);
+  const auditLog = db.prepare(`SELECT * FROM audit_log WHERE applicationId = ? ORDER BY createdAt ASC`).all(req.params.id);
+
+  res.json({ ...(updated as object), documents: docs, auditLog });
+});
+
 // ─── ERROR HANDLING ────────────────────────────────────────────────────────
 
 // Multer / file upload errors
@@ -374,6 +450,7 @@ app.get('/api/dashboard/district-trend', (_req, res) => {
   const now = new Date();
   const districts = ['Mbarara', 'Kampala', 'Gulu', 'Jinja'];
 
+  const trendWeekLabels = ['4 wks ago', '3 wks ago', '2 wks ago', 'Last week', 'This week'];
   const trend: Record<string, any[]> = {};
   for (const district of districts) {
     trend[district] = [];
@@ -392,7 +469,7 @@ app.get('/api/dashboard/district-trend', (_req, res) => {
           AND (julianday(resolvedAt) - julianday(submittedAt)) * 24 <= slaResolveHours
       `).get(district, weekStart, weekEnd) as { c: number }).c;
       trend[district].push({
-        week: `W-${w}`,
+        week: trendWeekLabels[4 - w],
         total,
         slaBreached: breached,
         onTime: onTimeCount,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Header from '../components/Header';
@@ -40,6 +40,17 @@ export default function LeadershipDashboard() {
     refetchInterval: 30000,
   });
 
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  useEffect(() => {
+    if (metrics) setLastUpdated(new Date());
+  }, [metrics]);
+
+  const { data: officerStats = [] } = useQuery({
+    queryKey: ['officer-stats'],
+    queryFn: () => axios.get('/api/dashboard/officers').then(r => r.data),
+    refetchInterval: 15000,
+  });
+
   const printReport = () => {
     window.print();
   };
@@ -62,13 +73,18 @@ export default function LeadershipDashboard() {
             <div className="w-16 h-0.5 bg-gold-500 mb-2" />
             <p className="text-gray-600">Mbarara District Local Government · Real-time service delivery metrics</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-start">
             <div className="text-right text-xs text-gray-500">
-              <div>Auto-refreshes every 10s</div>
-              <div className="mt-0.5">Last updated: {new Date().toLocaleTimeString('en-UG')}</div>
+              <div className="flex items-center gap-1 justify-end">
+                <span className="w-1.5 h-1.5 rounded-full bg-status-green animate-pulse inline-block" />
+                Auto-refreshes every 10s
+              </div>
+              <div className="mt-0.5 font-semibold tabular-nums">
+                Last updated: {lastUpdated.toLocaleTimeString('en-UG')}
+              </div>
             </div>
             <button onClick={printReport} className="btn-secondary text-sm py-2 flex items-center gap-2 print:hidden">
-              📄 Weekly Scorecard PDF
+              📄 Print Scorecard
             </button>
           </div>
         </div>
@@ -277,6 +293,71 @@ export default function LeadershipDashboard() {
                 })}
               </div>
             </div>
+
+            {/* Responsible Officers */}
+            {officerStats.length > 0 && (
+              <div className="card">
+                <h2 className="section-title">Officer Performance & Workload</h2>
+                <p className="text-xs text-gray-500 mb-4">Officers responsible for SLA outcomes · Mbarara District Agricultural Office</p>
+                <div className="space-y-3">
+                  {(officerStats as any[]).map((o: any) => (
+                    <div key={o.id} className="border border-gray-100 rounded-xl p-4 hover:border-navy-700 transition-colors">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm ${o.role === 'supervisor' ? 'bg-gold-500' : 'bg-navy-700'}`}>
+                            {o.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                          </div>
+                          <div>
+                            <p className="font-bold text-sm text-gray-800">{o.name}</p>
+                            <p className="text-xs text-gray-500 capitalize">{o.role === 'supervisor' ? 'Senior District Officer' : 'District Agricultural Officer'} · {o.district}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-6 text-center text-xs">
+                          <div>
+                            <div className="text-lg font-extrabold text-navy-700">{o.total}</div>
+                            <div className="text-gray-500">Total</div>
+                          </div>
+                          <div>
+                            <div className="text-lg font-extrabold text-status-orange">{o.active}</div>
+                            <div className="text-gray-500">Active</div>
+                          </div>
+                          <div>
+                            <div className={`text-lg font-extrabold ${o.slaCompliance >= 90 ? 'text-status-green' : o.slaCompliance >= 70 ? 'text-status-orange' : 'text-status-red'}`}>
+                              {o.slaCompliance}%
+                            </div>
+                            <div className="text-gray-500">SLA</div>
+                          </div>
+                          <div>
+                            <div className={`text-lg font-extrabold ${o.slaBreached > 0 ? 'text-status-red' : 'text-status-green'}`}>
+                              {o.slaBreached}
+                            </div>
+                            <div className="text-gray-500">Breached</div>
+                          </div>
+                          <div>
+                            <div className="text-lg font-extrabold text-gray-700">{o.avgResolutionHours > 0 ? `${o.avgResolutionHours}h` : '—'}</div>
+                            <div className="text-gray-500">Avg Res.</div>
+                          </div>
+                        </div>
+                      </div>
+                      {o.total > 0 && (
+                        <div className="mt-3">
+                          <div className="flex justify-between text-xs text-gray-500 mb-1">
+                            <span>SLA compliance rate</span>
+                            <span>{o.onTime}/{o.resolved} resolved on time</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div
+                              className={`h-1.5 rounded-full ${o.slaCompliance >= 90 ? 'bg-status-green' : o.slaCompliance >= 70 ? 'bg-status-orange' : 'bg-status-red'}`}
+                              style={{ width: `${o.slaCompliance}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Print-only scorecard header */}
             <div className="hidden print:block space-y-4 mt-8 border-t pt-8">

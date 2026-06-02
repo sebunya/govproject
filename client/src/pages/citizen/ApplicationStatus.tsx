@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -13,6 +13,10 @@ export default function ApplicationStatus() {
   const qc = useQueryClient();
 
   const [rating, setRating] = useState(0);
+  const [moreInfoMsg, setMoreInfoMsg] = useState('');
+  const [moreInfoFile, setMoreInfoFile] = useState<File | null>(null);
+  const [submittingMoreInfo, setSubmittingMoreInfo] = useState(false);
+  const moreInfoFileRef = useRef<HTMLInputElement>(null);
   const [ratingComment, setRatingComment] = useState('');
   const [submittingRating, setSubmittingRating] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
@@ -28,6 +32,18 @@ export default function ApplicationStatus() {
     await axios.patch(`/api/applications/${id}/rate`, { rating, comment: ratingComment });
     qc.invalidateQueries({ queryKey: ['application', id] });
     setSubmittingRating(false);
+  };
+
+  const submitMoreInfo = async () => {
+    setSubmittingMoreInfo(true);
+    const fd = new FormData();
+    if (moreInfoMsg) fd.append('message', moreInfoMsg);
+    if (moreInfoFile) fd.append('additionalDoc', moreInfoFile);
+    await axios.patch(`/api/applications/${id}/citizen-response`, fd);
+    qc.invalidateQueries({ queryKey: ['application', id] });
+    setMoreInfoMsg('');
+    setMoreInfoFile(null);
+    setSubmittingMoreInfo(false);
   };
 
   if (isLoading || !app) return (
@@ -104,12 +120,53 @@ export default function ApplicationStatus() {
       )}
 
       {app.status === 'more_info_requested' && (
-        <div className="bg-status-orangeBg border border-status-orange rounded-xl p-5">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">📋</span>
-            <div>
-              <h3 className="font-bold text-status-orange text-lg">Additional Information Required</h3>
-              <p className="text-sm text-gray-700 mt-0.5">{app.officerNotes || 'Please provide additional documentation.'}</p>
+        <div className="bg-status-orangeBg border-2 border-status-orange rounded-xl overflow-hidden">
+          <div className="bg-status-orange text-white px-5 py-3 flex items-center gap-2">
+            <span>📋</span>
+            <span className="font-bold">Additional Information Required — Action Needed</span>
+          </div>
+          <div className="p-5 space-y-4">
+            <div className="bg-white rounded-lg p-4 border border-orange-200">
+              <p className="text-xs font-semibold text-gray-500 mb-1">Officer's Request</p>
+              <p className="text-sm text-gray-800">{app.officerNotes || 'Please provide additional documentation to support your application.'}</p>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-gray-700">Your Response</p>
+              <textarea
+                className="form-input"
+                rows={3}
+                placeholder="Describe the additional information you are providing…"
+                value={moreInfoMsg}
+                onChange={e => setMoreInfoMsg(e.target.value)}
+              />
+              <div className="flex items-center gap-3">
+                {moreInfoFile ? (
+                  <div className="flex items-center gap-2 text-status-green text-sm">
+                    <span>✅</span><span className="max-w-[200px] truncate">{moreInfoFile.name}</span>
+                    <button onClick={() => setMoreInfoFile(null)} className="text-gray-400 text-xs">✕</button>
+                  </div>
+                ) : (
+                  <button onClick={() => moreInfoFileRef.current?.click()} className="btn-secondary text-sm py-2">
+                    📎 Attach Document
+                  </button>
+                )}
+                <input ref={moreInfoFileRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={e => setMoreInfoFile(e.target.files?.[0] || null)} />
+              </div>
+              <button
+                onClick={submitMoreInfo}
+                disabled={(!moreInfoMsg.trim() && !moreInfoFile) || submittingMoreInfo}
+                className="btn-primary"
+              >
+                {submittingMoreInfo ? 'Submitting…' : 'Submit Additional Information →'}
+              </button>
+            </div>
+          </div>
+          <div className="bg-white border-t border-orange-200">
+            <div className="flex items-center gap-2 text-xs text-gray-500 px-5 py-3">
+              <span className="text-gray-400">ℹ</span>
+              After submission, your application returns to the officer's queue for further review.
             </div>
           </div>
         </div>

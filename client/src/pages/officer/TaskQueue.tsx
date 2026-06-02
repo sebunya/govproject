@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
@@ -8,12 +9,23 @@ export default function TaskQueue() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const persona = params.get('persona') || 'officer';
+  const prevCountRef = useRef<number | null>(null);
+  const [newCount, setNewCount] = useState(0);
 
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ['officer-queue'],
     queryFn: () => axios.get('/api/applications?persona=officer').then(r => r.data),
     refetchInterval: 5000,
   });
+
+  // Track newly arrived applications
+  useEffect(() => {
+    if (prevCountRef.current !== null && apps.length > prevCountRef.current) {
+      setNewCount(apps.length - prevCountRef.current);
+      setTimeout(() => setNewCount(0), 8000);
+    }
+    prevCountRef.current = apps.length;
+  }, [apps.length]);
 
   if (isLoading) return (
     <div className="flex items-center justify-center py-20">
@@ -30,16 +42,21 @@ export default function TaskQueue() {
           <p className="text-gray-600">Tumusiime Robert · Mbarara District Agricultural Office</p>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-extrabold text-navy-700">{apps.length}</div>
+          <div className={`text-3xl font-extrabold text-navy-700 ${newCount > 0 ? 'animate-pulse-slow' : ''}`}>
+            {apps.length}
+          </div>
           <div className="text-xs text-gray-500">Pending applications</div>
+          {newCount > 0 && (
+            <div className="mt-1 badge-blue animate-pulse-slow">{newCount} new!</div>
+          )}
         </div>
       </div>
 
       {/* SLA legend */}
-      <div className="flex gap-4 text-xs">
+      <div className="flex flex-wrap gap-4 text-xs">
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-status-green inline-block" /> &gt;50% time remaining</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-status-orange inline-block" /> &lt;50% time remaining</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-status-red inline-block" /> &lt;10% / breached</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-status-red inline-block" /> &lt;10% / breached · sorted most urgent first</span>
       </div>
 
       {apps.length === 0 ? (
@@ -50,35 +67,48 @@ export default function TaskQueue() {
         </div>
       ) : (
         <div className="space-y-3">
-          {apps.map((app: any) => (
-            <div
-              key={app.id}
-              onClick={() => navigate(`/desk/review/${app.id}?persona=${persona}`)}
-              className="card hover:shadow-md hover:border-navy-700 cursor-pointer transition-all"
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <span className="font-extrabold text-navy-700">{app.referenceNumber}</span>
-                    <StatusBadge status={app.status} />
+          {apps.map((app: any) => {
+            const isNew = Date.now() - new Date(app.submittedAt).getTime() < 3600000;
+            const isUrgent = (() => {
+              const deadline = new Date(app.submittedAt).getTime() + app.slaResponseHours * 3600000;
+              const pct = Math.max(0, (deadline - Date.now()) / (app.slaResponseHours * 3600000)) * 100;
+              return pct < 10;
+            })();
+
+            return (
+              <div
+                key={app.id}
+                onClick={() => navigate(`/desk/review/${app.id}?persona=${persona}`)}
+                className={`card cursor-pointer transition-all hover:shadow-md ${
+                  isUrgent ? 'border-status-red ring-1 ring-status-red' :
+                  isNew ? 'border-navy-700 ring-1 ring-navy-700 ring-opacity-30' :
+                  'hover:border-navy-700'
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className="font-extrabold text-navy-700">{app.referenceNumber}</span>
+                      <StatusBadge status={app.status} />
+                      {isNew && <span className="badge-blue animate-pulse-slow">NEW</span>}
+                      {isUrgent && <span className="badge-red animate-pulse-slow">⚠ URGENT</span>}
+                    </div>
+                    <p className="font-semibold text-sm text-gray-800">{app.fullName}</p>
+                    <p className="text-sm text-gray-600">{app.cooperativeName}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Submitted: {new Date(app.submittedAt).toLocaleDateString('en-UG', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      {' · '}{app.district}
+                    </p>
                   </div>
-                  <p className="font-semibold text-sm text-gray-800">{app.fullName}</p>
-                  <p className="text-sm text-gray-600">{app.cooperativeName}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Submitted: {new Date(app.submittedAt).toLocaleDateString('en-UG', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    {' · '}{app.district}
-                  </p>
-                </div>
-                <div className="shrink-0 w-40">
-                  <SlaTimer submittedAt={app.submittedAt} slaHours={app.slaResponseHours} label="Response SLA" />
-                  <div className="mt-2">
+                  <div className="shrink-0 w-44 space-y-2">
+                    <SlaTimer submittedAt={app.submittedAt} slaHours={app.slaResponseHours} label="Response SLA" />
                     <SlaTimer submittedAt={app.submittedAt} slaHours={app.slaResolveHours} label="Resolution SLA" />
                   </div>
+                  <div className="text-navy-700 text-xl self-center">›</div>
                 </div>
-                <div className="text-navy-700 text-xl self-center">›</div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

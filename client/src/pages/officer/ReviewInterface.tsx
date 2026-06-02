@@ -36,10 +36,15 @@ export default function ReviewInterface() {
   const submitDecision = async () => {
     if (!decision) return;
     setSubmitting(true);
-    await axios.patch(`/api/applications/${id}/officer-decision`, { decision, notes });
-    qc.invalidateQueries({ queryKey: ['officer-queue'] });
-    navigate(`/desk?persona=${persona}`);
-    setSubmitting(false);
+    try {
+      await axios.patch(`/api/applications/${id}/officer-decision`, { decision, notes });
+      qc.invalidateQueries({ queryKey: ['officer-queue'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+      qc.invalidateQueries({ queryKey: ['dashboard-public'] });
+      navigate(`/desk?persona=${persona}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (isLoading || !app) return (

@@ -1,7 +1,90 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import SimulatedBanner from '../../components/SimulatedBanner';
+
+function ConfirmationScreen({ referenceNumber, applicationId, persona, onTrack, onPortal }: {
+  referenceNumber: string;
+  applicationId: number;
+  persona: string;
+  onTrack: () => void;
+  onPortal: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const [countdown, setCountdown] = useState(15);
+
+  useEffect(() => {
+    const t = setInterval(() => setCountdown(c => {
+      if (c <= 1) { clearInterval(t); onTrack(); return 0; }
+      return c - 1;
+    }), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const copy = () => {
+    navigator.clipboard.writeText(referenceNumber).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div className="card py-10">
+        <div className="text-center mb-6">
+          <div className="text-6xl mb-4">✅</div>
+          <h2 className="text-2xl font-extrabold text-status-green mb-2">Application Submitted Successfully</h2>
+          <p className="text-gray-600">Your cooperative registration and agribusiness permit application has been received by Mbarara District Local Government.</p>
+        </div>
+
+        {/* Reference number — prominent, copyable */}
+        <div className="bg-navy-700 rounded-xl p-5 text-center mb-6">
+          <p className="text-navy-100 text-xs font-semibold uppercase tracking-wider mb-1">Your Reference Number</p>
+          <div className="flex items-center justify-center gap-3">
+            <span className="font-extrabold text-white text-3xl tracking-widest">{referenceNumber}</span>
+            <button
+              onClick={copy}
+              className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${copied ? 'bg-status-green text-white' : 'bg-white bg-opacity-20 text-white hover:bg-opacity-30'}`}
+            >
+              {copied ? '✓ Copied!' : '📋 Copy'}
+            </button>
+          </div>
+          <p className="text-navy-100 text-xs mt-2 opacity-70">Keep this number to track your application</p>
+        </div>
+
+        <div className="bg-navy-50 rounded-xl p-5 space-y-3 mb-5">
+          {[
+            { label: 'Service', value: 'Cooperative Registration & Agribusiness Permit' },
+            { label: 'SLA — Initial Response', value: 'Within 2 working days', green: true },
+            { label: 'SLA — Resolution', value: 'Within 14 working days', green: true },
+            { label: 'MDA', value: 'Mbarara District Local Government' },
+          ].map(f => (
+            <div key={f.label} className="flex justify-between text-sm">
+              <span className="text-gray-500 font-semibold">{f.label}</span>
+              <span className={`font-medium text-right max-w-[60%] ${f.green ? 'text-status-green' : ''}`}>{f.value}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-gold-50 border border-gold-500 rounded-lg p-4 mb-6">
+          <p className="text-sm text-yellow-900">
+            <strong>What happens next?</strong> A District Agricultural Officer will review your application and may contact you within 2 working days if additional information is required. Your application status will update automatically.
+          </p>
+        </div>
+
+        <div className="flex gap-3 justify-center">
+          <button onClick={onTrack} className="btn-primary">
+            Track My Application →
+          </button>
+          <button onClick={onPortal} className="btn-secondary">Return to Portal</button>
+        </div>
+        <p className="text-xs text-center text-gray-400 mt-3">
+          Redirecting to application tracker in {countdown}s…
+        </p>
+      </div>
+    </div>
+  );
+}
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -110,57 +193,13 @@ export default function ApplicationForm() {
 
   if (submitted && step === 6) {
     return (
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="card text-center py-10">
-          <div className="text-5xl mb-4">✅</div>
-          <h2 className="text-2xl font-extrabold text-status-green mb-2">Application Submitted Successfully</h2>
-          <p className="text-gray-600 mb-6">Your cooperative registration and agribusiness permit application has been received.</p>
-
-          <div className="bg-navy-50 rounded-xl p-6 text-left space-y-3 mb-6">
-            <div className="flex justify-between">
-              <span className="text-sm font-semibold text-gray-500">Reference Number</span>
-              <span className="font-extrabold text-navy-700 text-lg">{submitted.referenceNumber}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-semibold text-gray-500">Service</span>
-              <span className="text-sm font-medium">Cooperative Registration & Agribusiness Permit</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-semibold text-gray-500">SLA — Initial Response</span>
-              <span className="text-sm font-medium text-status-green">Within 2 working days</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-semibold text-gray-500">SLA — Resolution</span>
-              <span className="text-sm font-medium text-status-green">Within 14 working days</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-semibold text-gray-500">MDA</span>
-              <span className="text-sm font-medium">Mbarara District Local Government</span>
-            </div>
-          </div>
-
-          <div className="bg-gold-50 border border-gold-500 rounded-lg p-4 text-left mb-6">
-            <p className="text-sm text-yellow-900">
-              <strong>What happens next?</strong> A District Agricultural Officer will review your application and contact you within 2 working days if additional information is required. You will be notified here when a decision is made.
-            </p>
-          </div>
-
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={() => navigate(`/portal/application/${submitted.id}?persona=${persona}`)}
-              className="btn-primary"
-            >
-              Track My Application →
-            </button>
-            <button
-              onClick={() => navigate(`/portal?persona=${persona}`)}
-              className="btn-secondary"
-            >
-              Return to Portal
-            </button>
-          </div>
-        </div>
-      </div>
+      <ConfirmationScreen
+        referenceNumber={submitted.referenceNumber}
+        applicationId={submitted.id}
+        persona={persona}
+        onTrack={() => navigate(`/portal/application/${submitted.id}?persona=${persona}`)}
+        onPortal={() => navigate(`/portal?persona=${persona}`)}
+      />
     );
   }
 
