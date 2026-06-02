@@ -1,7 +1,16 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-8C COMPLETE — Next: Pass 11B-8D (Final Submission Evidence Pack)
+## Status: 11B-8D COMPLETE ✅
+
+## Pass 11B-8D: Final Frappe-Native Evidence Manifest ✅ COMPLETE
+- [x] Create final evidence manifest `docs/submission/14_frappe_native_evidence_manifest.md`
+- [x] Cover all 11 required sections including Capability-to-Artifact Matrix, Asset Register, and Test Coverage
+- [x] Update static architecture verification test `test_submission_manifest.py`
+- [x] Update runtime validation checklist `docs/submission/08_runtime_validation_checklist.md`
+- [x] Update evidence index `docs/submission/13_evidence_index.md`
+- [x] Verify all 1401 tests pass successfully
+- [x] Ensure dotenv configuration remains untracked and compile checks pass
 
 ## Pass 11B-8C: Demo Seed Data, Migration Readiness and Runtime Smoke Checklist ✅ COMPLETE
 - [x] Create seed data safety architecture tests `test_seed_data_safety.py`

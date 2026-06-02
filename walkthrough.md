@@ -849,4 +849,57 @@ Created 3 standard Web Form templates under `web_form/`:
 - `.env` status: Untracked and uncommitted.
 - Runtime validation: Deferred to Hetzner/Frappe bench.
 
+---
+
+## Pass 11B-7C: REST API Envelope Endpoint Scaffolding
+
+This pass configures read-only whitelisted API endpoints to output envelope shapes, mock schemas, and sandbox disclaimers safely.
+
+### Accomplished Deliverables
+- Created `public_readiness.py` containing 6 read-only whitelisted API endpoints.
+- Created `test_public_api_scaffold.py` and `test_public_api_scaffold_outputs.py` validating safety, envelope structure, and optional NIN inputs.
+
+---
+
+## Pass 11B-7D: Citizen Status Lookup and Redaction Layer
+
+This pass implements citizen status lookup endpoints and masking functions to ensure PII (NIN, phone, email) is redacted.
+
+### Accomplished Deliverables
+- Created `application/redaction.py` containing masking helpers.
+- Added `get_redacted_case_status_preview` status lookup API.
+- Created `test_redaction.py` unit testing the redaction and masking logic.
+
+---
+
+## Pass 11B-8B: Safe Install Hook and Setup Readiness
+
+This pass configures a safe `after_install` setup hook to ensure idempotent app installation.
+
+### Accomplished Deliverables
+- Created `install.py` implementing role verification and setup logs.
+- Created `test_install_readiness.py` validating setup compliance.
+
+---
+
+## Pass 11B-8C: Demo Seed Data, Migration Readiness and Runtime Smoke Checklist
+
+This pass asserts seed data safety, validates patch migration callbacks, and logs runtime checklist items.
+
+### Accomplished Deliverables
+- Created `test_seed_data_safety.py` and `test_patch_migration_readiness.py`.
+- Added runtime smoke checklist steps to `08_runtime_validation_checklist.md`.
+
+---
+
+## Pass 11B-8D: Final Frappe-Native Evidence Manifest
+
+This pass compiles a submit-ready manifest mapping all capabilities, assets, tests, and runtime validation items.
+
+### Accomplished Deliverables
+- Created `docs/submission/14_frappe_native_evidence_manifest.md` covering all 11 required sections.
+- Verified test suite: **1401 / 1401 passed** (100% green).
+- Confirmed compile check successful and local environment file remains untracked.
+
+
 

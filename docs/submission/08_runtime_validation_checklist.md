@@ -251,6 +251,7 @@ Validate sequentially on a freshly provisioned bench:
    - [ ] Call `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_redacted_case_status_preview?reference_number=req_pass3_001` and verify that NIN, Phone, and Email values are masked (asterisks only).
    - [ ] Confirm that no raw NIRA, URA, or live external database connection calls are triggered.
 
-
-
-
+## Evidence Manifest Traceability Validation
+- [ ] Confirm that `docs/submission/14_frappe_native_evidence_manifest.md` is present on the site.
+- [ ] Verify that the manifest contains accurate counts: 16 DocTypes, 9 Reports, 9 Number Cards, 8 Charts, 1 Dashboard, 7 Print Formats, 8 Notifications, 7 Assignment Rules, 3 Web Forms.
+- [ ] Verify that all 25 capability matrix items have corresponding repo artifact paths and unit/architecture tests.

@@ -260,6 +260,13 @@ This document indexes the code deliverables, verification results, and operation
 - Created [test_patch_migration_readiness.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_patch_migration_readiness.py) validating the structure, existence, and `execute()` callbacks of all patches in `patches.txt`.
 - Appended the "Fresh Bench Runtime Smoke Checklist" detailing post-install diagnostics to [08_runtime_validation_checklist.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/08_runtime_validation_checklist.md).
 
+### Pass 11B-8D Additions (Final Frappe-Native Evidence Manifest)
+- Created [14_frappe_native_evidence_manifest.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/14_frappe_native_evidence_manifest.md) mapping all built capabilities, assets, tests, and runtime validation items.
+- Updated [test_submission_manifest.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/architecture/test_submission_manifest.py) to dynamically verify existence, format sections, and validate that the manifest does not claim any live registries, payments, or notifications.
+- Updated [08_runtime_validation_checklist.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/08_runtime_validation_checklist.md) to log complete traceability steps.
+- **1401 / 1401 passed** in total test suite.
+
+
 
 
 
