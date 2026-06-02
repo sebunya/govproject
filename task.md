@@ -104,3 +104,15 @@
 - [ ] Update README.md installation steps
 - [ ] Run full test suite
 - [ ] Final git push to main
+
+## Pass 11B-4A: Service Request JS Action Wiring ✅ COMPLETE
+- [x] Audit existing JS (2 buttons, no banner, no error handling)
+- [x] Audit Python whitelist (10 methods confirmed)
+- [x] Upgrade nilegov_service_request.js — prototype banner, status indicator
+- [x] Wire all 10 whitelisted methods into 3 button groups
+- [x] Add confirmation dialogs for all state-changing actions
+- [x] Add unified error handling and reload on success
+- [x] Create tests/architecture/test_service_request_js_actions.py (38 tests, 14 classes)
+- [x] Run full test suite: 863/863 passed
+- [x] Compile: CLEAN
+- [x] Commit + push to main

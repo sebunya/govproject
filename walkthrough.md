@@ -459,3 +459,70 @@ Untracked. `git ls-files .env` → no output.
 - Print formats (Pass 11B-6)
 - Citizen Web Form and REST API scaffold (Pass 11B-7)
 - after_install hook (Pass 11B-8)
+
+---
+
+## Pass 11B-4A: Service Request Desk Action Wiring
+
+**Verdict: Completed**
+
+### Whitelisted Methods Found and Wired
+
+| # | Python method | Exposed in JS | Group | Confirmation |
+|---|---|---|---|---|
+| 1 | `run_simulated_identity_check` | ✅ Run Simulated Identity Check | Simulated Actions | ✅ |
+| 2 | `verify_payment` | ✅ Run Simulated Payment Verification | Simulated Actions | ✅ |
+| 3 | `evaluate_sla_state` | ✅ Refresh SLA State | Simulated Actions | No (read-only) |
+| 4 | `assign_officer` | ✅ Assign Officer | Officer Actions | ✅ |
+| 5 | `reassign_officer` | ✅ Reassign Officer | Officer Actions | ✅ |
+| 6 | `assign_department_team` | ✅ Assign Department / Team | Officer Actions | No (via prompt) |
+| 7 | `mark_supervisor_review` | ✅ Send to Supervisor Review | Supervisor Actions | ✅ |
+| 8 | `return_case_to_officer` | ✅ Return Case to Officer | Supervisor Actions | ✅ |
+| 9 | `escalate_case` | ✅ Escalate Case | Supervisor Actions | ✅ |
+| 10 | `resolve_escalation` | ✅ Resolve Escalation | Supervisor Actions | ✅ |
+
+**No methods deferred.** All 10 whitelisted methods are safely wired.
+
+### JS Features Added
+
+- **Prototype banner**: `set_intro()` in `onload` with orange indicator
+- **Status indicator**: colour-coded dashboard headline showing `internal_status`, `sla_state`, `payment_status`, `escalation_status`
+- **`_safeCall()` helper**: unified frappe.call wrapper with freeze, success alert, reload, and error msgprint
+- **`_confirm()` helper**: wraps frappe.confirm + _safeCall for state-changing buttons
+- **3 button groups**: Simulated Actions / Officer Actions / Supervisor Actions
+- **Conditional visibility**: buttons appear only when contextually appropriate (e.g. Assign Officer only when unassigned; Resolve Escalation only when escalated)
+- **frappe.prompt dialogs**: Officer ID, Reason, Department/Team inputs before action execution
+
+### Files Modified
+
+| File | Change |
+|---|---|
+| `nilegov_service_request.js` | Full overhaul — prototype banner, status indicator, 10 action buttons, 3 groups, error handling |
+
+### Files Created
+
+| File | Purpose |
+|---|---|
+| `tests/architecture/test_service_request_js_actions.py` | 38 tests, 14 classes — static JS safety audit |
+
+### Test Results
+
+```
+863 passed in 1.92s
+```
+
+**Previously: 824/824. Now: 863/863. +39 new tests.**
+
+### Compile Result
+
+```
+python3 -m compileall → COMPILE OK
+```
+
+### No Live Integration Claims
+
+- Prototype banner explicitly states no live NIRA, UGHub, URA or payment gateway contact
+- All simulated buttons labelled "Simulated" or in "Simulated Actions" group
+- Test verifies no forbidden live labels in non-comment JS content
+- No external URLs in JS
+- No .env references in JS
