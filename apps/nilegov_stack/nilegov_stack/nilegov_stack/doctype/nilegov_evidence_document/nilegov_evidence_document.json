@@ -1,0 +1,144 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:evidence_document_id",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "evidence_document_id",
+   "fieldtype": "Data",
+   "label": "Evidence Document ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "citizen_profile",
+   "fieldtype": "Link",
+   "label": "Citizen Profile",
+   "options": "NileGov Citizen Profile",
+   "reqd": 1
+  },
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consent_record",
+   "fieldtype": "Link",
+   "label": "Consent Record",
+   "options": "NileGov Consent Record"
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "Document Type",
+   "options": "Police Letter Placeholder\nAffidavit Placeholder\nSupporting ID Placeholder\nPayment Receipt Placeholder\nApplication Form Placeholder\nOther Supporting Document",
+   "reqd": 1
+  },
+  {
+   "fieldname": "document_title",
+   "fieldtype": "Data",
+   "label": "Document Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "file",
+   "fieldtype": "Attach",
+   "label": "File",
+   "reqd": 1
+  },
+  {
+   "fieldname": "upload_channel",
+   "fieldtype": "Select",
+   "label": "Upload/Source Channel",
+   "options": "Web Form\nOfficer Assisted\nPortal\nEmail\nWhatsApp\nOther",
+   "reqd": 1,
+   "default": "Web Form"
+  },
+  {
+   "fieldname": "uploaded_by",
+   "fieldtype": "Link",
+   "label": "Uploaded By",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "uploaded_at",
+   "fieldtype": "Datetime",
+   "label": "Uploaded At",
+   "reqd": 1
+  },
+  {
+   "fieldname": "verification_status",
+   "fieldtype": "Select",
+   "label": "Verification Status",
+   "options": "Submitted\nUnder Review\nAccepted\nRejected\nRequires Replacement\nNot Required\nDemo Placeholder",
+   "reqd": 1,
+   "default": "Submitted"
+  },
+  {
+   "fieldname": "verified_by",
+   "fieldtype": "Data",
+   "label": "Verified By"
+  },
+  {
+   "fieldname": "verified_timestamp",
+   "fieldtype": "Datetime",
+   "label": "Verified Timestamp"
+  },
+  {
+   "fieldname": "visibility",
+   "fieldtype": "Select",
+   "label": "Visibility",
+   "options": "Citizen and Officer\nOfficer Only\nSupervisor Only",
+   "reqd": 1,
+   "default": "Citizen and Officer"
+  },
+  {
+   "fieldname": "officer_notes",
+   "fieldtype": "Small Text",
+   "label": "Officer Notes"
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "default": "Prototype simulation only. No live Government registry access."
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-02 10:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Evidence Document",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

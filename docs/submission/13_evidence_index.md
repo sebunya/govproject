@@ -1,0 +1,134 @@
+# NileGov Stack Evidence Index
+
+This document indexes the code deliverables, verification results, and operational assets ready in the **NileGov Stack** repository.
+
+---
+
+## 1. Automated Verification Checks
+
+* **Pytest Suite Verification:** **266 passed in 0.52s (100% success rate)** via `.venv/bin/pytest`.
+* **Python Compile Check:** **100% successful** via `compileall` (zero syntax/linter errors).
+* **Language Compliance Check:** Proves that all strings avoid overclaiming live connections.
+
+---
+
+## 2. Key Code Deliverables
+
+### Core Domain & Application Layer
+- [service_request.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/service_request.py) *(Aggregate root coordinating workflows, updated to handle assignments, SLA calculations, and escalation transitions)*
+- [citizen.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/citizen.py) *(CitizenProfile aggregate root implementing phone, location, email, preferred contact channel, status, optional NIN and safe demo check)*
+- [consent.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/consent.py) *(ConsentRecord aggregate root managing statuses, purposes, and channels)*
+- [evidence.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/evidence.py) *(EvidenceDocument aggregate root managing document types, upload channels, verification status, and officer notes)*
+- [sla.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/sla.py) *(SLARule aggregate class and SLAState/EscalationState constants)*
+- [escalation.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/escalation.py) *(EscalationRecord aggregate class)*
+- [notification.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/notification.py) *(NotificationEvent aggregate root managing statuses, channels, recipients, message types, titles, body previews, and consent tracking checks)*
+- [payment.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/payment.py) *(PaymentRecord aggregate root managing statuses, purposes, channels, verification statuses, receipt-readiness, and reconciliation)*
+- [value_objects.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/domain/value_objects.py) *(PII validation)*
+- [create_citizen_profile.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_citizen_profile.py) *(Create profile use case)*
+- [update_citizen_contact.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/update_citizen_contact.py) *(Update profile contact use case)*
+- [get_citizen_profile.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/get_citizen_profile.py) *(Retrieve profile use case)*
+- [list_citizen_service_requests.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_citizen_service_requests.py) *(Retrieve linked requests use case)*
+- [create_consent_record.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_consent_record.py) *(Create consent use case)*
+- [withdraw_consent.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/withdraw_consent.py) *(Withdraw consent use case)*
+- [check_active_consent.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/check_active_consent.py) *(Check active consent use case)*
+- [list_citizen_consent_records.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_citizen_consent_records.py) *(Query consent by profile use case)*
+- [list_request_consent_records.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_request_consent_records.py) *(Query consent by request use case)*
+- [create_evidence_document.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_evidence_document.py) *(Create evidence document use case)*
+- [verify_evidence_document.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/verify_evidence_document.py) *(Verify evidence document status and officer notes use case)*
+- [list_service_request_evidence.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_service_request_evidence.py) *(List service request evidence use case)*
+- [list_citizen_profile_evidence.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_citizen_profile_evidence.py) *(List citizen profile evidence use case)*
+- [assign_officer.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/assign_officer.py) *(Assign officer use case)*
+- [reassign_officer.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/reassign_officer.py) *(Reassign officer with reason use case)*
+- [assign_department_team.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/assign_department_team.py) *(Assign department/team queue use case)*
+- [mark_supervisor_review.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/mark_supervisor_review.py) *(Escalate to supervisor review use case)*
+- [return_case_to_officer.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/return_case_to_officer.py) *(Return case to assigned officer use case)*
+- [list_unassigned_requests.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_unassigned_requests.py) *(List unassigned requests use case)*
+- [list_requests_by_officer.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_requests_by_officer.py) *(List requests by officer use case)*
+- [list_requests_by_department.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_requests_by_department.py) *(List requests by department queue use case)*
+- [list_supervisor_review_queue.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_supervisor_review_queue.py) *(List supervisor review queue use case)*
+- [calculate_workload_metrics.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/calculate_workload_metrics.py) *(Calculate workloads and queue volumes use case)*
+- [create_sla_rule.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_sla_rule.py) *(Create SLA rule use case)*
+- [assign_sla_rule.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/assign_sla_rule.py) *(Assign SLA rule to case use case)*
+- [evaluate_sla_state.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/evaluate_sla_state.py) *(Evaluate SLA state use case)*
+- [escalate_case.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/escalate_case.py) *(Escalate case use case)*
+- [resolve_escalation.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/resolve_escalation.py) *(Resolve escalation use case)*
+- [list_at_risk_requests.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_at_risk_requests.py) *(List at risk requests use case)*
+- [list_overdue_requests.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_overdue_requests.py) *(List overdue requests use case)*
+- [list_escalated_requests.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_escalated_requests.py) *(List escalated requests use case)*
+- [verify_payment.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/verify_payment.py) *(Payment use case, updated to evaluate active consent)*
+- [close_case.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/close_case.py) *(Closure notes checks)*
+- [create_notification_event.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_notification_event.py) *(Create notification use case checking active citizen consent)*
+- [queue_notification_event.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/queue_notification_event.py) *(Queue notification use case)*
+- [mark_notification_sent.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/mark_notification_sent.py) *(Mark notification sent use case)*
+- [mark_notification_failed.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/mark_notification_failed.py) *(Mark notification failed use case)*
+- [cancel_notification_event.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/cancel_notification_event.py) *(Cancel notification use case)*
+- [list_notifications_by_service_request.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_notifications_by_service_request.py) *(List notifications by service request use case)*
+- [list_notifications_by_citizen_profile.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_notifications_by_citizen_profile.py) *(List notifications by citizen profile use case)*
+- [list_notifications_by_channel.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_notifications_by_channel.py) *(List notifications by channel use case)*
+- [list_notifications_by_delivery_status.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_notifications_by_delivery_status.py) *(List notifications by delivery status use case)*
+- [generate_message_preview.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/generate_message_preview.py) *(Generate preview for SMS, Email, and WhatsApp templates)*
+- [send_simulated_notification.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/send_simulated_notification.py) *(Execute simulated notification delivery)*
+- [create_payment_record.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/create_payment_record.py) *(Create payment record use case)*
+- [submit_simulated_payment.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/submit_simulated_payment.py) *(Submit payment transaction reference use case)*
+- [verify_simulated_payment_record.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/verify_simulated_payment_record.py) *(Verify payment record evaluating active consent use case)*
+- [mark_payment_failed.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/mark_payment_failed.py) *(Mark payment failed use case)*
+- [reverse_simulated_payment.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/reverse_simulated_payment.py) *(Reverse verified payment use case)*
+- [cancel_payment_record.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/cancel_payment_record.py) *(Cancel pending payment record use case)*
+- [mark_receipt_ready.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/mark_receipt_ready.py) *(Mark receipt status ready use case)*
+- [mark_simulated_receipt_generated.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/mark_simulated_receipt_generated.py) *(Simulate receipt generation use case)*
+- [list_payments_by_service_request.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_payments_by_service_request.py) *(List payments by service request use case)*
+- [list_payments_by_citizen_profile.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_payments_by_citizen_profile.py) *(List payments by citizen profile use case)*
+- [list_payments_by_payment_status.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_payments_by_payment_status.py) *(List payments by status use case)*
+- [list_payments_by_reconciliation_status.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/list_payments_by_reconciliation_status.py) *(List payments by reconciliation status use case)*
+- [calculate_payment_summary_metrics.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/calculate_payment_summary_metrics.py) *(Compute payments metrics use case)*
+- [register_pesapal_ipn.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/register_pesapal_ipn.py) *(Register Pesapal IPN use case)*
+- [initiate_pesapal_payment.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/initiate_pesapal_payment.py) *(Initiate Pesapal sandbox payment flow use case)*
+- [refresh_pesapal_payment_status.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/refresh_pesapal_payment_status.py) *(Refresh Pesapal payment status and sync use case)*
+- [pesapal_payload_parsers.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/application/pesapal_payload_parsers.py) *(Parses Pesapal callback and IPN payloads metadata)*
+
+### Infrastructure Layer (Persistence & Gateways)
+- [frappe_service_request_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_service_request_repository.py) *(Maps service request SLA and escalation domain state changes to the database)*
+- [frappe_citizen_profile_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_citizen_profile_repository.py) *(Maps profile domain state changes to the Frappe framework)*
+- [citizen_profile_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/citizen_profile_repository.py) *(InMemory repository for profile testing)*
+- [frappe_consent_record_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_consent_record_repository.py) *(Maps consent record domain state changes to the Frappe framework)*
+- [consent_record_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/consent_record_repository.py) *(InMemory repository for consent testing)*
+- [frappe_evidence_document_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_evidence_document_repository.py) *(Maps evidence document domain state changes to the Frappe framework)*
+- [evidence_document_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/evidence_document_repository.py) *(InMemory repository for evidence document testing)*
+- [sla_rule_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/sla_rule_repository.py) *(InMemory repository for SLA rule testing)*
+- [frappe_sla_rule_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_sla_rule_repository.py) *(Maps SLA rules domain state changes to the database)*
+- [frappe_notification_event_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_notification_event_repository.py) *(Maps notification domain state changes to the database)*
+- [notification_event_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/notification_event_repository.py) *(InMemory repository for notification testing)*
+- [frappe_payment_record_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/frappe_payment_record_repository.py) *(Maps payment record domain state changes to the database)*
+- [payment_record_repository.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/repositories/payment_record_repository.py) *(InMemory repository for payment testing)*
+- [simulated_identity_gateway.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/integrations/simulated_identity_gateway.py) *(Sandbox check)*
+- [simulated_payment_gateway.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/integrations/simulated_payment_gateway.py) *(Sandbox check updated for PaymentRecord verification)*
+- [pesapal_api_client.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/integrations/pesapal_api_client.py) *(Pesapal API 3.0 Sandbox/Live integration client)*
+- [simulated_notification_gateway.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/infrastructure/notifications/simulated_notification_gateway.py) *(Logs simulated notifications for email, SMS, and WhatsApp)*
+
+### Frappe Integration Layer
+- [nilegov_citizen_profile.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_citizen_profile/nilegov_citizen_profile.json) *(Citizen Profile DocType schema)*
+- [nilegov_citizen_profile.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_citizen_profile/nilegov_citizen_profile.py) *(Citizen Profile controller validations)*
+- [nilegov_consent_record.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_consent_record/nilegov_consent_record.json) *(Consent Record DocType schema)*
+- [nilegov_consent_record.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_consent_record/nilegov_consent_record.py) *(Consent Record controller validations)*
+- [nilegov_evidence_document.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_evidence_document/nilegov_evidence_document.json) *(Evidence Document DocType schema updated for document verification)*
+- [nilegov_evidence_document.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_evidence_document/nilegov_evidence_document.py) *(Evidence Document controller validations)*
+- [nilegov_sla_rule.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_sla_rule/nilegov_sla_rule.json) *(SLA Rule DocType schema)*
+- [nilegov_escalation_record.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_escalation_record/nilegov_escalation_record.json) *(Escalation Record DocType schema)*
+- [nilegov_citizen_notification.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_citizen_notification/nilegov_citizen_notification.json) *(Citizen Notification DocType schema)*
+- [nilegov_citizen_notification.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_citizen_notification/nilegov_citizen_notification.py) *(Citizen Notification controller validations)*
+- [nilegov_payment_record.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_payment_record/nilegov_payment_record.json) *(Payment Record DocType schema)*
+- [nilegov_payment_record.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_payment_record/nilegov_payment_record.py) *(Payment Record controller validations)*
+- [nilegov_service_request.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_service_request/nilegov_service_request.json) *(Service Request DocType schema, updated for SLA and escalations)*
+- [nilegov_service_request.js](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/doctype/nilegov_service_request/nilegov_service_request.js) *(Desk action handlers)*
+- [nilegov_case_operations.json](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/nilegov_stack/workspace/nilegov_case_operations/nilegov_case_operations.json) *(Desk Operations Workspace)*
+- [seed_service_types_and_sla_rules.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/patches/seed_service_types_and_sla_rules.py) *(SLA rule seeding patch)*
+- [seed_demo_records.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/patches/seed_demo_records.py) *(Seeding patch registered in patches.txt, updated for SLA states and escalations)*
+- [docker-compose.yml](file:///Users/robertsebunya/Documents/Nile_Gov/deployment/docker-compose.yml) *(Deployment setup mapping local source code)*
+
+---
+
+## 3. Operational Testing Status
+
+* **Static Schema Verification:** Checked. All 14 schema definitions contain the required disclaimers.
+* **Gunicorn / MariaDB Execution:** Stalled. Live runtime validation is pending deployment on a working container host.
+* **Wording Audit:** Verified. No live integration claims are made in documentation or code.

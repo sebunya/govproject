@@ -1,0 +1,23 @@
+[mysqld]
+# Frappe-required character set settings
+character-set-client-handshake = FALSE
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# Low Memory Tuning (Optimized for 1GB - 2GB RAM VPS)
+innodb_buffer_pool_size = 256M
+innodb_log_file_size = 64M
+innodb_log_buffer_size = 8M
+innodb_flush_log_at_trx_commit = 2
+innodb_flush_method = O_DIRECT
+innodb_file_per_table = 1
+
+# Reduce connection overheads
+max_connections = 50
+key_buffer_size = 16M
+thread_cache_size = 8
+query_cache_size = 0
+query_cache_type = 0
+
+[mysql]
+default-character-set = utf8mb4

@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:citizen_profile_id",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "citizen_profile_id",
+   "fieldtype": "Data",
+   "label": "Citizen Profile ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "nin",
+   "fieldtype": "Data",
+   "label": "NIN"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "division_or_area",
+   "fieldtype": "Data",
+   "label": "District or Division"
+  },
+  {
+   "fieldname": "preferred_contact_channel",
+   "fieldtype": "Select",
+   "label": "Preferred Contact Channel",
+   "options": "Phone\nEmail\nPortal\nSMS\nWhatsApp\nOfficer Assisted",
+   "default": "Phone"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive\nArchived\nDemo Only",
+   "default": "Active"
+  },
+  {
+   "fieldname": "linked_user",
+   "fieldtype": "Link",
+   "label": "Linked User",
+   "options": "User"
+  },
+  {
+   "fieldname": "created_from_portal_request",
+   "fieldtype": "Check",
+   "label": "Created From Portal Request"
+  },
+  {
+   "fieldname": "pii_classification",
+   "fieldtype": "Select",
+   "label": "PII Classification",
+   "options": "Citizen identifying information\nNone",
+   "default": "Citizen identifying information"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-02 10:05:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Citizen Profile",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

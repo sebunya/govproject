@@ -1,0 +1,58 @@
+{
+ "charts": [],
+ "creation": "2026-06-02 00:45:00.000000",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "label": "NileGov Case Operations",
+ "modified": "2026-06-02 00:45:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Case Operations",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "roles": [
+  {
+   "role": "Service Desk Officer"
+  },
+  {
+   "role": "Supervisor"
+  },
+  {
+   "role": "System Administrator"
+  }
+ ],
+ "shortcuts": [
+  {
+   "label": "New Requests",
+   "link_to": "NileGov Service Request",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": "[[\"NileGov Service Request\",\"internal_status\",\"=\",\"Submitted\"]]"
+  },
+  {
+   "label": "Requests Under Review",
+   "link_to": "NileGov Service Request",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": "[[\"NileGov Service Request\",\"internal_status\",\"=\",\"Under Review\"]]"
+  },
+  {
+   "label": "Payment Pending Cases",
+   "link_to": "NileGov Service Request",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": "[[\"NileGov Service Request\",\"internal_status\",\"=\",\"Payment Pending\"]]"
+  },
+  {
+   "label": "Ready for Collection",
+   "link_to": "NileGov Service Request",
+   "type": "DocType",
+   "docstatus": 0,
+   "filters": "[[\"NileGov Service Request\",\"internal_status\",\"=\",\"Ready for Collection\"]]"
+  }
+ ]
+}

@@ -1,0 +1,234 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:payment_record_id",
+ "creation": "2026-06-02 11:12:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "payment_record_id",
+   "fieldtype": "Data",
+   "label": "Payment Record ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request",
+   "reqd": 1
+  },
+  {
+   "fieldname": "citizen_profile",
+   "fieldtype": "Link",
+   "label": "Citizen Profile",
+   "options": "NileGov Citizen Profile"
+  },
+  {
+   "fieldname": "consent_record",
+   "fieldtype": "Link",
+   "label": "Consent Record",
+   "options": "NileGov Consent Record"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "reqd": 1,
+   "default": "0.0"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "reqd": 1,
+   "default": "UGX"
+  },
+  {
+   "fieldname": "payment_purpose",
+   "fieldtype": "Select",
+   "label": "Payment Purpose",
+   "options": "National ID Replacement Fee\nService Processing Fee\nDocument Replacement Fee\nOther Government Service Fee\nNot Applicable",
+   "default": "National ID Replacement Fee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_channel",
+   "fieldtype": "Select",
+   "label": "Payment Channel",
+   "options": "Simulated Mobile Money\nSimulated Card\nSimulated Bank\nSimulated Cash Office\nNot Applicable",
+   "default": "Simulated Mobile Money",
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "Not Required\nPending\nSubmitted\nVerified\nFailed\nReversed\nCancelled",
+   "default": "Pending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "simulated_transaction_reference",
+   "fieldtype": "Data",
+   "label": "Simulated Transaction Reference",
+   "reqd": 0
+  },
+  {
+   "fieldname": "verification_status",
+   "fieldtype": "Select",
+   "label": "Verification Status",
+   "options": "Not Checked\nPending Verification\nSimulated Verified\nSimulated Failed\nRequires Review\nNot Applicable",
+   "default": "Not Checked",
+   "reqd": 1
+  },
+  {
+   "fieldname": "verification_timestamp",
+   "fieldtype": "Datetime",
+   "label": "Verification Timestamp"
+  },
+  {
+   "fieldname": "verified_by",
+   "fieldtype": "Data",
+   "label": "Verified By"
+  },
+  {
+   "fieldname": "receipt_status",
+   "fieldtype": "Select",
+   "label": "Receipt Status",
+   "options": "Not Required\nReceipt Pending\nReceipt Ready\nSimulated Receipt Generated\nCancelled",
+   "default": "Receipt Pending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "receipt_reference",
+   "fieldtype": "Data",
+   "label": "Receipt Reference"
+  },
+  {
+   "fieldname": "reconciliation_status",
+   "fieldtype": "Select",
+   "label": "Reconciliation Status",
+   "options": "Not Required\nPending Reconciliation\nReconciled\nMismatch\nRequires Review",
+   "default": "Pending Reconciliation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "failure_reason",
+   "fieldtype": "Small Text",
+   "label": "Failure Reason"
+  },
+  {
+   "fieldname": "triggered_by_event",
+   "fieldtype": "Data",
+   "label": "Triggered By Event"
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "default": "Prototype simulation only. No live payment was processed.",
+   "reqd": 1
+  },
+  {
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "label": "Provider",
+   "options": "Simulated\nPesapal Sandbox\nPesapal Live",
+   "default": "Simulated",
+   "reqd": 1
+  },
+  {
+   "fieldname": "provider_mode",
+   "fieldtype": "Data",
+   "label": "Provider Mode"
+  },
+  {
+   "fieldname": "provider_order_tracking_id",
+   "fieldtype": "Data",
+   "label": "Provider Order Tracking ID"
+  },
+  {
+   "fieldname": "provider_merchant_reference",
+   "fieldtype": "Data",
+   "label": "Provider Merchant Reference"
+  },
+  {
+   "fieldname": "provider_redirect_url",
+   "fieldtype": "Data",
+   "label": "Provider Redirect URL"
+  },
+  {
+   "fieldname": "provider_payment_method",
+   "fieldtype": "Data",
+   "label": "Provider Payment Method"
+  },
+  {
+   "fieldname": "provider_confirmation_code",
+   "fieldtype": "Data",
+   "label": "Provider Confirmation Code"
+  },
+  {
+   "fieldname": "provider_status_code",
+   "fieldtype": "Data",
+   "label": "Provider Status Code"
+  },
+  {
+   "fieldname": "provider_status_description",
+   "fieldtype": "Data",
+   "label": "Provider Status Description"
+  },
+  {
+   "fieldname": "provider_status_checked_at",
+   "fieldtype": "Datetime",
+   "label": "Provider Status Checked At"
+  },
+  {
+   "fieldname": "provider_ipn_id",
+   "fieldtype": "Data",
+   "label": "Provider IPN ID"
+  },
+  {
+   "fieldname": "provider_callback_received_at",
+   "fieldtype": "Datetime",
+   "label": "Provider Callback Received At"
+  },
+  {
+   "fieldname": "provider_ipn_received_at",
+   "fieldtype": "Datetime",
+   "label": "Provider IPN Received At"
+  },
+  {
+   "fieldname": "provider_masked_account",
+   "fieldtype": "Data",
+   "label": "Provider Masked Account"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-02 11:12:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Payment Record",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

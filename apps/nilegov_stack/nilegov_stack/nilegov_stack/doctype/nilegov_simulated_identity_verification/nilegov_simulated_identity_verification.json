@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request",
+   "reqd": 1
+  },
+  {
+   "fieldname": "simulation_status",
+   "fieldtype": "Select",
+   "label": "Simulation Status",
+   "options": "Verified\nFailed\nUnverified",
+   "reqd": 1,
+   "default": "Unverified"
+  },
+  {
+   "fieldname": "nin_found",
+   "fieldtype": "Check",
+   "label": "NIN Found"
+  },
+  {
+   "fieldname": "citizen_name_returned",
+   "fieldtype": "Data",
+   "label": "Citizen Name Returned"
+  },
+  {
+   "fieldname": "location_returned",
+   "fieldtype": "Data",
+   "label": "Location Returned"
+  },
+  {
+   "fieldname": "verification_source",
+   "fieldtype": "Data",
+   "label": "Verification Source",
+   "reqd": 1,
+   "default": "Simulated NIRA Verification API"
+  },
+  {
+   "fieldname": "response_message",
+   "fieldtype": "Small Text",
+   "label": "Response Message",
+   "reqd": 1,
+   "default": "Prototype simulation only. No live Government registry access."
+  },
+  {
+   "fieldname": "simulated_at",
+   "fieldtype": "Datetime",
+   "label": "Simulated At",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-01 23:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Simulated Identity Verification",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

@@ -1,0 +1,133 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:consent_record_id",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "consent_record_id",
+   "fieldtype": "Data",
+   "label": "Consent Record ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "citizen_profile",
+   "fieldtype": "Link",
+   "label": "Citizen Profile",
+   "options": "NileGov Citizen Profile",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consent_purpose",
+   "fieldtype": "Select",
+   "label": "Consent Purpose",
+   "options": "Service Request Processing\nSimulated Identity Verification\nSimulated Payment Verification\nStatus Notifications\nFuture MDA Integration Readiness",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consent_channel",
+   "fieldtype": "Select",
+   "label": "Consent Channel",
+   "options": "Web Form\nOfficer Assisted\nPortal\nEmail\nPhone\nWhatsApp\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consent_status",
+   "fieldtype": "Select",
+   "label": "Consent Status",
+   "options": "Granted\nWithdrawn\nExpired\nNot Required\nPending",
+   "default": "Granted",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "withdrawal_timestamp",
+   "fieldtype": "Datetime",
+   "label": "Withdrawal Timestamp"
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Data",
+   "label": "Recorded By"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "default": "Prototype simulation only. No live Government registry access."
+  },
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request"
+  },
+  {
+   "fieldname": "consent_statement",
+   "fieldtype": "Small Text",
+   "label": "Consent Statement"
+  },
+  {
+   "fieldname": "statement_version",
+   "fieldtype": "Data",
+   "label": "Statement Version"
+  },
+  {
+   "fieldname": "consent_given_by",
+   "fieldtype": "Data",
+   "label": "Consent Given By"
+  },
+  {
+   "fieldname": "consent_given_at",
+   "fieldtype": "Datetime",
+   "label": "Consent Given At"
+  },
+  {
+   "fieldname": "ip_address",
+   "fieldtype": "Data",
+   "label": "IP Address"
+  },
+  {
+   "fieldname": "user_agent",
+   "fieldtype": "Small Text",
+   "label": "User Agent"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-02 10:15:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Consent Record",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

@@ -1,0 +1,175 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:notification_event_id",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "notification_event_id",
+   "fieldtype": "Data",
+   "label": "Notification Event ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request",
+   "reqd": 1
+  },
+  {
+   "fieldname": "citizen_profile",
+   "fieldtype": "Link",
+   "label": "Citizen Profile",
+   "options": "NileGov Citizen Profile"
+  },
+  {
+   "fieldname": "consent_record",
+   "fieldtype": "Link",
+   "label": "Consent Record",
+   "options": "NileGov Consent Record"
+  },
+  {
+   "fieldname": "recipient_type",
+   "fieldtype": "Select",
+   "label": "Recipient Type",
+   "options": "Citizen\nOfficer\nSupervisor\nDepartment Queue\nSystem",
+   "default": "Citizen",
+   "reqd": 1
+  },
+  {
+   "fieldname": "recipient_reference",
+   "fieldtype": "Data",
+   "label": "Recipient Reference"
+  },
+  {
+   "fieldname": "recipient_placeholder",
+   "fieldtype": "Data",
+   "label": "Recipient Placeholder"
+  },
+  {
+   "fieldname": "recipient",
+   "fieldtype": "Data",
+   "label": "Recipient",
+   "reqd": 1
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Channel",
+   "options": "Email\nSMS\nWhatsApp\nPortal\nInternal Desk\nOther",
+   "default": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "message_type",
+   "fieldtype": "Select",
+   "label": "Message Type",
+   "options": "Request Received\nUnder Review\nInformation Required\nPayment Pending\nPayment Verified\nApproved\nReady for Collection\nClosed\nRejected\nSLA At Risk\nSLA Overdue\nEscalated\nReturned to Officer",
+   "default": "Request Received",
+   "reqd": 1
+  },
+  {
+   "fieldname": "notification_type",
+   "fieldtype": "Select",
+   "label": "Notification Type",
+   "options": "Status Update\nClarification Request\nCase Closure\nSLA Warning\nSLA Breach\nEscalation",
+   "default": "Status Update",
+   "reqd": 1
+  },
+  {
+   "fieldname": "message_title",
+   "fieldtype": "Data",
+   "label": "Message Title"
+  },
+  {
+   "fieldname": "message_body_preview",
+   "fieldtype": "Small Text",
+   "label": "Message Body Preview"
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message",
+   "reqd": 1
+  },
+  {
+   "fieldname": "delivery_status",
+   "fieldtype": "Select",
+   "label": "Delivery Status",
+   "options": "Draft\nQueued\nSimulated Sent\nSimulated Failed\nCancelled\nNot Required",
+   "default": "Draft",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consent_checked",
+   "fieldtype": "Check",
+   "label": "Consent Checked",
+   "default": "0"
+  },
+  {
+   "fieldname": "consent_status_at_trigger",
+   "fieldtype": "Data",
+   "label": "Consent Status At Trigger"
+  },
+  {
+   "fieldname": "triggered_by_event",
+   "fieldtype": "Data",
+   "label": "Triggered By Event"
+  },
+  {
+   "fieldname": "scheduled_at",
+   "fieldtype": "Datetime",
+   "label": "Scheduled At"
+  },
+  {
+   "fieldname": "simulated_sent_at",
+   "fieldtype": "Datetime",
+   "label": "Simulated Sent At"
+  },
+  {
+   "fieldname": "simulated_failed_at",
+   "fieldtype": "Datetime",
+   "label": "Simulated Failed At"
+  },
+  {
+   "fieldname": "failure_reason",
+   "fieldtype": "Small Text",
+   "label": "Failure Reason"
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "default": "Prototype simulation only. No live email, SMS, WhatsApp or portal notification was sent."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-02 11:05:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Citizen Notification",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

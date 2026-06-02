@@ -1,0 +1,12 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "nilegov_stack"
+authors = [
+    {name = "Digi-Verse Uganda Limited", email = "info@digiverse.co.ug"}
+]
+description = "Uganda service delivery and case-management accountability platform"
+dependencies = []
+dynamic = ["version"]

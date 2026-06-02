@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request"
+  },
+  {
+   "fieldname": "integration_name",
+   "fieldtype": "Data",
+   "label": "Integration Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "simulation_type",
+   "fieldtype": "Select",
+   "label": "Simulation Type",
+   "options": "NIRA Identity Lookup\nURA Compliance Verify\nUGHub Queue Message Publish",
+   "reqd": 1
+  },
+  {
+   "fieldname": "request_summary",
+   "fieldtype": "Small Text",
+   "label": "Request Summary"
+  },
+  {
+   "fieldname": "response_summary",
+   "fieldtype": "Small Text",
+   "label": "Response Summary"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Success\nFailure",
+   "reqd": 1
+  },
+  {
+   "fieldname": "simulated_at",
+   "fieldtype": "Datetime",
+   "label": "Simulated At",
+   "reqd": 1
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "reqd": 1,
+   "default": "Prototype simulation only. No live Government registry access."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-01 23:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Integration Simulation Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}

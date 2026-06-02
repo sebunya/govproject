@@ -1,0 +1,33 @@
+# Task Checklist: Pass 8A-1B Consent Records Foundation
+
+- `[x]` Plan and Audit
+  - `[x]` Audit existing code and structure
+  - `[x]` Create implementation plan
+  - `[x]` Initialize task checklist
+- `[x]` Schema & Controller Updates
+  - `[x]` Modify `nilegov_consent_record.json` (autoname, citizen_profile, status, purpose, custom fields, optional legacy fields)
+  - `[x]` Modify `nilegov_consent_record.py` (remove legacy required validations, add status/purpose validations)
+- `[x]` Domain & Application Code
+  - `[x]` Implement `ConsentRecord` in `domain/consent.py`
+  - `[x]` Declare `ConsentRecordRepository` in `application/ports.py`
+  - `[x]` Create application use cases:
+    - `[x]` `create_consent_record.py`
+    - `[x]` `withdraw_consent.py`
+    - `[x]` `check_active_consent.py`
+    - `[x]` `list_citizen_consent_records.py`
+    - `[x]` `list_request_consent_records.py`
+- `[x]` Infrastructure Code
+  - `[x]` Create `InMemoryConsentRecordRepository` in `infrastructure/repositories/consent_record_repository.py`
+  - `[x]` Create `FrappeConsentRecordRepository` in `infrastructure/repositories/frappe_consent_record_repository.py`
+- `[x]` Seeding & Integration
+  - `[x]` Update `seed_demo_records.py` to seed custom consent scenarios for primary demo citizen profiles
+- `[x]` Unit & Quality Verification
+  - `[x]` Add `test_consent_record.py` verifying Consent Record logic
+  - `[x]` Run pytest validation (100% pass)
+  - `[x]` Run python compilation check (100% pass)
+- `[x]` Documentation & Submissions
+  - `[x]` Create `docs/modules/02_consent_records_foundation.md`
+  - `[x]` Update `docs/submission/07_claims_matrix.md`
+  - `[x]` Update `docs/submission/13_evidence_index.md`
+  - `[x]` Update `docs/submission/08_runtime_validation_checklist.md`
+  - `[x]` Update workspace task.md and walkthrough.md

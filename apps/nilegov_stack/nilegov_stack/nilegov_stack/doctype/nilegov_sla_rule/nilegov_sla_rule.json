@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:sla_rule_id",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "sla_rule_id",
+   "fieldtype": "Data",
+   "label": "SLA Rule ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "service_type",
+   "fieldtype": "Link",
+   "label": "Service Type",
+   "options": "NileGov Service Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "response_hours",
+   "fieldtype": "Int",
+   "label": "Response Hours",
+   "reqd": 1
+  },
+  {
+   "fieldname": "resolution_hours",
+   "fieldtype": "Int",
+   "label": "Resolution Hours",
+   "reqd": 1
+  },
+  {
+   "fieldname": "at_risk_threshold_percent",
+   "fieldtype": "Int",
+   "label": "At-Risk Threshold Percent",
+   "default": 80,
+   "reqd": 1
+  },
+  {
+   "fieldname": "escalation_threshold_hours",
+   "fieldtype": "Int",
+   "label": "Escalation Threshold Hours",
+   "reqd": 1
+  },
+  {
+   "fieldname": "escalation_queue",
+   "fieldtype": "Select",
+   "label": "Escalation Queue",
+   "options": "National ID Replacement Desk\nCitizen Services Desk\nVerification Desk\nPayment Review Desk\nSupervisor Review Queue\nCompleted Cases Queue",
+   "default": "Supervisor Review Queue",
+   "reqd": 1
+  },
+  {
+   "fieldname": "escalation_role",
+   "fieldtype": "Data",
+   "label": "Escalation Role",
+   "default": "supervisor_demo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active",
+   "default": "1"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "default": "Prototype simulation only. No live Government registry access."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-02 11:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov SLA Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "states": []
+}
