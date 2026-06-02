@@ -1,7 +1,7 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-3 COMPLETE — Next: 11B-4 (JS Form Scripts)
+## Status: 11B-5B COMPLETE — Next: 11B-6 (Print Formats, Notification Config, Assignment Rules)
 
 ---
 
@@ -138,5 +138,6 @@
 - [x] Assessed all 9 target reports → all Report Builder JSON, no blockers
 - [x] Assessed 9 number cards + 8 charts → all safe to implement
 - [x] Wrote implementation_plan.md
-- [ ] 11B-5A: Implement 9 reports + 9 number cards + 8 charts + 1 dashboard (36 files)
-- [ ] 11B-5B: Workspace report shortcuts, docs update
+- [x] 11B-5A: Implement 9 reports + 9 number cards + 8 charts + 1 dashboard (36 files)
+- [x] 11B-5B: Workspace report shortcuts, docs update
+

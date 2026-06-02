@@ -137,6 +137,9 @@ docker compose -f deployment/docker-compose.yml exec backend bench --site nilego
 Access the Desk using standard local credentials (e.g. Username `Administrator`, Password `admin` or using the seeded user `officer_demo`):
 
 - [ ] **Workspace check:** Navigate to `http://nilegov.local:8000/app/nilegov-case-operations`. Confirm the dashboard layout renders and dashboard counters match seeded numbers.
+- [ ] **Workspace Reports section check:** Confirm the new `I. Reports and Dashboards` section is visible and contains links to Case Operations Dashboard and all 9 custom report definitions.
+- [ ] **Workspace Case Operations Dashboard link check:** Click the link on the workspace and verify it navigates to the dashboard containing 8 charts and 9 number cards.
+- [ ] **Workspace Reports links check:** Click each of the 9 report links. Verify they navigate to the corresponding Report Builder views. Confirm that proper disclaimers (e.g. simulated context, sandbox notification warnings) appear onload.
 - [ ] **SLA Rules List check:** Navigate to `http://nilegov.local:8000/app/nilegov-sla-rule`. Verify that the rule `SLA-LOST-NID` renders.
 - [ ] **Service Catalogue List check:** Navigate to `http://nilegov.local:8000/app/nilegov-service-catalogue`. Confirm that the list renders and shows all 3 seeded templates (`SVC-LOST-NID`, `SVC-CITIZEN-COMPLAINT`, `SVC-PERMIT-APPLICATION`) with correct active statuses.
 - [ ] **Service Catalogue detail check:** Open `SVC-LOST-NID` details. Verify that `required_documents` lists all three placeholders, the fee is set to 50000.0, the default provider is `Simulated`, the workflow template is `Replacement Request Workflow`, and the mandatory disclaimer warning is visible.

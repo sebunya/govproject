@@ -198,7 +198,7 @@ class TestWorkspaceNoUnknownDocTypes:
         data = _load_ws()
         for lnk in data.get("links", []):
             lt = lnk.get("link_to", "")
-            if lt:
+            if lt and lnk.get("link_type", "DocType") == "DocType":
                 assert lt in ALL_NILEGOV_DOCTYPES, (
                     f"Workspace link references unknown DocType: '{lt}'"
                 )
@@ -207,7 +207,7 @@ class TestWorkspaceNoUnknownDocTypes:
         data = _load_ws()
         for sh in data.get("shortcuts", []):
             lt = sh.get("link_to", "")
-            if lt:
+            if lt and sh.get("type", "DocType") == "DocType":
                 assert lt in ALL_NILEGOV_DOCTYPES, (
                     f"Workspace shortcut references unknown DocType: '{lt}'"
                 )
@@ -250,7 +250,7 @@ class TestWorkspaceRoleAccess:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 7. Section labels (A–H card breaks)
+# 7. Section labels (A–I card breaks)
 # ─────────────────────────────────────────────────────────────────────────────
 class TestWorkspaceSectionLabels:
     EXPECTED_SECTIONS = {
@@ -262,6 +262,7 @@ class TestWorkspaceSectionLabels:
         "F. Communications",
         "G. M&E and Reporting",
         "H. Audit and Interoperability",
+        "I. Reports and Dashboards",
     }
 
     def test_workspace_has_all_section_labels(self):
@@ -276,14 +277,14 @@ class TestWorkspaceSectionLabels:
             f"Workspace missing section labels: {sorted(missing)}"
         )
 
-    def test_workspace_has_8_sections(self):
+    def test_workspace_has_9_sections(self):
         data = _load_ws()
         card_breaks = [
             lnk for lnk in data.get("links", [])
             if lnk.get("type") == "Card Break"
         ]
-        assert len(card_breaks) == 8, (
-            f"Expected 8 Card Break sections, got {len(card_breaks)}"
+        assert len(card_breaks) == 9, (
+            f"Expected 9 Card Break sections, got {len(card_breaks)}"
         )
 
 

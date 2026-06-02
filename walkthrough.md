@@ -660,13 +660,49 @@ python3 -m compileall → COMPILE OK
 ### Test Results
 
 ```
-1166 passed in 1.06s
+1175 passed in 1.12s
 ```
 
-**Previously: 941/941. Now: 1166/1166. +225 new tests.**
+**Previously: 1166/1166. Now: 1175/1175. +9 new tests.**
 
 ### Compile Result
 
 ```
 python3 -m compileall → COMPILE OK
 ```
+
+---
+
+## Pass 11B-5B: Reporting Workspace Shortcuts and Evidence Update Log
+
+This log covers the discoverability work to wire up the 1 Dashboard and 9 Report Builder reports created in Pass 11B-5A to the NileGov Case Operations Workspace JSON.
+
+### Accomplished Deliverables
+
+#### Workspace JSON Schema Update
+- Added section `I. Reports and Dashboards` to `links`.
+- Linked the `NileGov Case Operations Dashboard` (type: Dashboard) with `Case Operations Dashboard (Prototype)` label.
+- Linked all 9 custom reports (type: Report) with proper `(Prototype)` or `(Simulated)` labels to prevent overclaiming live/official government statistics or live payments.
+
+#### Workspace Verification Tests
+- Created a new unit test suite [test_workspace_reporting_links.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_workspace_reporting_links.py) verifying:
+  1. Workspace includes the dashboard link.
+  2. Workspace includes links for all 9 reports.
+  3. Dashboard and report links point to valid/existing definitions on disk.
+  4. Payment reconciliation labels clearly say `simulated` or `sandbox` (avoiding `live` payment claims).
+  5. Reporting Snapshot Summary labels do not say `official statistics` and contain `prototype`, `demo`, or `simulated`.
+  6. Integration simulation reports contain `simulation` wording.
+- Updated [test_workspace_navigation.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_workspace_navigation.py) to tolerate non-DocType workspace links (Dashboard and Report type) and support the new 9th section (`I. Reports and Dashboards`).
+
+#### Documentation Updates
+- Updated [13_evidence_index.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/13_evidence_index.md) to log workspace reporting links.
+- Updated [08_runtime_validation_checklist.md](file:///Users/robertsebunya/Documents/Nile_Gov/docs/submission/08_runtime_validation_checklist.md) to include reports and dashboard navigation checklist items.
+
+### Final Verification Results
+
+- Pytest Suite: **1175/1175 passed** (100% green).
+- Python compile: **CLEAN** (zero syntax errors).
+- `.env` status: Untracked and uncommitted.
+- Runtime validation: Deferred to Hetzner/Frappe bench.
+- Wording check: Verified no live/official government statistics claims exist in the workspace or documentation.
+

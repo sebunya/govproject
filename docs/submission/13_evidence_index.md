@@ -204,7 +204,12 @@ This document indexes the code deliverables, verification results, and operation
 ### Tests Added
 - `tests/unit/test_workspace_navigation.py` — 155 tests, 17 classes covering workspace links, shortcuts, no broken DocType names, no live labels, roles, section labels, search_fields, title_field, sort_field, list_view count, standard filters, JSON integrity, and spot-checks.
 
-### Test Suite After Pass 11B-3
-- **824 / 824 passed** (was 668 — +156 new tests)
+### Test Suite After Pass 11B-5B
+- **1175 / 1175 passed** (includes Pass 11B-5A reports/dashboards tests and Pass 11B-5B workspace links tests)
 - Python compile: CLEAN
 - `.env`: untracked
+
+### Pass 11B-5B Additions (Reporting Workspace Shortcuts and Evidence Update)
+- Added new section `I. Reports and Dashboards` to NileGov Case Operations Workspace links with 1 dashboard and 9 report shortcut links.
+- Created [test_workspace_reporting_links.py](file:///Users/robertsebunya/Documents/Nile_Gov/apps/nilegov_stack/nilegov_stack/tests/unit/test_workspace_reporting_links.py) verifying workspace links existence, dashboard and report definitions matching, and sandbox/prototype label disclaimers.
+
