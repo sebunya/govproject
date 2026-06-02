@@ -1,7 +1,13 @@
 # Pass 11B Task Checklist
 # NileGov Stack — Frappe Native Completeness
 
-## Status: 11B-6D COMPLETE — Next: Pass 11B-7 (Web Form and API)
+## Status: 11B-7A COMPLETE — Next: Pass 11B-7B (Web Form Metadata Scaffold)
+
+## Pass 11B-7A: Web Form, Public Status Lookup and REST API Surface Audit ✅ COMPLETE
+- [x] Audit existing `web_form/`, `www/`, and `interfaces/frappe/api/` directories
+- [x] Classify intake, lookup, and payment fields for public safety and redaction
+- [x] Design proposed scaffolding split and redact constraints
+- [x] Update implementation_plan.md and task.md planning files
 
 ## Pass 11B-6D: Assignment Rules and ToDo Readiness ✅ COMPLETE
 - [x] Create 7 standard Assignment Rule JSON files under `assignment_rule/`
