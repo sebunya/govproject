@@ -1,0 +1,21 @@
+{
+ "color": "#34a853",
+ "creation": "2026-06-02 00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "NileGov Service Request",
+ "filters_json": "[[\"NileGov Service Request\", \"internal_status\", \"not in\", \"Closed,Rejected\"]]",
+ "function": "Count",
+ "is_standard": 1,
+ "label": "Open Requests",
+ "method": "",
+ "modified": "2026-06-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Open Requests",
+ "owner": "Administrator",
+ "parent_document_type": "",
+ "show_percentage_stats": 0,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

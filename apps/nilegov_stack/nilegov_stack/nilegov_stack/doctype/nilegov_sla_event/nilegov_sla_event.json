@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request",
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "label": "Event Type",
+   "options": "SLA Response Created\nSLA Resolution Nearing\nSLA Escalated",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "due_at",
+   "fieldtype": "Datetime",
+   "label": "Due At",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "completed_at",
+   "fieldtype": "Datetime",
+   "label": "Completed At"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nCompleted\nBreached",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "breach_risk",
+   "fieldtype": "Select",
+   "label": "Breach Risk",
+   "options": "None\nLow\nHigh\nBreached",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-01 23:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov SLA Event",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "NileGov SLA Supervisor",
+   "read": 1,
+   "write": 1,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "NileGov M&E Viewer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "NileGov System Auditor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "NileGov System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  }
+ ],
+ "states": [],
+ "search_fields": "service_request,event_type,status",
+ "title_field": "service_request",
+ "sort_field": "due_at",
+ "sort_order": "ASC"
+}

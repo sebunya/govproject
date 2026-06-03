@@ -1,0 +1,32 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Notification",
+ "idx": 0,
+ "is_standard": 1,
+ "enabled": 1,
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Case Closed Alert",
+ "owner": "Administrator",
+ "channel": "Email",
+ "document_type": "NileGov Service Request",
+ "event": "Value Change",
+ "value_changed": "internal_status",
+ "condition": "doc.internal_status == 'Closed'",
+ "subject": "Service Request {{ doc.name }} Closed",
+ "message": "Service Request {{ doc.name }} has been closed.\nDecision: {{ doc.decision }}\nClosure Notes: {{ doc.closure_notes or 'None' }}\n\nPrototype notification readiness only. No live SMS, WhatsApp or production email was sent.",
+ "recipients": [
+  {
+   "doctype": "Notification Recipient",
+   "receiver_type": "By Role",
+   "receiver_by_role": "NileGov Citizen Officer"
+  },
+  {
+   "doctype": "Notification Recipient",
+   "receiver_type": "By Role",
+   "receiver_by_role": "NileGov M&E Viewer"
+  }
+ ]
+}

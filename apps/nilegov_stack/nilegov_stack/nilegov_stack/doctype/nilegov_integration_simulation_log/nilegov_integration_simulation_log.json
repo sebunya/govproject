@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "NileGov Service Request",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "integration_name",
+   "fieldtype": "Data",
+   "label": "Integration Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "simulation_type",
+   "fieldtype": "Select",
+   "label": "Simulation Type",
+   "options": "NIRA Identity Lookup\nURA Compliance Verify\nUGHub Queue Message Publish",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "request_summary",
+   "fieldtype": "Small Text",
+   "label": "Request Summary"
+  },
+  {
+   "fieldname": "response_summary",
+   "fieldtype": "Small Text",
+   "label": "Response Summary"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Success\nFailure",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "simulated_at",
+   "fieldtype": "Datetime",
+   "label": "Simulated At",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "reqd": 1,
+   "default": "Prototype simulation only. No live Government registry access."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-01 23:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Integration Simulation Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "NileGov System Auditor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "NileGov M&E Viewer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "NileGov System Manager",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  }
+ ],
+ "states": [],
+ "search_fields": "service_request,integration_name,simulation_type,status",
+ "title_field": "integration_name",
+ "sort_field": "simulated_at",
+ "sort_order": "DESC"
+}

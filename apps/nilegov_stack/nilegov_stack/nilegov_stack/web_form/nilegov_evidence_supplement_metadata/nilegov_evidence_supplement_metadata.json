@@ -1,0 +1,35 @@
+{
+ "doctype": "Web Form",
+ "name": "NileGov Evidence Supplement Metadata",
+ "title": "NileGov Evidence Supplement Metadata",
+ "doc_type": "NileGov Evidence Document",
+ "module": "NileGov Stack",
+ "is_standard": 1,
+ "published": 0,
+ "login_required": 1,
+ "route": "nilegov-evidence-supplement-metadata",
+ "introduction_text": "Prototype service journey only. No live NIRA, UGHub, URA, NITA-U, MDA or production payment system is connected. Prototype evidence metadata submission only. Documents are not verified against live police, court, NIRA, URA or MDA systems.",
+ "web_form_fields": [
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "Document Type",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "document_title",
+   "fieldtype": "Data",
+   "label": "Document Title",
+   "reqd": 1
+  }
+ ]
+}

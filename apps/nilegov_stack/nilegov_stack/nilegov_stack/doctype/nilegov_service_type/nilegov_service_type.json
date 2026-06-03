@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:service_code",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "service_name",
+   "fieldtype": "Data",
+   "label": "Service Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "service_code",
+   "fieldtype": "Data",
+   "label": "Service Code",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "responsible_unit",
+   "fieldtype": "Data",
+   "label": "Responsible Unit"
+  },
+  {
+   "fieldname": "default_sla_hours",
+   "fieldtype": "Int",
+   "label": "Default SLA Hours",
+   "reqd": 1
+  },
+  {
+   "fieldname": "requires_identity_check",
+   "fieldtype": "Check",
+   "label": "Requires Identity Check",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "requires_payment",
+   "fieldtype": "Check",
+   "label": "Requires Payment",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "requires_supporting_documents",
+   "fieldtype": "Check",
+   "label": "Requires Supporting Documents"
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "default": "1",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-01 23:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Service Type",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "NileGov MDA Admin",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "NileGov Citizen Officer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "NileGov System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  }
+ ],
+ "states": [],
+ "search_fields": "service_code,service_name",
+ "title_field": "service_name",
+ "sort_field": "service_name",
+ "sort_order": "ASC"
+}

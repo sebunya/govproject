@@ -1,0 +1,412 @@
+{
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:service_request_id",
+ "creation": "2026-06-01 23:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "service_request_id",
+   "fieldtype": "Data",
+   "label": "Service Request ID",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "service_type",
+   "fieldtype": "Link",
+   "label": "Service Type",
+   "options": "NileGov Service Type",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "citizen_profile",
+   "fieldtype": "Link",
+   "label": "Citizen Profile",
+   "options": "NileGov Citizen Profile",
+   "reqd": 1
+  },
+  {
+   "fieldname": "citizen_full_name",
+   "fieldtype": "Data",
+   "label": "Citizen Full Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "nin",
+   "fieldtype": "Data",
+   "label": "NIN",
+   "reqd": 1
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "division_or_area",
+   "fieldtype": "Data",
+   "label": "Division or Area"
+  },
+  {
+   "fieldname": "reason_for_request",
+   "fieldtype": "Small Text",
+   "label": "Reason For Request",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_lost",
+   "fieldtype": "Date",
+   "label": "Date Lost"
+  },
+  {
+   "fieldname": "police_reference_number",
+   "fieldtype": "Data",
+   "label": "Police Reference Number"
+  },
+  {
+   "fieldname": "consent_confirmed",
+   "fieldtype": "Check",
+   "label": "Consent Confirmed"
+  },
+  {
+   "fieldname": "citizen_visible_status",
+   "fieldtype": "Select",
+   "label": "Citizen Visible Status",
+   "options": "Submitted\nUnder Review\nInformation Required\nPayment Pending\nPayment Verified\nApproved\nReady for Collection\nRejected\nClosed",
+   "reqd": 1,
+   "default": "Submitted"
+  },
+  {
+   "fieldname": "internal_status",
+   "fieldtype": "Select",
+   "label": "Internal Status",
+   "options": "Submitted\nUnder Review\nInformation Required\nPayment Pending\nPayment Verified\nApproved\nReady for Collection\nRejected\nClosed",
+   "reqd": 1,
+   "default": "Submitted",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "assigned_officer",
+   "fieldtype": "Link",
+   "label": "Assigned Officer",
+   "options": "User",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "assigned_supervisor",
+   "fieldtype": "Link",
+   "label": "Assigned Supervisor",
+   "options": "User"
+  },
+  {
+   "fieldname": "sla_deadline",
+   "fieldtype": "Datetime",
+   "label": "SLA Deadline"
+  },
+  {
+   "fieldname": "escalation_status",
+   "fieldtype": "Select",
+   "label": "Escalation Status",
+   "options": "None\nPending\nResolved",
+   "default": "None"
+  },
+  {
+   "fieldname": "decision",
+   "fieldtype": "Select",
+   "label": "Decision",
+   "options": "Approved\nRejected\nNone",
+   "default": "None"
+  },
+  {
+   "fieldname": "closure_notes",
+   "fieldtype": "Small Text",
+   "label": "Closure Notes"
+  },
+  {
+   "fieldname": "submitted_at",
+   "fieldtype": "Datetime",
+   "label": "Submitted At"
+  },
+  {
+   "fieldname": "closed_at",
+   "fieldtype": "Datetime",
+   "label": "Closed At"
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "Not Required\nPending\nVerified\nFailed",
+   "default": "Not Required"
+  },
+  {
+   "fieldname": "payment_amount",
+   "fieldtype": "Float",
+   "label": "Payment Amount",
+   "default": 0.0
+  },
+  {
+   "fieldname": "payment_timestamp",
+   "fieldtype": "Datetime",
+   "label": "Payment Timestamp"
+  },
+  {
+   "fieldname": "identity_status",
+   "fieldtype": "Select",
+   "label": "Identity Verification Status",
+   "options": "Matched\nNot Matched\nRequires Review",
+   "default": "Requires Review"
+  },
+  {
+   "fieldname": "identity_timestamp",
+   "fieldtype": "Datetime",
+   "label": "Identity Verification Timestamp"
+  },
+  {
+   "fieldname": "identity_by",
+   "fieldtype": "Data",
+   "label": "Identity Verification By"
+  },
+  {
+   "fieldname": "assigned_department",
+   "fieldtype": "Select",
+   "label": "Assigned Department",
+   "options": "National ID Replacement Desk\nCitizen Services Desk\nVerification Desk\nPayment Review Desk",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "assigned_team",
+   "fieldtype": "Data",
+   "label": "Assigned Team"
+  },
+  {
+   "fieldname": "assigned_at",
+   "fieldtype": "Datetime",
+   "label": "Assigned At"
+  },
+  {
+   "fieldname": "reassigned_at",
+   "fieldtype": "Datetime",
+   "label": "Reassigned At"
+  },
+  {
+   "fieldname": "reassignment_reason",
+   "fieldtype": "Small Text",
+   "label": "Reassignment Reason"
+  },
+  {
+   "fieldname": "supervisor_review_required",
+   "fieldtype": "Check",
+   "label": "Supervisor Review Required",
+   "default": 0
+  },
+  {
+   "fieldname": "queue_name",
+   "fieldtype": "Select",
+   "label": "Queue Name",
+   "options": "National ID Replacement Desk\nCitizen Services Desk\nVerification Desk\nPayment Review Desk\nSupervisor Review Queue\nCompleted Cases Queue",
+   "default": "National ID Replacement Desk",
+   "reqd": 1
+  },
+  {
+   "fieldname": "assignment_status",
+   "fieldtype": "Select",
+   "label": "Assignment Status",
+   "options": "Unassigned\nAssigned\nReassigned\nSupervisor Review\nReturned to Officer\nClosed",
+   "default": "Unassigned",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sla_rule",
+   "fieldtype": "Link",
+   "label": "SLA Rule",
+   "options": "NileGov SLA Rule"
+  },
+  {
+   "fieldname": "response_due_at",
+   "fieldtype": "Datetime",
+   "label": "Response Due At"
+  },
+  {
+   "fieldname": "resolution_due_at",
+   "fieldtype": "Datetime",
+   "label": "Resolution Due At"
+  },
+  {
+   "fieldname": "sla_state",
+   "fieldtype": "Select",
+   "label": "SLA State",
+   "options": "Within SLA\nAt Risk\nOverdue\nPaused\nMet\nNot Applicable",
+   "default": "Not Applicable",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "sla_last_checked_at",
+   "fieldtype": "Datetime",
+   "label": "SLA Last Checked At"
+  },
+  {
+   "fieldname": "escalation_state",
+   "fieldtype": "Select",
+   "label": "Escalation State",
+   "options": "Not Escalated\nEscalation Recommended\nEscalated\nSupervisor Reviewing\nResolved",
+   "default": "Not Escalated",
+   "reqd": 1
+  },
+  {
+   "fieldname": "escalated_at",
+   "fieldtype": "Datetime",
+   "label": "Escalated At"
+  },
+  {
+   "fieldname": "escalated_to",
+   "fieldtype": "Link",
+   "label": "Escalated To",
+   "options": "User"
+  },
+  {
+   "fieldname": "escalation_reason",
+   "fieldtype": "Small Text",
+   "label": "Escalation Reason"
+  },
+  {
+   "fieldname": "at_risk_flag",
+   "fieldtype": "Check",
+   "label": "At Risk",
+   "default": "0"
+  },
+  {
+   "fieldname": "overdue_flag",
+   "fieldtype": "Check",
+   "label": "Overdue",
+   "default": "0"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-01 23:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Service Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "NileGov Citizen Officer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "NileGov Records Officer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "NileGov Payments Officer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "print": 1
+  },
+  {
+   "role": "NileGov SLA Supervisor",
+   "read": 1,
+   "write": 1,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "NileGov M&E Viewer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "NileGov MDA Admin",
+   "read": 1,
+   "write": 1,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "NileGov System Auditor",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "export": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "NileGov System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  }
+ ],
+ "states": [],
+ "search_fields": "service_request_id,citizen_full_name,service_type,assigned_officer,internal_status",
+ "title_field": "service_request_id",
+ "sort_field": "submitted_at",
+ "sort_order": "DESC"
+}

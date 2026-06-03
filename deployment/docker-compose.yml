@@ -1,0 +1,201 @@
+services:
+  # 1. Database Service (MariaDB)
+  db:
+    image: mariadb:10.6
+    container_name: nilegov-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-nilegov_root_pass}
+      MYSQL_DATABASE: ${DB_NAME:-nilegov_db}
+      MYSQL_USER: ${DB_USER:-nilegov_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-nilegov_pass}
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./config/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf:ro
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$DB_ROOT_PASSWORD"]
+      timeout: 10s
+      retries: 5
+
+  # 2. Redis Cache Service (for Cache and Socket.io)
+  redis-cache:
+    image: redis:7-alpine
+    container_name: nilegov-redis-cache
+    restart: always
+    command: redis-server --maxmemory 96mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-cache-data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 5s
+      retries: 5
+
+  # 2b. Redis Queue Service (for Background Jobs, strict reliability)
+  redis-queue:
+    image: redis:7-alpine
+    container_name: nilegov-redis-queue
+    restart: always
+    command: redis-server --maxmemory 64mb --maxmemory-policy noeviction
+    volumes:
+      - redis-queue-data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 5s
+      retries: 5
+
+  # 3. Configurator Service (Runs once on start to update common_site_config.json)
+  configurator:
+    image: frappe/erpnext:${APP_VERSION:-v15.15.0}
+    container_name: nilegov-configurator
+    restart: "no"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      REDIS_CACHE: redis://redis-cache:6379/0
+      REDIS_QUEUE: redis://redis-queue:6379/0
+      REDIS_SOCKETIO: redis://redis-cache:6379/1
+      SOCKETIO_PORT: 9000
+    volumes:
+      - sites-data:/home/frappe/frappe-bench/sites
+      - ../apps/nilegov_stack:/home/frappe/frappe-bench/apps/nilegov_stack
+
+    entrypoint: ["bash", "-c"]
+    command:
+      - >
+        bench set-config -g db_host $$DB_HOST;
+        bench set-config -gp db_port $$DB_PORT;
+        bench set-config -g redis_cache $$REDIS_CACHE;
+        bench set-config -g redis_queue $$REDIS_QUEUE;
+        bench set-config -g redis_socketio $$REDIS_SOCKETIO;
+        bench set-config -gp socketio_port $$SOCKETIO_PORT;
+    depends_on:
+      db:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+      redis-queue:
+        condition: service_healthy
+
+  # 4. Web Application Backend (Gunicorn)
+  backend:
+    image: frappe/erpnext:${APP_VERSION:-v15.15.0}
+    container_name: nilegov-backend
+    restart: always
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+    volumes:
+      - sites-data:/home/frappe/frappe-bench/sites
+      - logs-data:/home/frappe/frappe-bench/logs
+      - ../apps/nilegov_stack:/home/frappe/frappe-bench/apps/nilegov_stack
+
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 256M
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+      redis-queue:
+        condition: service_healthy
+
+  # 5. Real-time Realtime WebSockets (Socket.io)
+  websocket:
+    image: frappe/erpnext:${APP_VERSION:-v15.15.0}
+    container_name: nilegov-websocket
+    restart: always
+    command: node /home/frappe/frappe-bench/apps/frappe/socketio.js
+    ports:
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - sites-data:/home/frappe/frappe-bench/sites
+      - logs-data:/home/frappe/frappe-bench/logs
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M
+    depends_on:
+      backend:
+        condition: service_started
+
+  # 6. Consolidated Background Workers (processes all queues in one process)
+  worker:
+    image: frappe/erpnext:${APP_VERSION:-v15.15.0}
+    container_name: nilegov-worker
+    restart: always
+    command: bench worker --queue short,default,long
+    volumes:
+      - sites-data:/home/frappe/frappe-bench/sites
+      - logs-data:/home/frappe/frappe-bench/logs
+      - ../apps/nilegov_stack:/home/frappe/frappe-bench/apps/nilegov_stack
+
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    depends_on:
+      backend:
+        condition: service_started
+
+  # 7. Scheduled Tasks Service (Cron)
+  scheduler:
+    image: frappe/erpnext:${APP_VERSION:-v15.15.0}
+    container_name: nilegov-scheduler
+    restart: always
+    command: bench schedule
+    volumes:
+      - sites-data:/home/frappe/frappe-bench/sites
+      - logs-data:/home/frappe/frappe-bench/logs
+      - ../apps/nilegov_stack:/home/frappe/frappe-bench/apps/nilegov_stack
+
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M
+    depends_on:
+      backend:
+        condition: service_started
+
+volumes:
+  db-data:
+    name: nilegov-db-data
+  redis-cache-data:
+    name: nilegov-redis-cache-data
+  redis-queue-data:
+    name: nilegov-redis-queue-data
+  sites-data:
+    name: nilegov-sites-data
+  logs-data:
+    name: nilegov-logs-data

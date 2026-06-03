@@ -1,0 +1,26 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Notification",
+ "idx": 0,
+ "is_standard": 1,
+ "enabled": 1,
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Escalation Assigned Alert",
+ "owner": "Administrator",
+ "channel": "Email",
+ "document_type": "NileGov Escalation Record",
+ "event": "New",
+ "condition": "doc.status == 'Pending'",
+ "subject": "New SLA Escalation for Request {{ doc.service_request }}",
+ "message": "A new SLA Escalation has been logged for Service Request {{ doc.service_request }}.\nReason: {{ doc.escalation_reason }}\n\nPrototype notification readiness only. No live SMS, WhatsApp or production email was sent.",
+ "recipients": [
+  {
+   "doctype": "Notification Recipient",
+   "receiver_type": "By Role",
+   "receiver_by_role": "NileGov SLA Supervisor"
+  }
+ ]
+}

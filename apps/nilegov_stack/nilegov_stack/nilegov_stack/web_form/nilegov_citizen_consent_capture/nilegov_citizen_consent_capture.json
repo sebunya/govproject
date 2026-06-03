@@ -1,0 +1,42 @@
+{
+ "doctype": "Web Form",
+ "name": "NileGov Citizen Consent Capture",
+ "title": "NileGov Citizen Consent Capture",
+ "doc_type": "NileGov Consent Record",
+ "module": "NileGov Stack",
+ "is_standard": 1,
+ "published": 0,
+ "login_required": 1,
+ "route": "nilegov-citizen-consent-capture",
+ "introduction_text": "Prototype service journey only. No live NIRA, UGHub, URA, NITA-U, MDA or production payment system is connected. Prototype consent capture only. Consent is recorded for demo workflow purposes and does not activate live government registry processing.",
+ "web_form_fields": [
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "citizen_profile",
+   "fieldtype": "Link",
+   "label": "Citizen Profile",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "reqd": 0
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "consent_purpose",
+   "fieldtype": "Select",
+   "label": "Consent Purpose",
+   "reqd": 1
+  },
+  {
+   "doctype": "Web Form Field",
+   "fieldname": "consent_status",
+   "fieldtype": "Select",
+   "label": "Consent Status",
+   "reqd": 1
+  }
+ ]
+}

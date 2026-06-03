@@ -1,0 +1,14 @@
+{
+ "doctype": "Assignment Rule",
+ "name": "NileGov Payment Review Assignment",
+ "document_type": "NileGov Payment Record",
+ "assign_condition": "doc.payment_status == 'Pending' or doc.verification_status == 'Requires Review'",
+ "unassign_condition": "",
+ "close_condition": "",
+ "rule": "Round Robin",
+ "disabled": 0,
+ "priority": 1,
+ "is_standard": 1,
+ "assign_to_role": "NileGov Payments Officer",
+ "description": "Assign payments officer when payment is pending review. Prototype rule only."
+}

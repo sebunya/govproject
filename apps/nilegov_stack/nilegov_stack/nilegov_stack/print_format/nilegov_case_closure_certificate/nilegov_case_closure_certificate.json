@@ -1,0 +1,16 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Print Format",
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Case Closure Certificate",
+ "owner": "Administrator",
+ "doc_type": "NileGov Service Request",
+ "print_format_type": "Jinja",
+ "disabled": 0,
+ "html": "<div style=\"font-family: Georgia, serif; padding: 40px; border: 5px double #0f172a; border-radius: 8px; max-width: 650px; margin: auto; text-align: center; color: #1e293b; background-color: #fafaf9;\">\n  <div style=\"border-bottom: 2px solid #0f172a; padding-bottom: 15px; margin-bottom: 25px;\">\n    <h2 style=\"margin: 0; color: #0f172a; text-transform: uppercase; letter-spacing: 2px;\">Case Closure Slip</h2>\n    <h6 style=\"margin: 5px 0 0 0; color: #64748b; font-weight: normal; font-family: sans-serif;\">NileGov Case Management System (Prototype Only)</h6>\n  </div>\n\n  <p style=\"font-size: 16px; line-height: 1.6;\">\n    This record confirms that the Service Request reference <strong style=\"font-family: sans-serif;\">{{ doc.name }}</strong><br>\n    filed by <strong style=\"font-family: sans-serif;\">{{ doc.citizen_full_name }}</strong><br>\n    has been officially concluded with the final status of <strong style=\"font-family: sans-serif; text-transform: uppercase;\">{{ doc.internal_status }}</strong>.\n  </p>\n\n  <div style=\"margin: 25px auto; max-width: 80%; border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1; padding: 15px 0; text-align: left; font-size: 14px; font-family: sans-serif;\">\n    <p style=\"margin: 5px 0;\"><strong>Resolution Decision:</strong> {{ doc.decision }}</p>\n    <p style=\"margin: 5px 0;\"><strong>Closure Date:</strong> {{ doc.closed_at or 'N/A' }}</p>\n    <p style=\"margin: 5px 0;\"><strong>Closure Notes:</strong></p>\n    <blockquote style=\"margin: 5px 0 0 0; font-style: italic; color: #475569;\">\n      {{ doc.closure_notes or 'No closure notes provided.' }}\n    </blockquote>\n  </div>\n\n  <div style=\"margin-top: 30px; background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 12px; font-size: 11px; color: #b91c1c; text-align: center; font-weight: bold; font-family: sans-serif;\">\n    Disclaimer: Prototype simulation only. This document is a non-production mock. It does not represent an official legal certificate or government statistics.\n  </div>\n</div>"
+}

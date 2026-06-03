@@ -1,0 +1,14 @@
+{
+ "doctype": "Assignment Rule",
+ "name": "NileGov Escalation Review Assignment",
+ "document_type": "NileGov Escalation Record",
+ "assign_condition": "doc.status in ['Pending', 'Escalated']",
+ "unassign_condition": "",
+ "close_condition": "",
+ "rule": "Round Robin",
+ "disabled": 0,
+ "priority": 1,
+ "is_standard": 1,
+ "assign_to_role": "NileGov SLA Supervisor",
+ "description": "Create supervisor review task when escalation is active. Prototype rule only."
+}

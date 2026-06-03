@@ -1,0 +1,26 @@
+{
+ "creation": "2026-06-02 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Notification",
+ "idx": 0,
+ "is_standard": 1,
+ "enabled": 1,
+ "modified": "2026-06-02 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Simulated Citizen Status Update",
+ "owner": "Administrator",
+ "channel": "Email",
+ "document_type": "NileGov Citizen Notification",
+ "event": "Save",
+ "condition": "doc.delivery_status in ['Queued', 'Simulated Sent']",
+ "subject": "Simulated Citizen Notification Triggered (ID: {{ doc.name }})",
+ "message": "Simulated notification generated for service request: {{ doc.service_request }}.\nChannel: {{ doc.channel }}\nRecipient: {{ doc.recipient }}\nMessage Body: {{ doc.message }}\n\nCitizen-facing delivery is simulated until a live notification channel is configured and approved.",
+ "recipients": [
+  {
+   "doctype": "Notification Recipient",
+   "receiver_type": "By Role",
+   "receiver_by_role": "NileGov Citizen Officer"
+  }
+ ]
+}

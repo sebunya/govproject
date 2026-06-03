@@ -1,0 +1,14 @@
+{
+ "doctype": "Assignment Rule",
+ "name": "NileGov SLA Overdue Supervisor Assignment",
+ "document_type": "NileGov Service Request",
+ "assign_condition": "doc.sla_state == 'Overdue'",
+ "unassign_condition": "",
+ "close_condition": "",
+ "rule": "Round Robin",
+ "disabled": 0,
+ "priority": 3,
+ "is_standard": 1,
+ "assign_to_role": "NileGov SLA Supervisor",
+ "description": "Assign SLA supervisor when case is overdue. Prototype rule only."
+}
