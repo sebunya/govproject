@@ -481,6 +481,15 @@ app.get('/api/dashboard/district-trend', (_req, res) => {
   res.json({ districts, trend });
 });
 
+// Serve built React app in production
+if (process.env.NODE_ENV === 'production') {
+  const clientDist = path.resolve(__dirname, '../../client/dist');
+  app.use(express.static(clientDist));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`NileGov API running on http://localhost:${PORT}`);

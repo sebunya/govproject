@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--experimental-sqlite' ../node_modules/.bin/tsx watch src/index.ts",
     "build": "tsc",
+    "start": "NODE_OPTIONS='--experimental-sqlite' node dist/index.js",
     "seed": "NODE_OPTIONS='--experimental-sqlite' ../node_modules/.bin/tsx src/seed.ts"
   },
   "dependencies": {
