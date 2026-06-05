@@ -126,9 +126,10 @@ app.get('/api/applications', (req, res) => {
     `).all();
   } else if (persona === 'supervisor') {
     rows = db.prepare(`
-      SELECT a.*, GROUP_CONCAT(d.originalName, '||') as docNames
+      SELECT a.*, o.name as assignedOfficerName, GROUP_CONCAT(d.originalName, '||') as docNames
       FROM applications a
       LEFT JOIN documents d ON d.applicationId = a.id
+      LEFT JOIN officers o ON o.id = a.assignedOfficerId
       WHERE a.status = 'pending_countersign'
       GROUP BY a.id
       ORDER BY a.submittedAt ASC

@@ -127,9 +127,45 @@ const insertAudit = db.prepare(`
   VALUES (?, ?, ?, ?, ?, ?)
 `);
 
-for (let i = 1; i <= historicalApps.length; i++) {
-  insertAudit.run(i, 'Application submitted', 'citizen', names[i - 1], 'Application submitted via citizen portal', historicalApps[i - 1].submittedAt);
-}
+const officerNames: Record<number, string> = { 1: 'Tumusiime Robert', 2: 'Nakamya Grace', 3: 'Okello James', 4: 'Atim Doreen', 5: 'Mugisha Peter' };
+
+historicalApps.forEach((app, i) => {
+  const appId = i + 1;
+  const citizenName = i === 4 ? 'Akello Sarah Namugenyi' : names[i - 1] || names[i] || 'Citizen';
+  const offName = app.officerId ? officerNames[app.officerId] : null;
+  const submitAt = app.submittedAt;
+  const claimAt = new Date(new Date(submitAt).getTime() + 3 * 3600000).toISOString();
+  const decisionAt = app.resolvedAt
+    ? new Date(new Date(submitAt).getTime() + 24 * 3600000).toISOString()
+    : new Date(new Date(submitAt).getTime() + 30 * 3600000).toISOString();
+
+  insertAudit.run(appId, 'Application submitted via citizen portal', 'citizen', citizenName, null, submitAt);
+
+  if (app.officerId && app.status !== 'submitted') {
+    insertAudit.run(appId, `Claimed and assigned to ${offName}`, 'officer', offName, null, claimAt);
+  }
+
+  if (app.status === 'under_review') {
+    insertAudit.run(appId, 'Documents under review', 'officer', offName, 'SOP checklist in progress', decisionAt);
+  } else if (app.status === 'more_info_requested') {
+    insertAudit.run(appId, 'Additional information requested from applicant', 'officer', offName, 'Documents reviewed. Bylaws require clarification.', decisionAt);
+  } else if (app.status === 'pending_countersign') {
+    insertAudit.run(appId, 'Officer decision: recommended for approval', 'officer', offName, 'All SOP checks passed.', decisionAt);
+    insertAudit.run(appId, 'Forwarded to supervisor for countersignature', 'system', 'NileGov Stack', null, decisionAt);
+  } else if (app.status === 'approved') {
+    insertAudit.run(appId, 'Officer decision: approved', 'officer', offName, 'Documents reviewed. All requirements met.', decisionAt);
+    if (app.resolvedAt) {
+      const supervisedAt = new Date(new Date(app.resolvedAt).getTime() - 3600000).toISOString();
+      insertAudit.run(appId, 'Supervisor countersignature: approved', 'supervisor', 'Nakamya Grace', 'Reviewed and concurred.', supervisedAt);
+      insertAudit.run(appId, 'Permit granted. Application resolved.', 'system', 'NileGov Stack', null, app.resolvedAt);
+    }
+  } else if (app.status === 'rejected') {
+    insertAudit.run(appId, 'Officer decision: rejected', 'officer', offName, 'Requirements not met.', decisionAt);
+    if (app.resolvedAt) {
+      insertAudit.run(appId, 'Application closed — rejected', 'system', 'NileGov Stack', null, app.resolvedAt);
+    }
+  }
+});
 
 // Clean uploads dir for fresh demo
 const files = fs.readdirSync(uploadsDir);

@@ -51,8 +51,29 @@ export default function LeadershipDashboard() {
     refetchInterval: 15000,
   });
 
-  const printReport = () => {
-    window.print();
+  const printReport = () => window.print();
+
+  const exportCSV = () => {
+    if (!metrics) return;
+    const rows = [
+      ['Metric', 'Value'],
+      ['Processed Today', metrics.todayProcessed],
+      ['Processed This Week', metrics.weekProcessed],
+      ['Avg Resolution (hours)', metrics.avgResolutionHours],
+      ['SLA Compliance %', metrics.slaCompliancePercent],
+      ['Active Applications', metrics.activeApplications],
+      [],
+      ['District', 'Total', 'SLA Compliant', 'Avg Hours'],
+      ...(metrics.districtStats || []).map((d: any) => [d.district, d.total, d.onTime, d.avgHours ?? '—']),
+      [],
+      ['Officer', 'Total', 'Active', 'SLA %', 'Avg Resolution (h)'],
+      ...(officerStats as any[]).map((o: any) => [o.name, o.total, o.active, o.slaPercent, o.avgResolutionHours ?? '—']),
+    ];
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `nilegov-dashboard-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
   };
 
   return (
@@ -83,6 +104,9 @@ export default function LeadershipDashboard() {
                 Last updated: {lastUpdated.toLocaleTimeString('en-UG')}
               </div>
             </div>
+            <button onClick={exportCSV} className="btn-secondary text-sm py-2 flex items-center gap-2 print:hidden">
+              📊 Export CSV
+            </button>
             <button onClick={printReport} className="btn-secondary text-sm py-2 flex items-center gap-2 print:hidden">
               📄 Print Scorecard
             </button>

@@ -126,7 +126,7 @@ export default function SupervisorQueue() {
                   </div>
 
                   <div className="bg-navy-50 rounded-lg p-3">
-                    <p className="text-xs font-semibold text-navy-700 mb-1">Officer Tumusiime's Recommendation</p>
+                    <p className="text-xs font-semibold text-navy-700 mb-1">{app.assignedOfficerName || 'Officer'}'s Recommendation</p>
                     <p className="text-sm font-bold text-status-green capitalize">{app.officerDecision} — Forwarded for countersignature</p>
                     {app.officerNotes && <p className="text-xs text-gray-600 mt-1">"{app.officerNotes}"</p>}
                   </div>
