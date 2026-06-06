@@ -56,14 +56,23 @@
       #root { min-height: 100vh; }
       /* Initial loading state */
       .initial-loading {
-        display: flex; align-items: center; justify-content: center;
-        min-height: 100vh; background: #1F3864;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        min-height: 100vh; background: #1A1A1A; gap: 16px;
       }
       .initial-loading-logo {
-        width: 64px; height: 64px; background: #BF8F00;
+        width: 64px; height: 64px; background: #1A1A1A; border: 3px solid #F5C000;
         border-radius: 12px; display: flex; align-items: center; justify-content: center;
-        font-family: system-ui, sans-serif; font-weight: 800; font-size: 36px; color: white;
+        font-family: system-ui, sans-serif; font-weight: 800; font-size: 36px; color: #F5C000;
         animation: pulse 1.5s ease-in-out infinite;
+        position: relative; overflow: hidden;
+      }
+      .initial-loading-logo::after {
+        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 6px;
+        background: linear-gradient(to right, #1A1A1A 33%, #F5C000 33% 66%, #C8102E 66%);
+      }
+      .initial-loading-text {
+        color: #F5C000; font-family: system-ui,sans-serif; font-size: 13px;
+        font-weight: 600; letter-spacing: 0.1em; opacity: 0.8;
       }
       @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
     </style>
@@ -78,6 +87,7 @@
       <!-- Inline loading fallback shown until React hydrates -->
       <div class="initial-loading">
         <div class="initial-loading-logo">N</div>
+        <div class="initial-loading-text">NILEGOV STACK</div>
       </div>
     </div>
 

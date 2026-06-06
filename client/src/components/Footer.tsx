@@ -14,7 +14,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div
-                className="w-9 h-9 bg-gold-500 rounded-lg flex items-center justify-center font-bold text-white text-lg"
+                className="w-9 h-9 bg-ug-red rounded-lg flex items-center justify-center font-bold text-white text-lg"
                 aria-hidden="true"
               >N</div>
               <div>

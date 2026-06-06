@@ -29,7 +29,12 @@ export default function PermitCertificate({ app, onClose }: PermitCertificatePro
                 <div className="text-lg font-extrabold text-navy-700">Mbarara District Local Government</div>
                 <div className="text-xs text-gray-500">District Agricultural Office</div>
               </div>
-              <div className="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center text-white text-2xl font-extrabold">N</div>
+              <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-gray-200 flex flex-col items-center justify-center bg-navy-700">
+                <span className="text-gold-500 text-3xl font-extrabold leading-none">N</span>
+                <div className="flex w-full mt-1" style={{height:'5px'}}>
+                  <div className="flex-1 bg-navy-900"/><div className="flex-1 bg-gold-500"/><div className="flex-1 bg-ug-red"/>
+                </div>
+              </div>
             </div>
             <h1 className="text-2xl font-extrabold text-navy-700 uppercase tracking-wide">
               {isTrading ? 'Trading Licence' : 'Agribusiness Operating Permit'}

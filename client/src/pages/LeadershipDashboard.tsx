@@ -18,11 +18,12 @@ function StatCard({ value, label, sub, color }: { value: string | number; label:
   );
 }
 
+// Chart palette derived from Uganda national colours
 const DISTRICT_COLORS: Record<string, string> = {
-  Mbarara: '#1F3864',
-  Kampala: '#1F6F3F',
-  Gulu: '#B85800',
-  Jinja: '#BF8F00',
+  Mbarara: '#C8102E',   // Uganda red — featured district
+  Kampala: '#1A1A1A',   // Uganda black
+  Gulu:    '#D4A400',   // Uganda gold variant
+  Jinja:   '#7B3F00',   // earth brown (neutral differentiation)
 };
 
 export default function LeadershipDashboard() {
@@ -337,7 +338,7 @@ export default function LeadershipDashboard() {
                     <YAxis tick={{ fontSize: 11 }} />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="submitted" stroke="#1F3864" strokeWidth={2} dot={{ r: 4 }} name="Submitted" />
+                    <Line type="monotone" dataKey="submitted" stroke="#C8102E" strokeWidth={2} dot={{ r: 4 }} name="Submitted" />
                     <Line type="monotone" dataKey="resolved" stroke="#1F6F3F" strokeWidth={2} dot={{ r: 4 }} name="Resolved" />
                     <Line type="monotone" dataKey="slaBreached" stroke="#C00000" strokeWidth={2} dot={{ r: 4 }} name="SLA Breached" />
                   </LineChart>
@@ -354,7 +355,7 @@ export default function LeadershipDashboard() {
                     <YAxis tick={{ fontSize: 11 }} />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="total" fill="#1F3864" name="Total" radius={[3,3,0,0]} />
+                    <Bar dataKey="total" fill="#C8102E" name="Total" radius={[3,3,0,0]} />
                     <Bar dataKey="approved" fill="#1F6F3F" name="Approved" radius={[3,3,0,0]} />
                     <Bar dataKey="slaBreached" fill="#C00000" name="SLA Breached" radius={[3,3,0,0]} />
                   </BarChart>
@@ -450,7 +451,7 @@ export default function LeadershipDashboard() {
                     <Line
                       type="monotone"
                       dataKey="compliance"
-                      stroke={DISTRICT_COLORS[drillDistrict] || '#1F3864'}
+                      stroke={DISTRICT_COLORS[drillDistrict] || '#C8102E'}
                       strokeWidth={3}
                       dot={{ r: 5 }}
                       name="SLA Compliance %"
@@ -525,7 +526,7 @@ export default function LeadershipDashboard() {
                     <div key={o.id} className="border border-gray-100 rounded-xl p-4 hover:border-navy-700 transition-colors">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm ${o.role === 'supervisor' ? 'bg-gold-500' : 'bg-navy-700'}`}>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm ${o.role === 'supervisor' ? 'bg-ug-red' : 'bg-navy-700'}`}>
                             {o.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                           </div>
                           <div>

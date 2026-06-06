@@ -133,10 +133,10 @@ function matchStep(pathname: string) {
 }
 
 const PERSONA_COLOR: Record<string, string> = {
-  citizen: 'bg-status-green',
-  officer: 'bg-navy-700',
-  supervisor: 'bg-gold-500',
-  leadership: 'bg-status-red',
+  citizen:    'bg-status-green',
+  officer:    'bg-navy-700',
+  supervisor: 'bg-ug-red',
+  leadership: 'bg-gray-700',
 };
 
 export default function DemoGuide({ persona }: { persona: string }) {
@@ -150,7 +150,7 @@ export default function DemoGuide({ persona }: { persona: string }) {
     <div className="fixed bottom-4 right-4 z-50 w-80 print:hidden">
       {open ? (
         <div className="bg-navy-900 text-white rounded-xl shadow-2xl border border-navy-700 overflow-hidden">
-          <div className="bg-gold-500 px-4 py-2.5 flex items-center justify-between">
+          <div className="bg-navy-800 border-b-2 border-gold-500 px-4 py-2.5 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold text-white">🎬 Demo Guide</span>
               <button
@@ -168,7 +168,7 @@ export default function DemoGuide({ persona }: { persona: string }) {
               {STEPS.map(s => (
                 <div key={s.id} className={`px-4 py-2.5 text-xs ${s === current ? 'bg-navy-700' : ''}`}>
                   <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${s === current ? 'bg-gold-500 text-white' : 'bg-navy-700 text-gray-400'}`}>{s.id}</span>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${s === current ? 'bg-gold-500 text-gray-900' : 'bg-navy-700 text-gray-400'}`}>{s.id}</span>
                     <span className={`font-semibold ${s === current ? 'text-gold-500' : 'text-gray-300'}`}>{s.label}</span>
                     <span className={`text-white text-xs px-1.5 py-0.5 rounded-full ml-auto shrink-0 ${PERSONA_COLOR[s.persona] || 'bg-navy-700'}`}>{s.persona}</span>
                   </div>
@@ -179,7 +179,7 @@ export default function DemoGuide({ persona }: { persona: string }) {
           ) : current ? (
             <div className="px-4 py-3">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="bg-gold-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Step {current.id}/{STEPS.length}</span>
+                <span className="bg-gold-500 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full">Step {current.id}/{STEPS.length}</span>
                 <span className={`text-white text-xs font-bold px-2 py-0.5 rounded-full ${PERSONA_COLOR[current.persona] || 'bg-navy-700'}`}>{current.persona}</span>
                 <span className="text-xs font-semibold text-gray-300 flex-1">{current.label}</span>
               </div>
@@ -196,7 +196,7 @@ export default function DemoGuide({ persona }: { persona: string }) {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="bg-gold-500 hover:bg-yellow-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xl transition-colors flex items-center gap-2"
+          className="bg-navy-700 hover:bg-navy-800 border-2 border-gold-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xl transition-colors flex items-center gap-2"
         >
           🎬 Demo Guide
         </button>

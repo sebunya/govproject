@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#1F3864"/>
-  <rect x="0" y="472" width="512" height="20" rx="0" fill="#BF8F00"/>
-  <text x="256" y="340" font-family="system-ui,sans-serif" font-weight="800" font-size="280" fill="#BF8F00" text-anchor="middle" dominant-baseline="auto">N</text>
-  <text x="256" y="430" font-family="system-ui,sans-serif" font-weight="600" font-size="52" fill="#C5D2E8" text-anchor="middle">NILEGOV STACK</text>
+  <!-- Background: Uganda black -->
+  <rect width="512" height="512" rx="80" fill="#1A1A1A"/>
+  <!-- Uganda flag tri-stripe at bottom -->
+  <rect x="0" y="416" width="171" height="96" fill="#1A1A1A"/>
+  <rect x="171" y="416" width="170" height="96" fill="#F5C000"/>
+  <rect x="341" y="416" width="171" height="96" fill="#C8102E"/>
+  <!-- "N" in Uganda yellow -->
+  <text x="256" y="400" font-family="system-ui,sans-serif" font-weight="800" font-size="320"
+        fill="#F5C000" text-anchor="middle" dominant-baseline="auto">N</text>
+  <!-- "NILEGOV" subtitle -->
+  <text x="256" y="402" font-family="system-ui,sans-serif" font-weight="600" font-size="52"
+        fill="#FFFFFF" text-anchor="middle" opacity="0.85">NILEGOV STACK</text>
 </svg>

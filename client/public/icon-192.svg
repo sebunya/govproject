@@ -1,6 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="32" fill="#1F3864"/>
-  <rect x="0" y="172" width="192" height="8" rx="0" fill="#BF8F00"/>
-  <text x="96" y="128" font-family="system-ui,sans-serif" font-weight="800" font-size="108" fill="#BF8F00" text-anchor="middle" dominant-baseline="auto">N</text>
-  <text x="96" y="162" font-family="system-ui,sans-serif" font-weight="600" font-size="18" fill="#C5D2E8" text-anchor="middle">NILEGOV</text>
+  <!-- Background: Uganda black -->
+  <rect width="192" height="192" rx="32" fill="#1A1A1A"/>
+  <!-- Uganda flag tri-stripe at bottom -->
+  <rect x="0" y="156" width="64" height="36" fill="#1A1A1A"/>
+  <rect x="64" y="156" width="64" height="36" fill="#F5C000"/>
+  <rect x="128" y="156" width="64" height="36" fill="#C8102E"/>
+  <!-- "N" in Uganda yellow -->
+  <text x="96" y="148" font-family="system-ui,sans-serif" font-weight="800" font-size="120"
+        fill="#F5C000" text-anchor="middle" dominant-baseline="auto">N</text>
 </svg>

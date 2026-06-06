@@ -36,7 +36,7 @@ export default function PersonaSwitcher({ currentPersona }: { currentPersona: st
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-medium transition-all
                   whitespace-nowrap shrink-0
                   ${currentPersona === p.id
-                    ? 'bg-gold-500 text-white shadow-sm'
+                    ? 'bg-gold-500 text-gray-900 shadow-sm'
                     : 'text-gray-300 hover:bg-navy-700 hover:text-white'
                   }`}
               >

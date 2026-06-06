@@ -67,11 +67,11 @@ export default function CitizenLanding() {
         {/* Decorative pattern */}
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{ backgroundImage: 'repeating-linear-gradient(45deg,#BF8F00 0,#BF8F00 1px,transparent 0,transparent 50%)', backgroundSize: '12px 12px' }}
+          style={{ backgroundImage: 'repeating-linear-gradient(45deg,#F5C000 0,#F5C000 1px,transparent 0,transparent 50%)', backgroundSize: '12px 12px' }}
           aria-hidden="true"
         />
         <div className="relative z-10 px-6 sm:px-10 py-8 sm:py-10">
-          <div className="inline-flex items-center gap-2 bg-gold-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 bg-ug-red text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">
             <span aria-hidden="true">🇺🇬</span>
             Mbarara District Local Government
           </div>
@@ -155,7 +155,7 @@ export default function CitizenLanding() {
           ].map(s => (
             <li key={s.step} className="relative bg-white border border-gray-200 rounded-xl p-4 list-none">
               <div
-                className="absolute -top-3 -left-3 w-7 h-7 bg-gold-500 rounded-full flex items-center justify-center text-white text-xs font-extrabold shadow-sm"
+                className="absolute -top-3 -left-3 w-7 h-7 bg-ug-red rounded-full flex items-center justify-center text-white text-xs font-extrabold shadow-sm"
                 aria-hidden="true"
               >
                 {s.step}
