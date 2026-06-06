@@ -16,7 +16,7 @@ export default function PermitCertificate({ app, onClose }: PermitCertificatePro
           <h2 className="font-bold text-navy-700">Permit Certificate</h2>
           <div className="flex gap-2">
             <button onClick={() => window.print()} className="btn-secondary text-sm py-1.5">🖨 Print</button>
-            <button onClick={onClose} className="btn-secondary text-sm py-1.5">✕ Close</button>
+            <button onClick={onClose} aria-label="Close certificate" className="btn-secondary text-sm py-1.5"><span aria-hidden="true">✕</span> Close</button>
           </div>
         </div>
 

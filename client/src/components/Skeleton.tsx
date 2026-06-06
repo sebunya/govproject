@@ -45,7 +45,7 @@ export function SkeletonTable({ rows = 4, cols = 4 }: { rows?: number; cols?: nu
 
 export function SkeletonStatCards({ count = 4 }: { count?: number }) {
   return (
-    <div className={`grid grid-cols-2 md:grid-cols-${count} gap-4`} aria-hidden="true">
+    <div className="grid grid-cols-2 gap-4" style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }} aria-hidden="true">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="stat-card space-y-2">
           <div className="skeleton h-3 w-20 rounded" />

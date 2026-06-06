@@ -7,6 +7,7 @@ import SlaTimer from '../../components/SlaTimer';
 import ApiInteropPanel from '../../components/ApiInteropPanel';
 import PaymentPanel from '../../components/PaymentPanel';
 import NotificationsPanel from '../../components/NotificationsPanel';
+import { SkeletonCard, SkeletonTable } from '../../components/Skeleton';
 
 const SOP_ITEMS_COOP = [
   { id: 1, label: 'NIN verified via NIRA', check: (a: any) => a.nin?.length > 5 },
@@ -175,8 +176,10 @@ export default function ReviewInterface() {
   };
 
   if (isLoading || !app) return (
-    <div className="flex items-center justify-center py-20">
-      <div className="animate-spin h-8 w-8 border-4 border-navy-700 border-t-transparent rounded-full" />
+    <div className="space-y-6" aria-busy="true" aria-label="Loading application…">
+      <SkeletonCard />
+      <SkeletonTable rows={8} cols={2} />
+      <SkeletonCard />
     </div>
   );
 

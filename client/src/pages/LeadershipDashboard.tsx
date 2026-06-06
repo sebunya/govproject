@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { SkeletonStatCards, SkeletonCard } from '../components/Skeleton';
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid,
@@ -85,9 +87,9 @@ export default function LeadershipDashboard() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Header persona="leadership" />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8 w-full">
 
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -303,19 +305,17 @@ export default function LeadershipDashboard() {
         )}
 
         {activeTab === 'dashboard' && isLoading && !metrics && (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin h-10 w-10 border-4 border-navy-700 border-t-transparent rounded-full" />
+          <div className="space-y-8" aria-busy="true" aria-label="Loading dashboard…">
+            <SkeletonStatCards count={5} />
+            <div className="grid md:grid-cols-2 gap-6">
+              <SkeletonCard /><SkeletonCard />
+            </div>
+            <SkeletonCard />
           </div>
         )}
 
         {activeTab === 'dashboard' && !isLoading && metrics && (
         <div className="space-y-8">
-
-        {false ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin h-10 w-10 border-4 border-navy-700 border-t-transparent rounded-full" />
-          </div>
-        ) : (
           <>
             {/* KPI Cards */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -588,10 +588,10 @@ export default function LeadershipDashboard() {
               <p className="text-xs text-gray-500">This report is generated from live operational data within the NileGov Stack platform and is designed to support internal governance and accountability reporting.</p>
             </div>
           </>
-        )}
         </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

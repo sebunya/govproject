@@ -7,6 +7,7 @@ import StatusBadge from '../../components/StatusBadge';
 import SlaTimer from '../../components/SlaTimer';
 import NotificationsPanel from '../../components/NotificationsPanel';
 import PaymentPanel from '../../components/PaymentPanel';
+import { SkeletonCard, SkeletonText } from '../../components/Skeleton';
 
 export default function ApplicationStatus() {
   const { id } = useParams<{ id: string }>();
@@ -62,8 +63,12 @@ export default function ApplicationStatus() {
   };
 
   if (isLoading || !app) return (
-    <div className="flex items-center justify-center py-20">
-      <div className="animate-spin h-8 w-8 border-4 border-navy-700 border-t-transparent rounded-full" />
+    <div className="space-y-6" aria-busy="true" aria-label="Loading application…">
+      <SkeletonCard />
+      <div className="grid md:grid-cols-2 gap-4">
+        <SkeletonCard /><SkeletonCard />
+      </div>
+      <SkeletonText lines={4} />
     </div>
   );
 

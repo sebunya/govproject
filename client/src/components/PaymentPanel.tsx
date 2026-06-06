@@ -84,9 +84,9 @@ export default function PaymentPanel({ applicationId, feeAmount, feeCurrency, re
 
   if (existingPayment?.status === 'pending' || stage === 'processing') {
     return (
-      <div className="bg-status-orangeBg border-2 border-status-orange rounded-xl p-5">
+      <div className="bg-status-orangeBg border-2 border-status-orange rounded-xl p-5" role="status" aria-busy="true" aria-label="Payment processing">
         <div className="flex items-center gap-3 mb-3">
-          <div className="animate-spin h-6 w-6 border-3 border-status-orange border-t-transparent rounded-full" />
+          <div className="animate-spin h-6 w-6 border-3 border-status-orange border-t-transparent rounded-full" aria-hidden="true" />
           <div>
             <p className="font-bold text-status-orange">Payment Processing…</p>
             <p className="text-sm text-gray-700">Simulating Pesapal gateway verification</p>

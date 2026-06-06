@@ -1,6 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { SkeletonCard } from '../../components/Skeleton';
 
 export default function ServiceCatalogue() {
   const navigate = useNavigate();
@@ -14,8 +15,11 @@ export default function ServiceCatalogue() {
   });
 
   if (isLoading) return (
-    <div className="flex items-center justify-center py-20">
-      <div className="animate-spin h-8 w-8 border-4 border-navy-700 border-t-transparent rounded-full" />
+    <div className="space-y-6" aria-busy="true" aria-label="Loading services…">
+      <div className="h-8 w-48 skeleton rounded" />
+      <div className="space-y-4">
+        <SkeletonCard /><SkeletonCard />
+      </div>
     </div>
   );
 

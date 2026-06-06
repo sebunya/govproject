@@ -59,20 +59,22 @@ export default function ApiInteropPanel({ niraData, uraData, applicationRef, app
     <div className="card border border-gold-500 bg-gold-50">
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls="api-interop-panel"
         className="w-full flex items-center justify-between text-left"
       >
         <div className="flex items-center gap-2">
-          <span className="text-gold-500 text-lg">🔌</span>
+          <span className="text-gold-500 text-lg" aria-hidden="true">🔌</span>
           <div>
             <p className="font-bold text-yellow-900 text-sm">API / Interoperability Readiness</p>
             <p className="text-xs text-yellow-800">UGHub-pattern integration payloads · Module 10</p>
           </div>
         </div>
-        <span className="text-gold-500 font-bold">{open ? '↑' : '↓'}</span>
+        <span className="text-gold-500 font-bold" aria-hidden="true">{open ? '↑' : '↓'}</span>
       </button>
 
       {open && (
-        <div className="mt-4 border-t border-gold-500 pt-4">
+        <div id="api-interop-panel" className="mt-4 border-t border-gold-500 pt-4">
           <div className="flex flex-wrap gap-2 mb-3">
             {(['nira', 'ura', 'envelope', 'erp'] as const).map(t => (
               <button
