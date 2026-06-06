@@ -11,6 +11,7 @@ export default function TaskQueue() {
   const persona = params.get('persona') || 'officer';
   const prevCountRef = useRef<number | null>(null);
   const [newCount, setNewCount] = useState(0);
+  const [search, setSearch] = useState('');
 
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ['officer-queue'],
@@ -26,6 +27,14 @@ export default function TaskQueue() {
     }
     prevCountRef.current = apps.length;
   }, [apps.length]);
+
+  const filtered = (apps as any[]).filter((a: any) =>
+    !search ||
+    a.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+    a.referenceNumber?.toLowerCase().includes(search.toLowerCase()) ||
+    a.cooperativeName?.toLowerCase().includes(search.toLowerCase()) ||
+    a.businessName?.toLowerCase().includes(search.toLowerCase())
+  );
 
   if (isLoading) return (
     <div className="flex items-center justify-center py-20">
@@ -59,15 +68,23 @@ export default function TaskQueue() {
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-status-red inline-block" /> &lt;10% / breached · sorted most urgent first</span>
       </div>
 
-      {apps.length === 0 ? (
+      <input
+        className="form-input"
+        placeholder="Search by name, reference number, or business…"
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+      />
+      {search && <p className="text-xs text-gray-500">{filtered.length} of {(apps as any[]).length} shown</p>}
+
+      {filtered.length === 0 ? (
         <div className="card text-center py-12">
-          <div className="text-4xl mb-3">🎉</div>
-          <h3 className="font-bold text-gray-700">No pending applications</h3>
-          <p className="text-gray-500 text-sm mt-1">All applications have been processed.</p>
+          <div className="text-4xl mb-3">{search ? '🔍' : '🎉'}</div>
+          <h3 className="font-bold text-gray-700">{search ? 'No matching applications' : 'No pending applications'}</h3>
+          <p className="text-gray-500 text-sm mt-1">{search ? 'Try a different search term.' : 'All applications have been processed.'}</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {apps.map((app: any) => {
+          {filtered.map((app: any) => {
             const isNew = Date.now() - new Date(app.submittedAt).getTime() < 3600000;
             const isUrgent = (() => {
               const deadline = new Date(app.submittedAt).getTime() + app.slaResponseHours * 3600000;

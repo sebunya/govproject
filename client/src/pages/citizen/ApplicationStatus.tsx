@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import PermitCertificate from '../../components/PermitCertificate';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -22,6 +23,9 @@ export default function ApplicationStatus() {
   const [ratingComment, setRatingComment] = useState('');
   const [submittingRating, setSubmittingRating] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
+  const [showPermit, setShowPermit] = useState(false);
+  const [confirmWithdraw, setConfirmWithdraw] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
 
   const { data: app, isLoading } = useQuery({
     queryKey: ['application', id],
@@ -48,13 +52,22 @@ export default function ApplicationStatus() {
     setSubmittingMoreInfo(false);
   };
 
+  const handleWithdraw = async () => {
+    setWithdrawing(true);
+    await axios.patch(`/api/applications/${id}/withdraw`);
+    qc.invalidateQueries({ queryKey: ['application', id] });
+    qc.invalidateQueries({ queryKey: ['my-applications'] });
+    setWithdrawing(false);
+    setConfirmWithdraw(false);
+  };
+
   if (isLoading || !app) return (
     <div className="flex items-center justify-center py-20">
       <div className="animate-spin h-8 w-8 border-4 border-navy-700 border-t-transparent rounded-full" />
     </div>
   );
 
-  const isResolved = ['approved', 'rejected'].includes(app.status);
+  const isResolved = ['approved', 'rejected', 'withdrawn'].includes(app.status);
 
   const timelineSteps = [
     { label: 'Application Submitted', time: app.submittedAt, done: true },
@@ -317,8 +330,48 @@ export default function ApplicationStatus() {
         />
       )}
 
+      {/* Permit certificate */}
+      {app.status === 'approved' && (
+        <div className="card border-2 border-status-green">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-status-green">Your Permit is Ready</h3>
+              <p className="text-sm text-gray-600 mt-0.5">Download or print your official permit certificate.</p>
+            </div>
+            <button onClick={() => setShowPermit(true)} className="btn-primary shrink-0">
+              View Permit →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Withdrawal */}
+      {app.status === 'submitted' && !isResolved && (
+        <div className="card border border-gray-200">
+          <p className="text-sm font-semibold text-gray-700 mb-2">Withdraw Application</p>
+          <p className="text-xs text-gray-500 mb-3">You may withdraw this application before an officer begins review.</p>
+          {!confirmWithdraw ? (
+            <button onClick={() => setConfirmWithdraw(true)} className="text-sm text-status-red underline hover:no-underline">
+              Withdraw this application
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-status-red">Are you sure? This cannot be undone.</p>
+              <div className="flex gap-2">
+                <button onClick={handleWithdraw} disabled={withdrawing} className="bg-status-red text-white text-sm font-bold px-4 py-2 rounded-lg">
+                  {withdrawing ? 'Withdrawing…' : 'Yes, Withdraw'}
+                </button>
+                <button onClick={() => setConfirmWithdraw(false)} className="btn-secondary text-sm">Cancel</button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Notification log */}
       <NotificationsPanel applicationId={Number(id)} />
+
+      {showPermit && <PermitCertificate app={app} onClose={() => setShowPermit(false)} />}
     </div>
   );
 }

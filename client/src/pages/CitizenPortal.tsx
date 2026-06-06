@@ -1,4 +1,5 @@
-import { Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
+import { Routes, Route, useSearchParams } from 'react-router-dom';
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 import CitizenLanding from './citizen/CitizenLanding';
 import ServiceCatalogue from './citizen/ServiceCatalogue';
@@ -22,6 +23,7 @@ export default function CitizenPortal() {
           <Route path="application/:id" element={<ApplicationStatus />} />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }
