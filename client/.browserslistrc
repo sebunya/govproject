@@ -1,0 +1,10 @@
+# NileGov Stack — Browser targets
+# Targeting modern browsers with broad mobile coverage (Uganda's primary device profile)
+> 0.5%
+last 3 Chrome versions
+last 3 Firefox versions
+last 3 Safari versions
+last 3 Edge versions
+last 2 iOS versions
+not dead
+not op_mini all

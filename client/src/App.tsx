@@ -1,17 +1,61 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import PersonaSwitcher from './components/PersonaSwitcher';
 import DemoGuide from './components/DemoGuide';
 import { ToastProvider } from './components/Toast';
 import ErrorBoundary from './components/ErrorBoundary';
-import CitizenPortal from './pages/CitizenPortal';
-import OfficerDesk from './pages/OfficerDesk';
-import LeadershipDashboard from './pages/LeadershipDashboard';
-import NotFound from './pages/NotFound';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import AboutPage from './pages/AboutPage';
-import ApiDocsPage from './pages/ApiDocsPage';
-import TrackApplication from './pages/TrackApplication';
+import InstallPrompt from './components/InstallPrompt';
+import OfflineBanner from './components/OfflineBanner';
+import { SkeletonCard } from './components/Skeleton';
+
+// Lazy-loaded routes for code splitting
+const CitizenPortal      = lazy(() => import('./pages/CitizenPortal'));
+const OfficerDesk        = lazy(() => import('./pages/OfficerDesk'));
+const LeadershipDashboard = lazy(() => import('./pages/LeadershipDashboard'));
+const NotFound           = lazy(() => import('./pages/NotFound'));
+const PrivacyPolicy      = lazy(() => import('./pages/PrivacyPolicy'));
+const AboutPage          = lazy(() => import('./pages/AboutPage'));
+const ApiDocsPage        = lazy(() => import('./pages/ApiDocsPage'));
+const TrackApplication   = lazy(() => import('./pages/TrackApplication'));
+
+function PageSuspense({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-4xl mx-auto px-4 py-8 space-y-4" aria-busy="true" aria-label="Loading page…">
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
+  );
+}
+
+// Scroll to top on route change + announce for screen readers
+function RouteAnnouncer() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    // Update document title for screen readers (pages set their own but this resets)
+    const el = document.getElementById('route-announcer');
+    if (el) {
+      el.textContent = '';
+      requestAnimationFrame(() => { el.textContent = document.title; });
+    }
+  }, [location.pathname]);
+  return (
+    <div
+      id="route-announcer"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      className="sr-only"
+    />
+  );
+}
 
 export default function App() {
   const [params] = useSearchParams();
@@ -19,24 +63,33 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-    <ToastProvider>
-      <div className="min-h-screen bg-gray-50">
-        <PersonaSwitcher currentPersona={persona} />
-        <DemoGuide persona={persona} />
-        <Routes>
-          <Route path="/" element={<Navigate to={`/portal?persona=${persona}`} replace />} />
-          <Route path="/portal/*" element={<CitizenPortal />} />
-          <Route path="/desk/*" element={<OfficerDesk />} />
-          <Route path="/supervisor/*" element={<OfficerDesk />} />
-          <Route path="/dashboard/*" element={<LeadershipDashboard />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/api-docs" element={<ApiDocsPage />} />
-          <Route path="/track" element={<TrackApplication />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-    </ToastProvider>
+      <ToastProvider>
+        <RouteAnnouncer />
+        <OfflineBanner />
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+          <PersonaSwitcher currentPersona={persona} />
+
+          <main id="main-content" className="flex-1" tabIndex={-1}>
+            <PageSuspense>
+              <Routes>
+                <Route path="/" element={<Navigate to={`/portal?persona=${persona}`} replace />} />
+                <Route path="/portal/*" element={<CitizenPortal />} />
+                <Route path="/desk/*"   element={<OfficerDesk />} />
+                <Route path="/supervisor/*" element={<OfficerDesk />} />
+                <Route path="/dashboard/*" element={<LeadershipDashboard />} />
+                <Route path="/privacy"  element={<PrivacyPolicy />} />
+                <Route path="/about"    element={<AboutPage />} />
+                <Route path="/api-docs" element={<ApiDocsPage />} />
+                <Route path="/track"    element={<TrackApplication />} />
+                <Route path="*"         element={<NotFound />} />
+              </Routes>
+            </PageSuspense>
+          </main>
+
+          <DemoGuide persona={persona} />
+          <InstallPrompt />
+        </div>
+      </ToastProvider>
     </ErrorBoundary>
   );
 }

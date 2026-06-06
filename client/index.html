@@ -1,16 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-UG" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NileGov Stack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Primary Meta -->
+    <title>NileGov Stack — Mbarara District Government Services</title>
+    <meta name="description" content="Apply for agribusiness permits, trading licences and government services online. Mbarara District Local Government service delivery portal — Uganda." />
+    <meta name="keywords" content="Mbarara District, Uganda government services, agribusiness permit, trading licence, cooperative registration, e-government" />
+    <meta name="author" content="Mbarara District Local Government" />
+    <meta name="application-name" content="NileGov Stack" />
+    <meta name="generator" content="NileGov Stack v1.0" />
+
+    <!-- PWA / Theme -->
+    <meta name="theme-color" content="#1F3864" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0F1D38" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="NileGov" />
+    <meta name="msapplication-TileColor" content="#1F3864" />
+    <meta name="msapplication-config" content="none" />
+    <meta name="format-detection" content="telephone=yes" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NileGov Stack" />
+    <meta property="og:title" content="NileGov Stack — Mbarara District Government Services" />
+    <meta property="og:description" content="Apply for government services online — agribusiness permits, trading licences and more. Mbarara District Local Government, Uganda." />
+    <meta property="og:image" content="/icon-512.svg" />
+    <meta property="og:locale" content="en_UG" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="NileGov Stack — Mbarara District" />
+    <meta name="twitter:description" content="Online government service delivery for Mbarara District, Uganda." />
+    <meta name="twitter:image" content="/icon-512.svg" />
+
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/icon-192.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+
+    <!-- Fonts — preconnect then load -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Critical inline: prevent flash of unstyled content -->
+    <style>
+      html { scroll-behavior: smooth; }
+      body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f9fafb; }
+      #root { min-height: 100vh; }
+      /* Initial loading state */
+      .initial-loading {
+        display: flex; align-items: center; justify-content: center;
+        min-height: 100vh; background: #1F3864;
+      }
+      .initial-loading-logo {
+        width: 64px; height: 64px; background: #BF8F00;
+        border-radius: 12px; display: flex; align-items: center; justify-content: center;
+        font-family: system-ui, sans-serif; font-weight: 800; font-size: 36px; color: white;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Skip navigation for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-50 focus:bg-gold-500 focus:text-white focus:px-4 focus:py-2 focus:font-bold">
+      Skip to main content
+    </a>
+
+    <div id="root">
+      <!-- Inline loading fallback shown until React hydrates -->
+      <div class="initial-loading">
+        <div class="initial-loading-logo">N</div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
