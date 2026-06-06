@@ -13,11 +13,19 @@ export default function CitizenLanding() {
     staleTime: 30000,
   });
 
+  const { data: services = [] } = useQuery({
+    queryKey: ['services-count'],
+    queryFn: () => axios.get('/api/services').then(r => r.data as any[]),
+    staleTime: 60000,
+  });
+  const activeCount = (services as any[]).filter((s: any) => s.active).length;
+  const totalCount = (services as any[]).length;
+
   const stats = [
     {
       label: 'Services Available',
-      value: '1 Active',
-      sub: '4 coming soon',
+      value: activeCount > 0 ? `${activeCount} Active` : '—',
+      sub: `${totalCount - activeCount} coming soon`,
     },
     {
       label: 'Avg. Resolution Time',

@@ -92,12 +92,14 @@ export default function TaskQueue() {
                       <StatusBadge status={app.status} />
                       {isNew && <span className="badge-blue animate-pulse-slow">NEW</span>}
                       {isUrgent && <span className="badge-red animate-pulse-slow">⚠ URGENT</span>}
+                      {app.escalationState === 'escalated' && <span className="bg-status-red text-white text-xs font-bold px-2 py-0.5 rounded-full">🚨 ESCALATED</span>}
                     </div>
                     <p className="font-semibold text-sm text-gray-800">{app.fullName}</p>
-                    <p className="text-sm text-gray-600">{app.cooperativeName}</p>
+                    <p className="text-sm text-gray-600">{app.businessName || app.cooperativeName}</p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Submitted: {new Date(app.submittedAt).toLocaleDateString('en-UG', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      {app.serviceCode === 'trading-licence' ? '🏪 Trading Licence' : '🌿 Agribusiness Permit'}
                       {' · '}{app.district}
+                      {' · '}Submitted: {new Date(app.submittedAt).toLocaleDateString('en-UG', { day: 'numeric', month: 'short' })}
                     </p>
                   </div>
                   <div className="shrink-0 w-44 space-y-2">

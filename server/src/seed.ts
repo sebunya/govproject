@@ -263,6 +263,11 @@ const insertAudit = db.prepare(`
   VALUES (?, ?, ?, ?, ?, ?)
 `);
 
+const insertDoc = db.prepare(`
+  INSERT INTO documents (applicationId, originalName, storedName, fileType, uploadedAt, verificationStatus, verifiedBy, verifiedAt)
+  VALUES (?, ?, ?, 'application/pdf', ?, ?, ?, ?)
+`);
+
 apps.forEach((app, i) => {
   const issarah = i === 4;
   const name = names[i] || `Citizen ${i + 1}`;
@@ -390,6 +395,18 @@ apps.forEach((app, i) => {
       ratedAt);
   }
 
+  // ── Documents ──
+  const docVerified = ['approved', 'pending_countersign'].includes(app.status) ? 'verified' : (app.officerId ? 'pending' : 'pending');
+  const docVerifiedBy = docVerified === 'verified' ? offName : null;
+  const docVerifiedAt = docVerified === 'verified' ? decisionAt : null;
+  if (isTL) {
+    insertDoc.run(appId, 'Business_Registration_Certificate.pdf', `seed-doc-${appId}-1.pdf`, submitAt, docVerified, docVerifiedBy, docVerifiedAt);
+    insertDoc.run(appId, 'Premises_Photograph.pdf', `seed-doc-${appId}-2.pdf`, submitAt, docVerified, docVerifiedBy, docVerifiedAt);
+  } else {
+    insertDoc.run(appId, 'Cooperative_Bylaws.pdf', `seed-doc-${appId}-1.pdf`, submitAt, docVerified, docVerifiedBy, docVerifiedAt);
+    insertDoc.run(appId, 'Member_Roster.pdf', `seed-doc-${appId}-2.pdf`, submitAt, docVerified, docVerifiedBy, docVerifiedAt);
+  }
+
   // ── Payments (for trading-licence apps) ──
   if (isTL) {
     const payStatus = app.feeVerified ? 'verified' : (app.status === 'submitted' ? 'pending' : 'verified');
@@ -416,6 +433,7 @@ console.log('✅ Database seeded successfully.');
 console.log(`   Services: 5 (2 active)`);
 console.log(`   Officers: 6`);
 console.log(`   Applications: ${apps.length}`);
+console.log(`   Documents: ${apps.length * 2} records (2 per application)`);
 console.log(`   Notifications: ~${apps.length * 3} records`);
 console.log(`   Payments: ${apps.filter(a => a.serviceCode === 'trading-licence').length} fee-based records`);
 console.log(`   Uploads directory cleared: ${uploadsDir}`);

@@ -315,11 +315,12 @@ app.patch('/api/applications/:id/claim', (req, res) => {
       VALUES (?, 'Application claimed for review', 'officer', 'Tumusiime Robert', 'Opened in officer desk', ?)
     `).run(req.params.id, now);
   }
-
-  const updated = db.prepare(`SELECT * FROM applications WHERE id = ?`).get(req.params.id);
+  const updated = db.prepare(`SELECT * FROM applications WHERE id = ?`).get(req.params.id) as Record<string,unknown>;
   const docs = db.prepare(`SELECT * FROM documents WHERE applicationId = ? ORDER BY uploadedAt`).all(req.params.id);
   const auditLog = db.prepare(`SELECT * FROM audit_log WHERE applicationId = ? ORDER BY createdAt`).all(req.params.id);
-  res.json({ ...(updated as object), documents: docs, auditLog });
+  const svc2 = db.prepare(`SELECT feeAmount, feeCurrency FROM services WHERE code = ?`).get(updated.serviceCode as string) as { feeAmount: number; feeCurrency: string } | undefined;
+  const pay2 = db.prepare(`SELECT status FROM payments WHERE applicationId = ? ORDER BY createdAt DESC LIMIT 1`).get(req.params.id) as { status: string } | undefined;
+  res.json({ ...updated, documents: docs, auditLog, feeAmount: svc2?.feeAmount ?? 0, feeCurrency: svc2?.feeCurrency ?? 'UGX', paymentStatus: pay2?.status ?? null });
 });
 
 app.patch('/api/applications/:id/officer-decision', (req, res) => {

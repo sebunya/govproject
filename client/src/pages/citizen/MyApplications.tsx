@@ -69,8 +69,10 @@ export default function MyApplications() {
                     Submitted: {new Date(app.submittedAt).toLocaleDateString('en-UG', { day: 'numeric', month: 'long', year: 'numeric' })}
                     {app.resolvedAt && ` · Resolved: ${new Date(app.resolvedAt).toLocaleDateString('en-UG', { day: 'numeric', month: 'long', year: 'numeric' })}`}
                   </p>
-                  {app.cooperativeName && (
-                    <p className="text-xs text-gray-500 mt-0.5">Cooperative: {app.cooperativeName}</p>
+                  {(app.cooperativeName || app.businessName) && (
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {app.businessName ? `Business: ${app.businessName}` : `Cooperative: ${app.cooperativeName}`}
+                    </p>
                   )}
                 </div>
                 <div className="text-navy-700 text-xl">›</div>
