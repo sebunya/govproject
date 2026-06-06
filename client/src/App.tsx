@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { Routes, Route, useLocation, useSearchParams } from 'react-router-dom';
 import PersonaSwitcher from './components/PersonaSwitcher';
 import DemoGuide from './components/DemoGuide';
 import { ToastProvider } from './components/Toast';
@@ -10,6 +9,7 @@ import OfflineBanner from './components/OfflineBanner';
 import { SkeletonCard } from './components/Skeleton';
 
 // Lazy-loaded routes for code splitting
+const LoginPage          = lazy(() => import('./pages/LoginPage'));
 const CitizenPortal      = lazy(() => import('./pages/CitizenPortal'));
 const OfficerDesk        = lazy(() => import('./pages/OfficerDesk'));
 const LeadershipDashboard = lazy(() => import('./pages/LeadershipDashboard'));
@@ -57,38 +57,48 @@ function RouteAnnouncer() {
   );
 }
 
-export default function App() {
+function AppInner() {
   const [params] = useSearchParams();
+  const location = useLocation();
   const persona = params.get('persona') || 'citizen';
+  const isLoginPage = location.pathname === '/';
 
+  return (
+    <>
+      <RouteAnnouncer />
+      <OfflineBanner />
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        {!isLoginPage && <PersonaSwitcher currentPersona={persona} />}
+
+        <main id="main-content" className="flex-1" tabIndex={-1}>
+          <PageSuspense>
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/portal/*" element={<CitizenPortal />} />
+              <Route path="/desk/*"   element={<OfficerDesk />} />
+              <Route path="/supervisor/*" element={<OfficerDesk />} />
+              <Route path="/dashboard/*" element={<LeadershipDashboard />} />
+              <Route path="/privacy"  element={<PrivacyPolicy />} />
+              <Route path="/about"    element={<AboutPage />} />
+              <Route path="/api-docs" element={<ApiDocsPage />} />
+              <Route path="/track"    element={<TrackApplication />} />
+              <Route path="*"         element={<NotFound />} />
+            </Routes>
+          </PageSuspense>
+        </main>
+
+        {!isLoginPage && <DemoGuide persona={persona} />}
+        <InstallPrompt />
+      </div>
+    </>
+  );
+}
+
+export default function App() {
   return (
     <ErrorBoundary>
       <ToastProvider>
-        <RouteAnnouncer />
-        <OfflineBanner />
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-          <PersonaSwitcher currentPersona={persona} />
-
-          <main id="main-content" className="flex-1" tabIndex={-1}>
-            <PageSuspense>
-              <Routes>
-                <Route path="/" element={<Navigate to={`/portal?persona=${persona}`} replace />} />
-                <Route path="/portal/*" element={<CitizenPortal />} />
-                <Route path="/desk/*"   element={<OfficerDesk />} />
-                <Route path="/supervisor/*" element={<OfficerDesk />} />
-                <Route path="/dashboard/*" element={<LeadershipDashboard />} />
-                <Route path="/privacy"  element={<PrivacyPolicy />} />
-                <Route path="/about"    element={<AboutPage />} />
-                <Route path="/api-docs" element={<ApiDocsPage />} />
-                <Route path="/track"    element={<TrackApplication />} />
-                <Route path="*"         element={<NotFound />} />
-              </Routes>
-            </PageSuspense>
-          </main>
-
-          <DemoGuide persona={persona} />
-          <InstallPrompt />
-        </div>
+        <AppInner />
       </ToastProvider>
     </ErrorBoundary>
   );

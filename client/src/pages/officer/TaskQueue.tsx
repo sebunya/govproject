@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import StatusBadge from '../../components/StatusBadge';
 import SlaTimer from '../../components/SlaTimer';
+import { SkeletonTable } from '../../components/Skeleton';
 
 export default function TaskQueue() {
   const navigate = useNavigate();
@@ -37,8 +38,8 @@ export default function TaskQueue() {
   );
 
   if (isLoading) return (
-    <div className="flex items-center justify-center py-20">
-      <div className="animate-spin h-8 w-8 border-4 border-navy-700 border-t-transparent rounded-full" />
+    <div className="space-y-6">
+      <SkeletonTable rows={5} cols={6} />
     </div>
   );
 

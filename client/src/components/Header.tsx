@@ -13,16 +13,33 @@ const personaLabels: Record<string, { name: string; role: string; avatar: string
 interface NavItem { label: string; to: string; icon: string }
 
 function getNavItems(persona: string): NavItem[] {
-  return [
-    { label: 'Home',            to: `/portal?persona=${persona}`,              icon: '🏠' },
-    { label: 'Services',        to: `/portal/services?persona=${persona}`,     icon: '📋' },
-    ...(persona === 'citizen'
-      ? [{ label: 'My Applications', to: `/portal/my-applications?persona=${persona}`, icon: '📁' }]
-      : []),
-    { label: 'Track',     to: `/track?persona=${persona}`,    icon: '🔍' },
-    { label: 'About',     to: `/about?persona=${persona}`,    icon: 'ℹ️' },
-    { label: 'API Docs',  to: `/api-docs?persona=${persona}`, icon: '⚙️' },
-  ];
+  const p = `persona=${persona}`;
+  switch (persona) {
+    case 'officer':
+      return [
+        { label: 'Task Queue', to: `/desk?${p}`,     icon: '📋' },
+        { label: 'About',      to: `/about?${p}`,    icon: 'ℹ️' },
+        { label: 'API Docs',   to: `/api-docs?${p}`, icon: '⚙️' },
+      ];
+    case 'supervisor':
+      return [
+        { label: 'Review Queue', to: `/supervisor?${p}`, icon: '✅' },
+        { label: 'About',        to: `/about?${p}`,      icon: 'ℹ️' },
+      ];
+    case 'leadership':
+      return [
+        { label: 'Dashboard', to: `/dashboard?${p}`, icon: '📊' },
+        { label: 'About',     to: `/about?${p}`,     icon: 'ℹ️' },
+      ];
+    default: // citizen
+      return [
+        { label: 'Home',             to: `/portal?${p}`,                      icon: '🏠' },
+        { label: 'Services',         to: `/portal/services?${p}`,             icon: '📋' },
+        { label: 'My Applications',  to: `/portal/my-applications?${p}`,      icon: '📁' },
+        { label: 'Track',            to: `/track?${p}`,                       icon: '🔍' },
+        { label: 'About',            to: `/about?${p}`,                       icon: 'ℹ️' },
+      ];
+  }
 }
 
 function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: () => void }) {
@@ -98,7 +115,7 @@ export default function Header({ persona = 'citizen' }: HeaderProps) {
 
             {/* Logo */}
             <Link
-              to={`/portal?persona=${persona}`}
+              to={`/?persona=${persona}`}
               className="flex items-center gap-3 group flex-shrink-0 focus-visible:outline-none"
               aria-label="NileGov Stack — Home"
             >
