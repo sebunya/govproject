@@ -171,8 +171,10 @@ app.get('/api/applications/:id', (req, res) => {
   const id = row.id as number;
   const docs = db.prepare(`SELECT * FROM documents WHERE applicationId = ? ORDER BY uploadedAt ASC`).all(id);
   const auditLog = db.prepare(`SELECT * FROM audit_log WHERE applicationId = ? ORDER BY createdAt ASC`).all(id);
+  const svc = db.prepare(`SELECT feeAmount, feeCurrency FROM services WHERE code = ?`).get(row.serviceCode as string) as { feeAmount: number; feeCurrency: string } | undefined;
+  const payment = db.prepare(`SELECT status FROM payments WHERE applicationId = ? ORDER BY createdAt DESC LIMIT 1`).get(id) as { status: string } | undefined;
 
-  res.json({ ...row, documents: docs, auditLog });
+  res.json({ ...row, documents: docs, auditLog, feeAmount: svc?.feeAmount ?? 0, feeCurrency: svc?.feeCurrency ?? 'UGX', paymentStatus: payment?.status ?? null });
 });
 
 // ─── MODULE: NOTIFICATIONS ─────────────────────────────────────────────────
@@ -541,15 +543,28 @@ app.get('/api/dashboard/reports', (_req, res) => {
 
   const total = (db.prepare(`SELECT COUNT(*) as c FROM applications`).get() as { c: number }).c;
   const byStatus = db.prepare(`SELECT status, COUNT(*) as c FROM applications GROUP BY status`).all() as { status: string; c: number }[];
-  const byService = db.prepare(`SELECT serviceCode, serviceType, COUNT(*) as c FROM applications GROUP BY serviceCode`).all() as any[];
+  const byServiceRaw = db.prepare(`
+    SELECT a.serviceCode, s.name as serviceName,
+      COUNT(*) as total,
+      SUM(CASE WHEN a.status='approved' THEN 1 ELSE 0 END) as approved,
+      SUM(CASE WHEN a.status='rejected' THEN 1 ELSE 0 END) as rejected,
+      SUM(CASE WHEN a.resolvedAt IS NULL THEN 1 ELSE 0 END) as active,
+      ROUND(AVG(CASE WHEN a.resolvedAt IS NOT NULL THEN (julianday(a.resolvedAt)-julianday(a.submittedAt))*24 END), 0) as avgResolutionHours
+    FROM applications a LEFT JOIN services s ON s.code = a.serviceCode
+    GROUP BY a.serviceCode ORDER BY total DESC
+  `).all() as any[];
   const byDistrict = db.prepare(`SELECT district, COUNT(*) as c FROM applications GROUP BY district ORDER BY c DESC`).all() as any[];
   const resolved = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE resolvedAt IS NOT NULL`).get() as { c: number }).c;
   const onTime = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE resolvedAt IS NOT NULL AND (julianday(resolvedAt)-julianday(submittedAt))*24<=slaResolveHours`).get() as { c: number }).c;
+  const approvedCount = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE status='approved'`).get() as { c: number }).c;
   const escalated = (db.prepare(`SELECT COUNT(*) as c FROM applications WHERE escalationState='escalated'`).get() as { c: number }).c;
+  const notifTotal = (db.prepare(`SELECT COUNT(*) as c FROM notifications`).get() as { c: number }).c;
   const notifSent = (db.prepare(`SELECT COUNT(*) as c FROM notifications WHERE status='simulated_sent'`).get() as { c: number }).c;
   const notifFailed = (db.prepare(`SELECT COUNT(*) as c FROM notifications WHERE status='simulated_failed'`).get() as { c: number }).c;
+  const notifByChannel = db.prepare(`SELECT channel, COUNT(*) as c FROM notifications GROUP BY channel`).all() as { channel: string; c: number }[];
   const payVerified = (db.prepare(`SELECT COUNT(*) as c, COALESCE(SUM(amount),0) as total FROM payments WHERE status='verified'`).get() as { c: number; total: number });
   const payPending = (db.prepare(`SELECT COUNT(*) as c FROM payments WHERE status='pending'`).get() as { c: number }).c;
+  const payByMethod = db.prepare(`SELECT method, COUNT(*) as c FROM payments WHERE status='verified' GROUP BY method`).all() as { method: string; c: number }[];
   const docsTotal = (db.prepare(`SELECT COUNT(*) as c FROM documents`).get() as { c: number }).c;
   const docsVerified = (db.prepare(`SELECT COUNT(*) as c FROM documents WHERE verificationStatus='verified'`).get() as { c: number }).c;
   const avgRating = (db.prepare(`SELECT ROUND(AVG(rating),1) as avg FROM applications WHERE rating IS NOT NULL`).get() as { avg: number | null }).avg;
@@ -557,31 +572,34 @@ app.get('/api/dashboard/reports', (_req, res) => {
 
   res.json({
     snapshotId,
-    snapshotName: 'Daily Performance Snapshot',
     generatedAt: now.toISOString(),
-    generatedBy: 'NileGov Stack Reporting Engine',
-    reportingPeriodStart: new Date(now.getTime() - 30 * 86400000).toISOString(),
-    reportingPeriodEnd: now.toISOString(),
-    sourceDataset: 'Seeded Fictional Demo Data — Mbarara District Local Government',
     disclaimer: 'Prototype simulation only. These metrics reflect seeded demo data and do not represent official government statistics.',
-    totalApplications: total,
-    totalResolved: resolved,
-    withinSlaCount: onTime,
-    slaBreachedCount: resolved - onTime,
-    escalatedCount: escalated,
-    slaCompliancePercent: resolved > 0 ? Math.round((onTime / resolved) * 100) : 100,
-    applicationsByStatus: Object.fromEntries(byStatus.map(r => [r.status, r.c])),
-    applicationsByService: byService,
-    applicationsByDistrict: byDistrict,
-    documentTotal: docsTotal,
-    documentVerified: docsVerified,
-    notificationSent: notifSent,
-    notificationFailed: notifFailed,
-    paymentVerifiedCount: payVerified.c,
-    paymentVerifiedAmount: payVerified.total,
-    paymentPendingCount: payPending,
-    averageCitizenRating: avgRating,
-    officerWorkloadSummary: officerWorkload,
+    totals: {
+      total,
+      resolved,
+      approved: approvedCount,
+      approvalRate: resolved > 0 ? Math.round((approvedCount / resolved) * 100) : 0,
+      slaCompliance: resolved > 0 ? Math.round((onTime / resolved) * 100) : 100,
+      escalated,
+      avgRating,
+    },
+    byStatus: Object.fromEntries(byStatus.map(r => [r.status, r.c])),
+    byService: byServiceRaw,
+    byDistrict,
+    documents: { total: docsTotal, verified: docsVerified },
+    notifications: {
+      total: notifTotal,
+      simulated_sent: notifSent,
+      simulated_failed: notifFailed,
+      byChannel: Object.fromEntries(notifByChannel.map(r => [r.channel, r.c])),
+    },
+    payments: {
+      totalVerifiedAmount: payVerified.total,
+      verifiedCount: payVerified.c,
+      pendingCount: payPending,
+      byMethod: Object.fromEntries(payByMethod.map(r => [r.method, r.c])),
+    },
+    officerWorkload,
   });
 });
 
