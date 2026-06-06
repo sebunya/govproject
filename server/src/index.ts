@@ -604,6 +604,41 @@ app.get('/api/dashboard/reports', (_req, res) => {
   });
 });
 
+// ─── HEALTH CHECK ──────────────────────────────────────────────────────────
+
+app.get('/api/health', (_req, res) => {
+  const appCount = (db.prepare('SELECT COUNT(*) as c FROM applications').get() as {c:number}).c;
+  const notifCount = (db.prepare('SELECT COUNT(*) as c FROM notifications').get() as {c:number}).c;
+  res.json({
+    status: 'ok',
+    version: '1.0.0-demo',
+    timestamp: new Date().toISOString(),
+    database: 'connected',
+    applicationCount: appCount,
+    notificationCount: notifCount,
+    disclaimer: 'Prototype only. Not a live production system.',
+  });
+});
+
+// Public reference tracker (no NIN required)
+app.get('/api/track/:ref', (req, res) => {
+  const row = db.prepare(`SELECT referenceNumber, serviceType, status, submittedAt, respondedAt, resolvedAt, slaResponseHours, slaResolveHours, escalationState FROM applications WHERE referenceNumber = ?`).get(req.params.ref.toUpperCase()) as any;
+  if (!row) return res.status(404).json({ error: 'Reference number not found.' });
+  res.json(row);
+});
+
+// Application withdrawal (citizen)
+app.patch('/api/applications/:id/withdraw', (req, res) => {
+  const now = new Date().toISOString();
+  const row = db.prepare('SELECT status, fullName, referenceNumber FROM applications WHERE id = ?').get(req.params.id) as any;
+  if (!row) return res.status(404).json({ error: 'Not found' });
+  if (!['submitted'].includes(row.status)) return res.status(409).json({ error: 'Only submitted applications can be withdrawn.' });
+  db.prepare(`UPDATE applications SET status = 'withdrawn', resolvedAt = ? WHERE id = ?`).run(now, req.params.id);
+  db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt) VALUES (?, 'Application withdrawn by citizen', 'citizen', ?, 'Citizen requested withdrawal before officer review.', ?)`).run(req.params.id, row.fullName, now);
+  db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt) VALUES (?, 'citizen', 'portal', ?, ?, 'simulated_sent', ?)`).run(req.params.id, row.fullName, `Your application ${row.referenceNumber} has been withdrawn as requested.`, now);
+  res.json({ ok: true });
+});
+
 // ─── ERROR HANDLER ─────────────────────────────────────────────────────────
 
 app.use((err: any, _req: any, res: any, next: any) => {

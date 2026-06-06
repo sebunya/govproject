@@ -202,7 +202,7 @@ export default function ApplicationForm() {
       fd.append('consentTimestamp', new Date().toISOString());
       if (bylaws) fd.append('bylaws', bylaws);
       if (memberRoster) fd.append('memberRoster', memberRoster);
-      if (tradingDoc) fd.append('tradingDoc', tradingDoc);
+      if (tradingDoc) fd.append('bizReg', tradingDoc);
 
       const res = await axios.post('/api/applications', fd);
       setSubmitted(res.data);
