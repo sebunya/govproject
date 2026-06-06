@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install --workspaces --include=dev
+
+      - name: Type-check server
+        run: npm run build --workspace=server
+
+      - name: Build client (Vite)
+        run: cd client && ../node_modules/.bin/vite build
+
+      - name: Check build output
+        run: |
+          echo "Client dist:"
+          ls -lh client/dist/
+          echo "Server dist:"
+          ls -lh server/dist/
