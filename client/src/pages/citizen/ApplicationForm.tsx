@@ -131,6 +131,8 @@ export default function ApplicationForm() {
   const [niraLoading, setNiraLoading] = useState(false);
   const [showNiraBanner, setShowNiraBanner] = useState(false);
   const [niraError, setNiraError] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('+256700000000');
+  const [email, setEmail] = useState('citizen@demo.ug');
 
   const [cooperativeName, setCooperativeName] = useState(isTrading ? '' : 'Mbarara Coffee Growers Cooperative');
   const [businessName, setBusinessName] = useState('Nakayima General Merchandise');
@@ -190,6 +192,8 @@ export default function ApplicationForm() {
       fd.append('dateOfBirth', niraData!.dateOfBirth);
       fd.append('district', niraData!.district);
       fd.append('gender', niraData!.gender);
+      if (phoneNumber.trim()) fd.append('phoneNumber', phoneNumber.trim());
+      if (email.trim()) fd.append('email', email.trim());
       fd.append('serviceCode', serviceParam);
       if (isTrading) {
         fd.append('businessName', businessName);
@@ -309,6 +313,32 @@ export default function ApplicationForm() {
           </div>
 
           {showNiraBanner && <SimulatedBanner service="NIRA" />}
+
+          {/* Contact details for real notifications */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="form-label">Phone Number <span className="text-gold-500 font-semibold">(for SMS & WhatsApp)</span></label>
+              <input
+                className="form-input"
+                value={phoneNumber}
+                onChange={e => setPhoneNumber(e.target.value)}
+                placeholder="+256700000000"
+                type="tel"
+              />
+              <p className="text-xs text-gray-400 mt-1">Used for SMS and WhatsApp notifications</p>
+            </div>
+            <div>
+              <label className="form-label">Email Address <span className="text-gold-500 font-semibold">(for email notifications)</span></label>
+              <input
+                className="form-input"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                type="email"
+              />
+              <p className="text-xs text-gray-400 mt-1">Used for ZeptoMail transactional email</p>
+            </div>
+          </div>
 
           {niraData && (
             <div className="bg-status-greenBg border border-status-green rounded-lg p-4 space-y-3">

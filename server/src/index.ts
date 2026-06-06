@@ -5,6 +5,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { db, initSchema, uploadsDir } from './db.js';
+import { notifyCitizen, integrationStatus } from './integrations/notify.js';
+import { submitPesapalOrder, getPesapalTransactionStatus, isPesapalConfigured } from './integrations/pesapal.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 initSchema();
@@ -172,14 +174,14 @@ app.post('/api/applications', upload.fields([
   const result = db.prepare(`
     INSERT INTO applications (
       referenceNumber, serviceCode, serviceType,
-      nin, fullName, dateOfBirth, district, gender,
+      nin, fullName, dateOfBirth, district, gender, phoneNumber, email,
       cooperativeName, businessName,
       proposedTin, taxStatus, taxClearanceValidUntil,
       consentTimestamp, status, escalationState,
       slaResponseHours, slaResolveHours, submittedAt
     ) VALUES (
       ?, ?, ?,
-      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?,
       ?, ?,
       ?, ?, ?,
       ?, 'submitted', 'not_escalated',
@@ -188,6 +190,7 @@ app.post('/api/applications', upload.fields([
   `).run(
     refNum, body.serviceCode || 'cooperative-permit', svc?.name || body.serviceType || 'Government Service',
     body.nin, body.fullName, body.dateOfBirth, body.district, body.gender,
+    body.phoneNumber || null, body.email || null,
     body.cooperativeName || null, body.businessName || null,
     body.proposedTin, body.taxStatus, body.taxClearanceValidUntil,
     now, svc?.slaResponseHours || 48, svc?.slaResolveHours || 336, now,
@@ -207,9 +210,27 @@ app.post('/api/applications', upload.fields([
     VALUES (?, 'Application submitted via citizen portal', 'citizen', ?, null, ?)
   `).run(appId, body.fullName, now);
 
+  const submitMsg = `Application ${refNum} received. We will notify you when an officer begins review. Track at: nilegov.mbarara.go.ug/track`;
+
+  // Portal log always inserted immediately
   db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt)
     VALUES (?, 'citizen', 'portal', ?, ?, 'simulated_sent', ?)
   `).run(appId, body.fullName, `Application ${refNum} received. Track status at the NileGov portal.`, now);
+
+  // Fire real SMS + Email + WhatsApp asynchronously (don't block response)
+  notifyCitizen(
+    { phoneNumber: body.phoneNumber, email: body.email, fullName: body.fullName },
+    { referenceNumber: refNum, subject: `NileGov — Application ${refNum} Received`, message: submitMsg },
+  ).then(results => {
+    const insertN = db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, disclaimer, createdAt) VALUES (?, 'citizen', ?, ?, ?, ?, ?, ?)`);
+    const note = (r: any) => r.simulated ? 'simulated_sent' : r.sent ? 'sent' : 'failed';
+    const disc = (r: any) => r.simulated ? 'Prototype simulation — no live message sent' : r.sent ? `Sent via ${r.provider}` : `Failed: ${r.error}`;
+    if (body.phoneNumber) {
+      insertN.run(appId, 'sms', body.phoneNumber, submitMsg, note(results.sms), disc(results.sms), now);
+      insertN.run(appId, 'whatsapp', body.phoneNumber, submitMsg, note(results.whatsapp), disc(results.whatsapp), now);
+    }
+    if (body.email) insertN.run(appId, 'email', body.email, submitMsg, note(results.email), disc(results.email), now);
+  }).catch(console.error);
 
   res.json({ referenceNumber: refNum, id: appId });
 });
@@ -272,30 +293,68 @@ app.get('/api/applications/:id/payments', (req, res) => {
   res.json(payments);
 });
 
-app.post('/api/applications/:id/initiate-payment', (req, res) => {
+app.post('/api/applications/:id/initiate-payment', async (req, res) => {
   const { purpose, amount, currency, method, mobileNumber } = req.body;
   const now = new Date().toISOString();
 
   const existing = db.prepare(`SELECT id FROM payments WHERE applicationId = ? AND status NOT IN ('failed')`).get(req.params.id);
   if (existing) return res.status(409).json({ error: 'Payment already initiated for this application.' });
 
+  const appRow = db.prepare(`SELECT referenceNumber, fullName, phoneNumber, email FROM applications WHERE id = ?`).get(req.params.id) as any;
+
   const result = db.prepare(`
     INSERT INTO payments (applicationId, purpose, amount, currency, method, mobileNumber, status, createdAt)
     VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)
   `).run(req.params.id, purpose, amount, currency || 'UGX', method, mobileNumber || null, now);
 
+  const paymentId = result.lastInsertRowid as number;
+
   db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt)
     VALUES (?, 'Payment initiated', 'citizen', 'Citizen', ?, ?)
   `).run(req.params.id, `${purpose} — UGX ${Number(amount).toLocaleString()} via ${method}`, now);
 
-  res.json({ id: result.lastInsertRowid, status: 'pending' });
+  // If Pesapal is configured, submit real order
+  if (isPesapalConfigured() && appRow) {
+    const appUrl = process.env.APP_URL || 'http://localhost:3001';
+    const callbackUrl = `${appUrl}/api/pesapal/callback?applicationId=${req.params.id}&paymentId=${paymentId}`;
+    submitPesapalOrder({
+      reference: `${appRow.referenceNumber}-${paymentId}`,
+      amount: Number(amount),
+      currency: currency || 'UGX',
+      description: purpose,
+      callbackUrl,
+      phoneNumber: mobileNumber || appRow.phoneNumber,
+      email: appRow.email,
+      firstName: appRow.fullName?.split(' ')[0],
+      lastName: appRow.fullName?.split(' ').slice(1).join(' '),
+    }).then(order => {
+      if (order.trackingId) {
+        db.prepare(`UPDATE payments SET transactionRef = ? WHERE id = ?`).run(order.trackingId, paymentId);
+      }
+    }).catch(console.error);
+  }
+
+  res.json({ id: paymentId, status: 'pending' });
 });
 
-app.post('/api/applications/:id/simulate-payment', (req, res) => {
+app.post('/api/applications/:id/simulate-payment', async (req, res) => {
   const { paymentId } = req.body;
   const now = new Date().toISOString();
-  const txRef = `SIM-PAY-${req.params.id}-${Date.now()}`;
-  const rcptRef = `SIM-RECEIPT-${req.params.id}-${uuidv4().slice(0, 6).toUpperCase()}`;
+  const appRow = db.prepare(`SELECT referenceNumber, fullName, phoneNumber, email FROM applications WHERE id = ?`).get(req.params.id) as any;
+  const payRow = db.prepare(`SELECT transactionRef FROM payments WHERE id = ?`).get(paymentId) as any;
+
+  let txRef: string;
+  let rcptRef: string;
+
+  // If Pesapal configured and we have a real tracking ID, fetch real status
+  if (isPesapalConfigured() && payRow?.transactionRef && !payRow.transactionRef.startsWith('SIM-')) {
+    const status = await getPesapalTransactionStatus(payRow.transactionRef);
+    txRef = payRow.transactionRef;
+    rcptRef = status.confirmationCode || `PESA-${payRow.transactionRef}`;
+  } else {
+    txRef = `SIM-PAY-${req.params.id}-${Date.now()}`;
+    rcptRef = `SIM-RECEIPT-${req.params.id}-${uuidv4().slice(0, 6).toUpperCase()}`;
+  }
 
   db.prepare(`
     UPDATE payments SET status = 'verified', transactionRef = ?, receiptRef = ?,
@@ -304,15 +363,55 @@ app.post('/api/applications/:id/simulate-payment', (req, res) => {
   `).run(txRef, rcptRef, now, now, paymentId, req.params.id);
 
   db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt)
-    VALUES (?, 'Simulated payment verified', 'system', 'NileGov Stack (Pesapal Sandbox)', ?, ?)
-  `).run(req.params.id, `Transaction: ${txRef} | Receipt: ${rcptRef}`, now);
+    VALUES (?, ?, 'system', 'NileGov Stack (Pesapal ${isPesapalConfigured() ? 'Live' : 'Sandbox'})', ?, ?)
+  `).run(req.params.id, `Payment verified — ${isPesapalConfigured() ? 'real' : 'simulated'}`, `Transaction: ${txRef} | Receipt: ${rcptRef}`, now);
 
-  db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt)
-    VALUES (?, 'citizen', 'sms', 'Citizen', ?, 'simulated_sent', ?)
-  `).run(req.params.id, `Payment confirmed. Receipt: ${rcptRef}. Prototype simulation — no live payment processed.`, now);
+  const payMsg = `Payment confirmed. Receipt: ${rcptRef}. ${isPesapalConfigured() ? 'Processed via Pesapal.' : 'Prototype simulation — no live payment processed.'}`;
+
+  db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, disclaimer, createdAt)
+    VALUES (?, 'citizen', 'portal', ?, ?, 'simulated_sent', 'Portal notification', ?)
+  `).run(req.params.id, appRow?.fullName || 'Citizen', payMsg, now);
+
+  if (appRow) {
+    notifyCitizen(
+      { phoneNumber: appRow.phoneNumber, email: appRow.email, fullName: appRow.fullName },
+      { referenceNumber: appRow.referenceNumber, subject: `NileGov — Payment Confirmed: ${appRow.referenceNumber}`, message: payMsg },
+    ).then(r => {
+      const insertN = db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, disclaimer, createdAt) VALUES (?, 'citizen', ?, ?, ?, ?, ?, ?)`);
+      const note = (x: any) => x.simulated ? 'simulated_sent' : x.sent ? 'sent' : 'failed';
+      const disc = (x: any) => x.simulated ? 'Prototype simulation' : x.sent ? `Sent via ${x.provider}` : `Failed: ${x.error}`;
+      if (appRow.phoneNumber) {
+        insertN.run(req.params.id, 'sms', appRow.phoneNumber, payMsg, note(r.sms), disc(r.sms), now);
+        insertN.run(req.params.id, 'whatsapp', appRow.phoneNumber, payMsg, note(r.whatsapp), disc(r.whatsapp), now);
+      }
+      if (appRow.email) insertN.run(req.params.id, 'email', appRow.email, payMsg, note(r.email), disc(r.email), now);
+    }).catch(console.error);
+  }
 
   const payment = db.prepare(`SELECT * FROM payments WHERE id = ?`).get(paymentId);
   res.json(payment);
+});
+
+// Pesapal IPN callback (GET) — called by Pesapal after payment
+app.get('/api/pesapal/ipn', (req, res) => {
+  const { OrderTrackingId, OrderMerchantReference, OrderNotificationType } = req.query;
+  console.log(`[PESAPAL IPN] TrackingId: ${OrderTrackingId} | Ref: ${OrderMerchantReference} | Type: ${OrderNotificationType}`);
+  // In production: verify status with getPesapalTransactionStatus and update DB
+  res.json({ orderNotificationType: OrderNotificationType, orderTrackingId: OrderTrackingId, orderMerchantReference: OrderMerchantReference, status: '200' });
+});
+
+// Pesapal callback after redirect (GET) — citizen returns from Pesapal hosted page
+app.get('/api/pesapal/callback', async (req, res) => {
+  const { OrderTrackingId, applicationId, paymentId } = req.query;
+  if (OrderTrackingId && paymentId) {
+    const status = await getPesapalTransactionStatus(String(OrderTrackingId));
+    if (status.status === 'COMPLETED') {
+      const now = new Date().toISOString();
+      const rcptRef = status.confirmationCode || String(OrderTrackingId);
+      db.prepare(`UPDATE payments SET status = 'verified', receiptRef = ?, verifiedAt = ? WHERE id = ?`).run(rcptRef, now, paymentId);
+    }
+  }
+  res.redirect(`/portal/application/${applicationId}?persona=citizen`);
 });
 
 // ─── MODULE: DOCUMENT VERIFICATION ────────────────────────────────────────
@@ -417,18 +516,34 @@ app.patch('/api/applications/:id/officer-decision', (req, res) => {
     VALUES (?, ?, 'officer', 'Tumusiime Robert', ?, ?)
   `).run(req.params.id, `Officer decision: ${decision}`, notes || '', now);
 
-  const row = db.prepare(`SELECT fullName, referenceNumber FROM applications WHERE id = ?`)
-    .get(req.params.id) as { fullName: string; referenceNumber: string };
+  const row = db.prepare(`SELECT fullName, referenceNumber, phoneNumber, email FROM applications WHERE id = ?`)
+    .get(req.params.id) as { fullName: string; referenceNumber: string; phoneNumber?: string; email?: string };
 
   if (decision === 'approved') {
     db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt)
       VALUES (?, 'supervisor', 'internal', 'Nakamya Grace', ?, 'simulated_sent', ?)
     `).run(req.params.id, `Application ${row.referenceNumber} approved by officer — pending your countersignature.`, now);
   } else if (decision === 'more_info_requested') {
+    const moreInfoMsg = `Action needed: Your application ${row.referenceNumber} requires additional information. Log in to the NileGov portal to respond.`;
     db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt)
       VALUES (?, 'citizen', 'sms', ?, ?, 'simulated_sent', ?)
-    `).run(req.params.id, row.fullName,
-      `Action needed: Your application ${row.referenceNumber} requires additional information. Log in to the NileGov portal to respond.`, now);
+    `).run(req.params.id, row.phoneNumber || row.fullName, moreInfoMsg, now);
+    notifyCitizen(
+      { phoneNumber: row.phoneNumber, email: row.email, fullName: row.fullName },
+      { referenceNumber: row.referenceNumber, subject: `NileGov — Action Required: ${row.referenceNumber}`, message: moreInfoMsg },
+    ).then(r => {
+      const insertN = db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, disclaimer, createdAt) VALUES (?, 'citizen', ?, ?, ?, ?, ?, ?)`);
+      const note = (x: any) => x.simulated ? 'simulated_sent' : x.sent ? 'sent' : 'failed';
+      const disc = (x: any) => x.simulated ? 'Prototype simulation' : x.sent ? `Sent via ${x.provider}` : `Failed: ${x.error}`;
+      if (row.phoneNumber) insertN.run(req.params.id, 'whatsapp', row.phoneNumber, moreInfoMsg, note(r.whatsapp), disc(r.whatsapp), now);
+      if (row.email) insertN.run(req.params.id, 'email', row.email, moreInfoMsg, note(r.email), disc(r.email), now);
+    }).catch(console.error);
+  } else if (decision === 'rejected') {
+    const rejMsg = `Your application ${row.referenceNumber} has been reviewed. The officer was unable to approve it at this time. Please visit the district office for guidance.`;
+    notifyCitizen(
+      { phoneNumber: row.phoneNumber, email: row.email, fullName: row.fullName },
+      { referenceNumber: row.referenceNumber, subject: `NileGov — Application Update: ${row.referenceNumber}`, message: rejMsg },
+    ).catch(console.error);
   }
 
   res.json(db.prepare('SELECT * FROM applications WHERE id = ?').get(req.params.id));
@@ -445,19 +560,31 @@ app.patch('/api/applications/:id/supervisor-decision', (req, res) => {
     VALUES (?, ?, 'supervisor', 'Nakamya Grace', ?, ?)
   `).run(req.params.id, `Supervisor decision: ${decision}`, notes || '', now);
 
-  const row = db.prepare(`SELECT fullName, referenceNumber FROM applications WHERE id = ?`)
-    .get(req.params.id) as { fullName: string; referenceNumber: string };
+  const row = db.prepare(`SELECT fullName, referenceNumber, phoneNumber, email FROM applications WHERE id = ?`)
+    .get(req.params.id) as { fullName: string; referenceNumber: string; phoneNumber?: string; email?: string };
 
   const msg = decision === 'approved'
-    ? `APPROVED: Application ${row.referenceNumber} has been approved. Your permit has been granted by Mbarara District Local Government.`
-    : `Application ${row.referenceNumber} could not be approved. Please visit the district office for guidance.`;
+    ? `APPROVED: Your application ${row.referenceNumber} has been approved. Your permit has been granted by Mbarara District Local Government. Visit the NileGov portal to download your certificate.`
+    : `Your application ${row.referenceNumber} could not be approved at this time. Please visit the district office for guidance or reapply.`;
 
-  db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt)
-    VALUES (?, 'citizen', 'sms', ?, ?, 'simulated_sent', ?)
-  `).run(req.params.id, row.fullName, msg, now);
   db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt)
     VALUES (?, 'citizen', 'portal', ?, ?, 'simulated_sent', ?)
   `).run(req.params.id, row.fullName, msg, now);
+
+  // Fire real multi-channel notifications
+  notifyCitizen(
+    { phoneNumber: row.phoneNumber, email: row.email, fullName: row.fullName },
+    { referenceNumber: row.referenceNumber, subject: decision === 'approved' ? `✅ NileGov — Permit Granted: ${row.referenceNumber}` : `NileGov — Application Update: ${row.referenceNumber}`, message: msg },
+  ).then(r => {
+    const insertN = db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, disclaimer, createdAt) VALUES (?, 'citizen', ?, ?, ?, ?, ?, ?)`);
+    const note = (x: any) => x.simulated ? 'simulated_sent' : x.sent ? 'sent' : 'failed';
+    const disc = (x: any) => x.simulated ? 'Prototype simulation' : x.sent ? `Sent via ${x.provider}` : `Failed: ${x.error}`;
+    if (row.phoneNumber) {
+      insertN.run(req.params.id, 'sms', row.phoneNumber, msg, note(r.sms), disc(r.sms), now);
+      insertN.run(req.params.id, 'whatsapp', row.phoneNumber, msg, note(r.whatsapp), disc(r.whatsapp), now);
+    }
+    if (row.email) insertN.run(req.params.id, 'email', row.email, msg, note(r.email), disc(r.email), now);
+  }).catch(console.error);
 
   res.json(db.prepare('SELECT * FROM applications WHERE id = ?').get(req.params.id));
 });
@@ -700,8 +827,10 @@ app.get('/api/dashboard/reports', (_req, res) => {
 // ─── HEALTH CHECK ──────────────────────────────────────────────────────────
 
 app.get('/api/health', (_req, res) => {
-  const appCount = (db.prepare('SELECT COUNT(*) as c FROM applications').get() as {c:number}).c;
-  const notifCount = (db.prepare('SELECT COUNT(*) as c FROM notifications').get() as {c:number}).c;
+  const appCount    = (db.prepare('SELECT COUNT(*) as c FROM applications').get() as {c:number}).c;
+  const notifCount  = (db.prepare('SELECT COUNT(*) as c FROM notifications').get() as {c:number}).c;
+  const sentCount   = (db.prepare("SELECT COUNT(*) as c FROM notifications WHERE status='sent'").get() as {c:number}).c;
+  const integrations = integrationStatus();
   res.json({
     status: 'ok',
     version: '1.0.0-demo',
@@ -709,8 +838,28 @@ app.get('/api/health', (_req, res) => {
     database: 'connected',
     applicationCount: appCount,
     notificationCount: notifCount,
+    notificationsSentLive: sentCount,
+    integrations,
     disclaimer: 'Prototype only. Not a live production system.',
   });
+});
+
+// Admin: test a notification channel
+app.post('/api/admin/test-notification', async (req, res) => {
+  const { channel, to, message } = req.body;
+  if (!to || !message) return res.status(400).json({ error: 'to and message are required' });
+
+  const { sendSms: sms } = await import('./integrations/sms.js');
+  const { sendEmail: email } = await import('./integrations/email.js');
+  const { sendWhatsApp: wa } = await import('./integrations/whatsapp.js');
+
+  let result;
+  if (channel === 'sms')       result = await sms(to, message);
+  else if (channel === 'email') result = await email(to, `NileGov Test — ${new Date().toISOString()}`, message);
+  else if (channel === 'whatsapp') result = await wa(to, message);
+  else return res.status(400).json({ error: 'channel must be sms, email, or whatsapp' });
+
+  res.json({ channel, to, result });
 });
 
 // Public reference tracker (no NIN required)

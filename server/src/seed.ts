@@ -38,6 +38,7 @@ db.exec(`
     serviceType TEXT NOT NULL DEFAULT 'Cooperative Registration & Agribusiness Permit',
     nin TEXT NOT NULL, fullName TEXT NOT NULL, dateOfBirth TEXT NOT NULL,
     district TEXT NOT NULL, gender TEXT NOT NULL,
+    phoneNumber TEXT, email TEXT,
     cooperativeName TEXT, businessName TEXT,
     proposedTin TEXT NOT NULL, taxStatus TEXT NOT NULL, taxClearanceValidUntil TEXT NOT NULL,
     consentTimestamp TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'submitted',

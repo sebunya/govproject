@@ -52,6 +52,8 @@ export function initSchema() {
       dateOfBirth TEXT NOT NULL,
       district TEXT NOT NULL,
       gender TEXT NOT NULL,
+      phoneNumber TEXT,
+      email TEXT,
       cooperativeName TEXT,
       businessName TEXT,
       proposedTin TEXT NOT NULL,

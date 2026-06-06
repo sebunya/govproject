@@ -17,8 +17,16 @@ interface Endpoint {
 }
 
 const ENDPOINTS: Endpoint[] = [
-  { method: 'GET', path: '/api/health', summary: 'System health check', module: 'System', auth: 'None',
-    response: `{ "status": "ok", "version": "1.0.0-demo", "timestamp": "...", "database": "connected", "applicationCount": 25, "disclaimer": "Prototype only." }` },
+  { method: 'GET', path: '/api/health', summary: 'System health — shows integration status (SMS/email/WhatsApp/Pesapal configured or simulated)', module: 'System', auth: 'None',
+    response: `{ "status": "ok", "version": "1.0.0-demo", "timestamp": "...", "database": "connected", "applicationCount": 25, "notificationsSentLive": 0, "integrations": { "sms": { "configured": false, "provider": "Africa's Talking" }, "email": { "configured": false, "provider": "ZeptoMail" }, "whatsapp": { "configured": false, "provider": "Meta WhatsApp Business API" }, "pesapal": { "configured": false, "provider": "Pesapal API 3.0", "sandbox": true } } }` },
+  { method: 'POST', path: '/api/admin/test-notification', summary: 'Test a live notification channel (SMS, email, or WhatsApp)', module: 'MOD-06 Notifications', auth: 'Admin',
+    request: `{ "channel": "sms" | "email" | "whatsapp", "to": "+256700000000", "message": "Test from NileGov" }`,
+    response: `{ "channel": "sms", "to": "+256700000000", "result": { "success": true, "simulated": false, "provider": "Africa's Talking", "messageId": "ATXid_..." } }`,
+    notes: 'Live when AT_API_KEY / ZEPTO_API_KEY / META_WHATSAPP_TOKEN are set in server/.env. Falls back to simulation if not configured.' },
+  { method: 'GET', path: '/api/pesapal/ipn', summary: 'Pesapal IPN callback — called by Pesapal after payment completion', module: 'MOD-07 Payments', auth: 'None (Pesapal webhook)',
+    request: `Query params: ?OrderTrackingId=...&OrderMerchantReference=NGS-2026-0018-5&OrderNotificationType=IPNCHANGE`,
+    response: `{ "orderNotificationType": "IPNCHANGE", "orderTrackingId": "...", "orderMerchantReference": "...", "status": "200" }`,
+    notes: 'Registered automatically on first payment initiation. URL must be publicly accessible; set PESAPAL_IPN_URL in server/.env.' },
   { method: 'GET', path: '/api/services', summary: 'List all services in the catalogue', module: 'MOD-08 Service Catalogue', auth: 'None',
     response: `[{ "id": 1, "code": "cooperative-permit", "name": "Cooperative Registration & Agribusiness Permit", "category": "Agriculture", "slaResponseHours": 48, "slaResolveHours": 336, "feeAmount": 0, "feeCurrency": "UGX", "requiredDocs": "Cooperative Bylaws,Member Roster", "active": 1 }]` },
   { method: 'GET', path: '/api/officers', summary: 'List all officers', module: 'MOD-04 Assignment', auth: 'Officer',
