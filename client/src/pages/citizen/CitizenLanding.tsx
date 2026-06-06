@@ -115,6 +115,59 @@ export default function CitizenLanding() {
         ))}
       </div>
 
+      {/* How it works */}
+      <div>
+        <h2 className="text-lg font-bold text-navy-700 mb-4">How it works</h2>
+        <div className="grid md:grid-cols-4 gap-4">
+          {[
+            { step: '1', icon: '📋', title: 'Choose a Service', desc: 'Browse the Service Catalogue and select the permit or licence you need.' },
+            { step: '2', icon: '📝', title: 'Submit Your Application', desc: 'Fill in your details. Your identity is verified via NIRA and your tax status via URA.' },
+            { step: '3', icon: '👨‍💼', title: 'Officer Review', desc: 'A District Officer reviews your documents within the SLA window. You are notified at every step.' },
+            { step: '4', icon: '🎉', title: 'Receive Your Permit', desc: 'Download your official permit certificate. For fee-based services, pay securely via mobile money.' },
+          ].map(s => (
+            <div key={s.step} className="relative bg-white border border-gray-200 rounded-xl p-4">
+              <div className="absolute -top-3 -left-3 w-7 h-7 bg-gold-500 rounded-full flex items-center justify-center text-white text-xs font-extrabold">{s.step}</div>
+              <div className="text-2xl mb-2 mt-1">{s.icon}</div>
+              <h3 className="font-bold text-navy-700 text-sm mb-1">{s.title}</h3>
+              <p className="text-xs text-gray-600 leading-relaxed">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick reference tracker */}
+      <div className="bg-navy-50 rounded-xl p-5 border border-navy-100">
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-xl">🔍</span>
+          <h3 className="font-bold text-navy-700">Already applied? Track your reference</h3>
+        </div>
+        <div className="flex gap-2">
+          <input
+            id="quick-track"
+            className="form-input font-mono uppercase flex-1 text-sm"
+            placeholder="NGS-2026-0001"
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                const val = (e.target as HTMLInputElement).value.trim().toUpperCase();
+                if (val) navigate(`/track?persona=${persona}&ref=${val}`);
+              }
+            }}
+          />
+          <button
+            onClick={() => {
+              const el = document.getElementById('quick-track') as HTMLInputElement | null;
+              const val = el?.value.trim().toUpperCase() || '';
+              if (val) navigate(`/track?persona=${persona}&ref=${val}`);
+              else navigate(`/track?persona=${persona}`);
+            }}
+            className="btn-primary shrink-0"
+          >
+            Track →
+          </button>
+        </div>
+        <p className="text-xs text-gray-500 mt-2">No account required. Enter your reference number to check status.</p>
+      </div>
+
       {/* Active applications alert */}
       {metrics && metrics.activeApplications > 0 && (
         <div className="bg-gold-50 border border-gold-500 rounded-xl p-4 flex items-center gap-3">

@@ -569,7 +569,21 @@ app.get('/api/dashboard/reports', (_req, res) => {
   const docsTotal = (db.prepare(`SELECT COUNT(*) as c FROM documents`).get() as { c: number }).c;
   const docsVerified = (db.prepare(`SELECT COUNT(*) as c FROM documents WHERE verificationStatus='verified'`).get() as { c: number }).c;
   const avgRating = (db.prepare(`SELECT ROUND(AVG(rating),1) as avg FROM applications WHERE rating IS NOT NULL`).get() as { avg: number | null }).avg;
-  const officerWorkload = db.prepare(`SELECT o.name, COUNT(a.id) as cases FROM officers o LEFT JOIN applications a ON a.assignedOfficerId=o.id GROUP BY o.id ORDER BY cases DESC`).all();
+  const officerWorkload = db.prepare(`
+    SELECT o.id, o.name, o.role,
+      COUNT(a.id) as total,
+      SUM(CASE WHEN a.resolvedAt IS NULL AND a.assignedOfficerId IS NOT NULL THEN 1 ELSE 0 END) as active,
+      SUM(CASE WHEN a.resolvedAt IS NOT NULL THEN 1 ELSE 0 END) as resolved,
+      SUM(CASE WHEN a.status='approved' THEN 1 ELSE 0 END) as approved,
+      ROUND(AVG(CASE WHEN a.resolvedAt IS NOT NULL THEN (julianday(a.resolvedAt)-julianday(a.submittedAt))*24 END),0) as avgResolutionHours,
+      SUM(CASE WHEN a.resolvedAt IS NOT NULL AND (julianday(a.resolvedAt)-julianday(a.submittedAt))*24 <= a.slaResolveHours THEN 1 ELSE 0 END) as onTime,
+      SUM(CASE WHEN a.resolvedAt IS NOT NULL AND (julianday(a.resolvedAt)-julianday(a.submittedAt))*24 > a.slaResolveHours THEN 1 ELSE 0 END) as slaBreached
+    FROM officers o LEFT JOIN applications a ON a.assignedOfficerId=o.id
+    GROUP BY o.id ORDER BY total DESC
+  `).all().map((o: any) => ({
+    ...o,
+    slaCompliance: o.resolved > 0 ? Math.round((o.onTime / o.resolved) * 100) : 100,
+  }));
 
   res.json({
     snapshotId,

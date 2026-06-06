@@ -7,39 +7,39 @@ const STEPS = [
     persona: 'citizen',
     label: 'Citizen Landing',
     paths: ['/portal'],
-    action: 'Show live KPI stats. Explain SLA-bound, citizen-centred service delivery.',
-    next: 'Click "Apply for a Service →"',
+    action: 'Show live KPI stats pulled from the database — services available, avg resolution time, SLA compliance %. Explain citizen-centred service delivery.',
+    next: 'Click "Apply for a Service →" or navigate to Service Catalogue',
   },
   {
     id: 2,
     persona: 'citizen',
     label: 'Service Catalogue (Module 08)',
     paths: ['/portal/services'],
-    action: 'Two services active: Agribusiness Permit (free) and Trading Licence (UGX 120k fee). Point to requiredDocs chips and fee labels.',
+    action: 'Two services active: Agribusiness Permit (free) and Trading Licence (UGX 120,000 fee). Point to requiredDocs chips, SLA commitments, and fee labels. Coming-soon services shown greyed out.',
     next: 'Click "Apply Now →" on Trading Licence to demo the payment flow',
   },
   {
     id: 3,
     persona: 'citizen',
-    label: 'Application Form — Identity (Step 1)',
+    label: 'Application Form — Identity (Module 01)',
     paths: ['/portal/apply'],
-    action: 'NIN pre-filled as CM93019100ABC1J. Click "Verify Identity" — watch NIRA SIMULATED banner appear. Fields lock from NIRA data.',
+    action: 'NIN pre-filled as CM93019100ABC1J. Click "Verify Identity via NIRA" — watch NIRA SIMULATED banner appear. Fields (name, DOB, gender, district) lock from verified NIRA response.',
     next: 'Continue → Step 2',
   },
   {
     id: 4,
     persona: 'citizen',
-    label: 'Application Form — Business & Tax (Step 2)',
+    label: 'Application Form — Business, Tax & Consent',
     paths: ['/portal/apply'],
-    action: 'Business name entered. Click "Verify Tax Status" — URA SIMULATED banner. Clearance date shown. Consent → Documents → Review.',
-    next: 'Submit. Copy reference number.',
+    action: 'Business name entered. Click "Verify Tax Status via URA" — URA SIMULATED banner shows clearance date. Consent checkbox (Module 02 — PDPA 2019). Upload documents. Review summary → Submit.',
+    next: 'Submit. Copy the reference number shown.',
   },
   {
     id: 5,
     persona: 'citizen',
     label: 'Application Status + Payment (Module 07)',
     paths: ['/portal/application/', '/portal/my-applications'],
-    action: 'Open the new application. See Notification Log (Module 06) — SMS, email, portal events. Scroll to Payment panel — select MTN Mobile Money and pay.',
+    action: 'Open the new application. See SLA timers ticking. Scroll to Notification Log (Module 06) — SMS, email, portal events. Scroll to Payment panel — select MTN Mobile Money → Pay Now.',
     next: 'Watch Pesapal Sandbox simulation (2.5s). Receipt appears.',
   },
   {
@@ -47,31 +47,31 @@ const STEPS = [
     persona: 'officer',
     label: 'Officer Task Queue',
     paths: ['/desk'],
-    action: 'Escalated apps sorted to top (red 🚨 badge). New Trading Licence submission visible. Click to open review.',
+    action: 'Escalated apps sorted to top (red 🚨 badge). NEW badge on recent submission. SLA progress bars visible. Search bar filters by name or reference. Click the Trading Licence application.',
     next: 'Click the Trading Licence application',
   },
   {
     id: 7,
     persona: 'officer',
-    label: 'Review Interface — Doc Verify + Escalate',
+    label: 'Review Interface — Docs, SOP, Escalate (Modules 03–05)',
     paths: ['/desk/review'],
-    action: 'SOP checklist shows "fee paid" item. Per-document ✓ Verify / ✕ Reject buttons. If SLA >75% → red escalation banner → "🚨 Escalate Now". Open API Interop panel.',
+    action: 'SOP checklist (8 items) auto-populated from data — "fee paid" item for Trading Licence. Per-document View / ✓ Verify / ✕ Reject. SLA >75% elapsed → red escalation banner → "🚨 Escalate". Open API Interop panel (Module 10) to inspect UGHub envelope.',
     next: 'Select ✅ Approve → Submit Decision',
   },
   {
     id: 8,
     persona: 'supervisor',
-    label: 'Supervisor Queue — Escalated Tab',
+    label: 'Supervisor Queue — Countersign & Escalated',
     paths: ['/supervisor'],
-    action: 'Two tabs: Pending Countersignature and 🚨 Escalated. Show escalated app (NGS-2026-0014) with SLA timer in red.',
-    next: 'Switch to Countersign tab → expand → ✅ Countersign & Approve',
+    action: 'Two tabs: Pending Countersignature and 🚨 Escalated. Show escalated app NGS-2026-0014 with SLA timer in red. Switch to Countersign tab → expand application details → ✅ Countersign & Approve.',
+    next: 'Switch to citizen persona → open NGS-2026-0005',
   },
   {
     id: 9,
     persona: 'citizen',
-    label: 'Citizen — Approved + Notifications',
+    label: 'Approved — Permit Certificate & Notifications',
     paths: ['/portal/application/'],
-    action: 'Status APPROVED — green banner. Scroll to Notification Log — system SMS + portal notifications fired on each status change. Rate the service ⭐⭐⭐⭐⭐',
+    action: 'Navigate to My Applications → open NGS-2026-0005 (Akello Sarah, approved). Green APPROVED banner. Click "View Permit →" — official certificate with Republic of Uganda letterhead, signatures, stamp area, print/download. Notification Log shows SMS + portal events. Rate the service ⭐⭐⭐⭐⭐.',
     next: 'Switch to leadership persona',
   },
   {
@@ -79,8 +79,40 @@ const STEPS = [
     persona: 'leadership',
     label: 'Leadership Dashboard + M&E Reports (Module 09)',
     paths: ['/dashboard'],
-    action: 'Live KPIs, weekly trend, district drill-down. Click "📋 M&E Reports" tab — notification stats by channel, payment revenue (UGX), service breakdown, citizen satisfaction rating.',
-    next: 'Click "📊 Export CSV" to download executive scorecard.',
+    action: 'Live KPIs — active applications, weekly trend chart, district drill-down, officer workload. Click "📋 M&E Reports" tab — notification delivery by channel, payment revenue in UGX, service approval breakdown, avg satisfaction rating. Click "📊 Export CSV" for executive scorecard.',
+    next: 'Navigate to /track — public reference tracker',
+  },
+  {
+    id: 11,
+    persona: 'citizen',
+    label: 'Public Reference Tracker',
+    paths: ['/track'],
+    action: 'No login required. Enter any reference e.g. NGS-2026-0005 → see status, SLA timers, citizen-friendly message. Useful for citizens without portal access. Try NGS-2026-0014 (under review + escalated).',
+    next: 'Navigate to /about for architecture overview',
+  },
+  {
+    id: 12,
+    persona: 'citizen',
+    label: 'About NileGov Stack',
+    paths: ['/about'],
+    action: 'Architecture ASCII diagram showing all tiers. 11 operational modules with status badges (all Live). Technology stack table — Node.js 22 built-in SQLite, React 18, Recharts. Six design principles. Prototype disclaimer.',
+    next: 'Navigate to /api-docs',
+  },
+  {
+    id: 13,
+    persona: 'citizen',
+    label: 'API Documentation (27 endpoints)',
+    paths: ['/api-docs'],
+    action: 'Search filter across all 27 endpoints. Method badges (GET/POST/PATCH). Expand any endpoint to see request/response schema. Click "▶ Test" on GET endpoints — live data returned from the running server. UGHub envelope pattern documented at bottom.',
+    next: 'Switch back to citizen → demo withdrawal',
+  },
+  {
+    id: 14,
+    persona: 'citizen',
+    label: 'Application Withdrawal',
+    paths: ['/portal/application/'],
+    action: 'Open a "submitted" application (e.g. NGS-2026-0018 or a freshly submitted one). Scroll to bottom — "Withdraw this application" link. Confirm → status changes to Withdrawn (grey badge). Demonstrates citizen control of their data (PDPA right to erasure principle).',
+    next: '🎬 End of demo — all 11 modules demonstrated.',
   },
 ];
 
@@ -93,6 +125,9 @@ function matchStep(pathname: string) {
   if (pathname.includes('/application/')) return STEPS.find(s => s.id === 9);
   if (pathname.includes('/apply')) return STEPS.find(s => s.id === 3);
   if (pathname.includes('/services')) return STEPS.find(s => s.id === 2);
+  if (pathname.startsWith('/track')) return STEPS.find(s => s.id === 11);
+  if (pathname.startsWith('/about')) return STEPS.find(s => s.id === 12);
+  if (pathname.startsWith('/api-docs')) return STEPS.find(s => s.id === 13);
   if (pathname.startsWith('/portal')) return STEPS.find(s => s.id === 1);
   return null;
 }
@@ -144,7 +179,7 @@ export default function DemoGuide({ persona }: { persona: string }) {
           ) : current ? (
             <div className="px-4 py-3">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="bg-gold-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Step {current.id} of {STEPS.length}</span>
+                <span className="bg-gold-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Step {current.id}/{STEPS.length}</span>
                 <span className={`text-white text-xs font-bold px-2 py-0.5 rounded-full ${PERSONA_COLOR[current.persona] || 'bg-navy-700'}`}>{current.persona}</span>
                 <span className="text-xs font-semibold text-gray-300 flex-1">{current.label}</span>
               </div>

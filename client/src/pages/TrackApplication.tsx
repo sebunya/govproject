@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
@@ -9,16 +9,18 @@ import SlaTimer from '../components/SlaTimer';
 export default function TrackApplication() {
   const [params] = useSearchParams();
   const persona = params.get('persona') || 'citizen';
-  const [ref, setRef] = useState('');
+  const prefillRef = params.get('ref') || '';
+  const [ref, setRef] = useState(prefillRef);
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const track = async () => {
-    if (!ref.trim()) return;
+  const track = async (overrideRef?: string) => {
+    const lookup = (overrideRef ?? ref).trim().toUpperCase();
+    if (!lookup) return;
     setLoading(true); setError(''); setResult(null);
     try {
-      const res = await axios.get(`/api/track/${ref.trim().toUpperCase()}`);
+      const res = await axios.get(`/api/track/${lookup}`);
       setResult(res.data);
     } catch {
       setError('Reference number not found. Please check and try again.');
@@ -26,6 +28,11 @@ export default function TrackApplication() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (prefillRef) track(prefillRef);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const STATUS_MSG: Record<string, string> = {
     submitted: 'Your application has been received and is awaiting officer assignment.',

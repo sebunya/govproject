@@ -255,6 +255,45 @@ export default function LeadershipDashboard() {
               </div>
             )}
 
+            {/* Officer workload in M&E tab */}
+            {reports.officerWorkload && reports.officerWorkload.length > 0 && (
+              <div className="card">
+                <h2 className="section-title">Officer Workload & Performance (Module 04 — Assignment)</h2>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
+                        <th className="text-left py-2">Officer</th>
+                        <th className="text-right py-2">Total</th>
+                        <th className="text-right py-2">Active</th>
+                        <th className="text-right py-2">Resolved</th>
+                        <th className="text-right py-2">Approved</th>
+                        <th className="text-right py-2">SLA %</th>
+                        <th className="text-right py-2">Avg Res.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(reports.officerWorkload as any[]).map((o: any) => (
+                        <tr key={o.id} className="border-b border-gray-100 hover:bg-navy-50">
+                          <td className="py-2 font-medium">{o.name}</td>
+                          <td className="py-2 text-right">{o.total}</td>
+                          <td className="py-2 text-right text-status-orange font-semibold">{o.active}</td>
+                          <td className="py-2 text-right">{o.resolved}</td>
+                          <td className="py-2 text-right text-status-green font-semibold">{o.approved ?? '—'}</td>
+                          <td className="py-2 text-right">
+                            <span className={`font-bold ${(o.slaCompliance ?? 100) >= 90 ? 'text-status-green' : 'text-status-orange'}`}>
+                              {o.slaCompliance ?? 100}%
+                            </span>
+                          </td>
+                          <td className="py-2 text-right text-gray-600">{o.avgResolutionHours > 0 ? `${o.avgResolutionHours}h` : '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             <div className="bg-gold-50 border border-gold-500 rounded-xl p-4 text-sm text-yellow-800">
               <strong>Module 09 — M&E Reporting:</strong> This snapshot is generated from live operational data in NileGov Stack.
               In production, it would feed into the Ministry of Local Government IFMIS reporting framework and OPM performance scorecards.
