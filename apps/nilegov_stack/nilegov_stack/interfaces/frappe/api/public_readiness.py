@@ -199,6 +199,3 @@ def get_redacted_case_status_preview(reference_number=None):
     redacted_data["runtime_validation_status"] = "Pending Hetzner/Frappe runtime validation"
 
     return build_success_envelope(redacted_data).to_dict()
-
-
-

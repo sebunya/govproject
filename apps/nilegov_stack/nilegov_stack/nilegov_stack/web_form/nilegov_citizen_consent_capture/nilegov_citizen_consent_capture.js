@@ -52,8 +52,8 @@ frappe.web_form.after_load = () => {
                     Data Processing Consent Record
                 </h4>
                 <p style="color:#555555; margin-bottom:0;">
-                    Personal data processing requires explicit consent from the data subject. 
-                    This record documents consent for processing identity profiles, mobile numbers, locations, 
+                    Personal data processing requires explicit consent from the data subject.
+                    This record documents consent for processing identity profiles, mobile numbers, locations,
                     and attachments relative to the requested public services.
                 </p>
             </div>
@@ -65,7 +65,7 @@ frappe.web_form.after_load = () => {
     if (!frappe.web_form.get_value('consent_purpose')) {
         frappe.web_form.set_value('consent_purpose', 'Identity Verification and SLA Tracking');
     }
-    
+
     // Set default status to Opt-In
     if (!frappe.web_form.get_value('consent_status')) {
         frappe.web_form.set_value('consent_status', 'Opt-In');

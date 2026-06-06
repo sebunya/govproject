@@ -64,7 +64,7 @@ frappe.web_form.after_load = () => {
         const serviceRequest = frappe.web_form.get_value('service_request');
         const docType = frappe.web_form.get_value('document_type');
         const docTitle = frappe.web_form.get_value('document_title');
-        
+
         if (!serviceRequest) {
             frappe.msgprint(__('You must specify a valid Service Request reference number.'));
             return false;

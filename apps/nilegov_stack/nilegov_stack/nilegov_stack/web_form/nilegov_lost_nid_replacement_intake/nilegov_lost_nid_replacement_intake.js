@@ -111,7 +111,7 @@ frappe.web_form.after_load = () => {
             <div class="nilegov-step step-3">3. Legal Consent</div>
         </div>
     `;
-    
+
     const webForm = $('.web-form');
     if ($('.nilegov-stepper-container').length === 0) {
         webForm.prepend(stepperHtml);
@@ -134,7 +134,7 @@ frappe.web_form.after_load = () => {
                     <li>Intake Parameters: Physical Location, Reason for Request.</li>
                 </ul>
                 <p style="color:#555555; margin-bottom:0;">
-                    Your data is solely used to process this lost NID replacement request. 
+                    Your data is solely used to process this lost NID replacement request.
                     A secure timestamp will be recorded to register your consent.
                 </p>
             </div>
@@ -161,7 +161,7 @@ frappe.web_form.after_load = () => {
             }
 
             alertDiv.html('<span style="color:#856404; font-style:italic;">Querying NIRA registry simulation...</span>').show();
-            
+
             setTimeout(() => {
                 if (ninVal === 'CM93019100ABC1J') {
                     alertDiv.html(

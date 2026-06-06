@@ -39,7 +39,7 @@ class TestRecoverySafetyCleanup:
         assert os.path.isfile(API_FILE), f"API file not found at {API_FILE}"
         with open(API_FILE, "r", encoding="utf-8") as f:
             content = f.read()
-        
+
         for ep in REMOVED_ENDPOINTS:
             assert f"def {ep}(" not in content, f"Unapproved endpoint '{ep}' is still defined in public_readiness.py"
 

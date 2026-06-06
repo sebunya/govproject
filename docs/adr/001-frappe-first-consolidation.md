@@ -13,7 +13,7 @@ Running a dual-backend architecture (Express/SQLite alongside Frappe) introduces
 ---
 
 ## Decision
-We will consolidate all operations into the Frappe-native custom app (System B) as the sole runtime and backend. 
+We will consolidate all operations into the Frappe-native custom app (System B) as the sole runtime and backend.
 
 ### Implementation Boundaries
 1. **Database Source of Truth:** SQLite is deprecated. MariaDB (or PostgreSQL) managed natively by Frappe Bench is the sole database engine.
