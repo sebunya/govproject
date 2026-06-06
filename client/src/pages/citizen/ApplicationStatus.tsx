@@ -4,6 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusBadge from '../../components/StatusBadge';
 import SlaTimer from '../../components/SlaTimer';
+import NotificationsPanel from '../../components/NotificationsPanel';
+import PaymentPanel from '../../components/PaymentPanel';
 
 export default function ApplicationStatus() {
   const { id } = useParams<{ id: string }>();
@@ -303,6 +305,20 @@ export default function ApplicationStatus() {
           </p>
         </div>
       )}
+
+      {/* Payment panel — shown for fee-based services */}
+      {app.serviceCode === 'trading-licence' && app.feeAmount > 0 && (
+        <PaymentPanel
+          applicationId={Number(id)}
+          serviceCode={app.serviceCode}
+          feeAmount={app.feeAmount}
+          feeCurrency={app.feeCurrency || 'UGX'}
+          readOnly={false}
+        />
+      )}
+
+      {/* Notification log */}
+      <NotificationsPanel applicationId={Number(id)} />
     </div>
   );
 }

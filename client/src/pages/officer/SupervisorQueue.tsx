@@ -9,17 +9,21 @@ export default function SupervisorQueue() {
   const [params] = useSearchParams();
   const persona = params.get('persona') || 'supervisor';
   const qc = useQueryClient();
+  const [tab, setTab] = useState<'countersign' | 'escalated'>('countersign');
   const [expanded, setExpanded] = useState<number | null>(null);
   const [decision, setDecision] = useState<Record<number, 'approved' | 'rejected'>>({});
   const [notes, setNotes] = useState<Record<number, string>>({});
   const [submitting, setSubmitting] = useState<number | null>(null);
   const [recentDecision, setRecentDecision] = useState<{ ref: string; decision: string } | null>(null);
 
-  const { data: apps = [], isLoading } = useQuery({
+  const { data: allApps = [], isLoading } = useQuery({
     queryKey: ['supervisor-queue'],
     queryFn: () => axios.get('/api/applications?persona=supervisor').then(r => r.data),
     refetchInterval: 5000,
   });
+
+  const apps = (allApps as any[]).filter((a: any) => a.status === 'pending_countersign');
+  const escalatedApps = (allApps as any[]).filter((a: any) => a.escalationState === 'escalated' && a.status !== 'pending_countersign');
 
   const submitDecision = async (appId: number, refNum: string) => {
     setSubmitting(appId);
@@ -68,19 +72,75 @@ export default function SupervisorQueue() {
           <div className="w-16 h-0.5 bg-gold-500 mt-1 mb-2" />
           <p className="text-gray-600">Nakamya Grace · Senior District Officer · Mbarara District</p>
         </div>
-        <div className="text-right">
-          <div className="text-3xl font-extrabold text-navy-700">{apps.length}</div>
-          <div className="text-xs text-gray-500">Awaiting countersignature</div>
+        <div className="flex gap-4 text-right">
+          <div>
+            <div className="text-3xl font-extrabold text-navy-700">{apps.length}</div>
+            <div className="text-xs text-gray-500">Countersign pending</div>
+          </div>
+          {escalatedApps.length > 0 && (
+            <div>
+              <div className="text-3xl font-extrabold text-status-red">{escalatedApps.length}</div>
+              <div className="text-xs text-gray-500">Escalated</div>
+            </div>
+          )}
         </div>
       </div>
 
-      {apps.length === 0 ? (
+      {/* Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setTab('countersign')}
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${tab === 'countersign' ? 'bg-navy-700 text-white' : 'bg-white border border-navy-700 text-navy-700'}`}
+        >
+          Pending Countersignature ({apps.length})
+        </button>
+        <button
+          onClick={() => setTab('escalated')}
+          className={`px-4 py-2 rounded-full text-sm font-bold transition-colors flex items-center gap-2 ${tab === 'escalated' ? 'bg-status-red text-white' : 'bg-white border border-status-red text-status-red'}`}
+        >
+          🚨 Escalated ({escalatedApps.length})
+        </button>
+      </div>
+
+      {tab === 'escalated' && (
+        <div className="space-y-4">
+          {escalatedApps.length === 0 ? (
+            <div className="card text-center py-12">
+              <div className="text-4xl mb-3">✅</div>
+              <h3 className="font-bold text-gray-700">No escalated applications</h3>
+              <p className="text-gray-500 text-sm mt-1">No applications have been flagged for priority review.</p>
+            </div>
+          ) : (
+            escalatedApps.map((app: any) => (
+              <div key={app.id} className="card border-2 border-status-red">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className="bg-status-red text-white text-xs font-bold px-2 py-0.5 rounded-full">🚨 ESCALATED</span>
+                      <span className="font-extrabold text-navy-700">{app.referenceNumber}</span>
+                      <StatusBadge status={app.status} />
+                    </div>
+                    <p className="font-semibold text-sm">{app.fullName}</p>
+                    <p className="text-sm text-gray-600">{app.cooperativeName || app.businessName}</p>
+                    <p className="text-xs text-gray-500 mt-1">Assigned to: <strong>{app.assignedOfficerName || '—'}</strong></p>
+                  </div>
+                  <div className="shrink-0 w-44">
+                    <SlaTimer submittedAt={app.submittedAt} slaHours={app.slaResolveHours} label="Resolution SLA" />
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {tab === 'countersign' && apps.length === 0 ? (
         <div className="card text-center py-12">
           <div className="text-4xl mb-3">✅</div>
           <h3 className="font-bold text-gray-700">No applications pending countersignature</h3>
           <p className="text-gray-500 text-sm mt-1">All officer decisions have been reviewed.</p>
         </div>
-      ) : (
+      ) : tab === 'countersign' && (
         <div className="space-y-4">
           {apps.map((app: any) => (
             <div key={app.id} className="card">

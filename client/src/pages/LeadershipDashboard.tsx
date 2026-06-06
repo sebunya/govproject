@@ -27,6 +27,7 @@ const DISTRICT_COLORS: Record<string, string> = {
 
 export default function LeadershipDashboard() {
   const [drillDistrict, setDrillDistrict] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'reports'>('dashboard');
 
   const { data: metrics, isLoading } = useQuery({
     queryKey: ['dashboard'],
@@ -49,6 +50,12 @@ export default function LeadershipDashboard() {
     queryKey: ['officer-stats'],
     queryFn: () => axios.get('/api/dashboard/officers').then(r => r.data),
     refetchInterval: 15000,
+  });
+
+  const { data: reports } = useQuery({
+    queryKey: ['me-reports'],
+    queryFn: () => axios.get('/api/dashboard/reports').then(r => r.data),
+    refetchInterval: 30000,
   });
 
   const printReport = () => window.print();
@@ -113,7 +120,158 @@ export default function LeadershipDashboard() {
           </div>
         </div>
 
-        {isLoading || !metrics ? (
+        {/* Tab switcher */}
+        <div className="flex gap-2">
+          {[
+            { id: 'dashboard', label: '📊 Live Dashboard' },
+            { id: 'reports', label: '📋 M&E Reports' },
+          ].map(t => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id as any)}
+              className={`px-4 py-2 rounded-full text-sm font-bold transition-colors ${activeTab === t.id ? 'bg-navy-700 text-white' : 'bg-white border border-navy-700 text-navy-700'}`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* M&E Reports Tab */}
+        {activeTab === 'reports' && reports && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: 'Total Applications', value: reports.totals?.total || 0, sub: 'All time' },
+                { label: 'Approval Rate', value: `${reports.totals?.approvalRate || 0}%`, sub: 'Approved / total resolved', color: 'text-status-green' },
+                { label: 'Avg Citizen Rating', value: reports.totals?.avgRating ? `${reports.totals.avgRating}★` : '—', sub: 'Service satisfaction score', color: 'text-gold-500' },
+                { label: 'Escalations', value: reports.totals?.escalated || 0, sub: 'Flagged for priority review', color: reports.totals?.escalated > 0 ? 'text-status-red' : 'text-status-green' },
+              ].map(s => (
+                <div key={s.label} className="stat-card">
+                  <div className={`text-3xl font-extrabold ${s.color || 'text-navy-700'}`}>{s.value}</div>
+                  <div className="text-sm font-semibold text-gray-700 mt-1">{s.label}</div>
+                  {s.sub && <div className="text-xs text-gray-500 mt-0.5">{s.sub}</div>}
+                </div>
+              ))}
+            </div>
+
+            {/* Notification stats */}
+            {reports.notifications && (
+              <div className="card">
+                <h2 className="section-title">Notification Delivery (Module 06)</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div className="bg-navy-50 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-navy-700">{reports.notifications.total}</div>
+                    <div className="text-xs text-gray-500 mt-1">Total Sent</div>
+                  </div>
+                  <div className="bg-status-greenBg rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-status-green">{reports.notifications.simulated_sent || 0}</div>
+                    <div className="text-xs text-gray-500 mt-1">Simulated Sent</div>
+                  </div>
+                  <div className="bg-status-redBg rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-status-red">{reports.notifications.simulated_failed || 0}</div>
+                    <div className="text-xs text-gray-500 mt-1">Failed</div>
+                  </div>
+                  <div className="bg-gold-50 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-gold-500">{reports.notifications.byChannel?.sms || 0}</div>
+                    <div className="text-xs text-gray-500 mt-1">SMS</div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {Object.entries(reports.notifications.byChannel || {}).map(([ch, count]) => (
+                    <div key={ch} className="flex items-center gap-3">
+                      <span className="text-sm font-semibold text-gray-700 w-20 capitalize">{ch}</span>
+                      <div className="flex-1 bg-gray-100 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full bg-navy-700"
+                          style={{ width: `${reports.notifications.total > 0 ? Math.round((count as number / reports.notifications.total) * 100) : 0}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-500 w-8 text-right">{count as number}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-yellow-800 bg-gold-50 border border-gold-500 rounded-lg p-2 mt-3">
+                  ⚠ Prototype simulation only. No live SMS, email or portal notifications were sent. Production integration would use NITA-U certified channels.
+                </p>
+              </div>
+            )}
+
+            {/* Payment stats */}
+            {reports.payments && (
+              <div className="card">
+                <h2 className="section-title">Payment Revenue (Module 07 — Pesapal Sandbox)</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div className="bg-status-greenBg rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-status-green">{Number(reports.payments.totalVerifiedAmount || 0).toLocaleString()}</div>
+                    <div className="text-xs text-gray-500 mt-1">UGX Verified Revenue</div>
+                  </div>
+                  <div className="bg-navy-50 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-navy-700">{reports.payments.verifiedCount || 0}</div>
+                    <div className="text-xs text-gray-500 mt-1">Payments Verified</div>
+                  </div>
+                  <div className="bg-status-orangeBg rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-status-orange">{reports.payments.pendingCount || 0}</div>
+                    <div className="text-xs text-gray-500 mt-1">Pending</div>
+                  </div>
+                  <div className="bg-navy-50 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-navy-700">UGX 120k</div>
+                    <div className="text-xs text-gray-500 mt-1">Per Licence Fee</div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {Object.entries(reports.payments.byMethod || {}).map(([method, count]) => (
+                    <div key={method} className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600 capitalize">{method.replace(/_/g, ' ')}</span>
+                      <span className="font-bold text-navy-700">{count as number} payments</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-yellow-800 bg-gold-50 border border-gold-500 rounded-lg p-2 mt-3">
+                  ⚠ Prototype simulation only. No live payment was processed. Pesapal API 3.0 Sandbox Pattern.
+                </p>
+              </div>
+            )}
+
+            {/* Service breakdown */}
+            {reports.byService && (
+              <div className="card">
+                <h2 className="section-title">Applications by Service (Module 08 — Service Catalogue)</h2>
+                <div className="space-y-3">
+                  {reports.byService.map((svc: any) => (
+                    <div key={svc.serviceCode} className="border border-gray-100 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-navy-700">{svc.serviceName || svc.serviceCode}</span>
+                        <span className="text-sm font-bold text-gray-700">{svc.total} total</span>
+                      </div>
+                      <div className="flex gap-4 text-xs text-gray-500">
+                        <span className="text-status-green">✓ {svc.approved} approved</span>
+                        <span className="text-status-red">✕ {svc.rejected} rejected</span>
+                        <span className="text-status-orange">⏱ {svc.active} active</span>
+                        {svc.avgResolutionHours > 0 && <span>⏰ avg {svc.avgResolutionHours}h</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="bg-gold-50 border border-gold-500 rounded-xl p-4 text-sm text-yellow-800">
+              <strong>Module 09 — M&E Reporting:</strong> This snapshot is generated from live operational data in NileGov Stack.
+              In production, it would feed into the Ministry of Local Government IFMIS reporting framework and OPM performance scorecards.
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'dashboard' && isLoading && !metrics && (
+          <div className="flex items-center justify-center py-20">
+            <div className="animate-spin h-10 w-10 border-4 border-navy-700 border-t-transparent rounded-full" />
+          </div>
+        )}
+
+        {activeTab === 'dashboard' && !isLoading && metrics && (
+        <div className="space-y-8">
+
+        {false ? (
           <div className="flex items-center justify-center py-20">
             <div className="animate-spin h-10 w-10 border-4 border-navy-700 border-t-transparent rounded-full" />
           </div>
@@ -390,6 +548,8 @@ export default function LeadershipDashboard() {
               <p className="text-xs text-gray-500">This report is generated from live operational data within the NileGov Stack platform and is designed to support internal governance and accountability reporting.</p>
             </div>
           </>
+        )}
+        </div>
         )}
       </main>
     </div>

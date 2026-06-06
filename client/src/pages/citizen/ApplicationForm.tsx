@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import SimulatedBanner from '../../components/SimulatedBanner';
 
-function ConfirmationScreen({ referenceNumber, applicationId, persona, onTrack, onPortal }: {
+function ConfirmationScreen({ referenceNumber, applicationId, persona, serviceCode, onTrack, onPortal }: {
   referenceNumber: string;
   applicationId: number;
   persona: string;
+  serviceCode: string;
   onTrack: () => void;
   onPortal: () => void;
 }) {
@@ -28,16 +30,21 @@ function ConfirmationScreen({ referenceNumber, applicationId, persona, onTrack, 
     });
   };
 
+  const isTrading = serviceCode === 'trading-licence';
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="card py-10">
         <div className="text-center mb-6">
           <div className="text-6xl mb-4">✅</div>
           <h2 className="text-2xl font-extrabold text-status-green mb-2">Application Submitted Successfully</h2>
-          <p className="text-gray-600">Your cooperative registration and agribusiness permit application has been received by Mbarara District Local Government.</p>
+          <p className="text-gray-600">
+            {isTrading
+              ? 'Your Trading Licence application has been received. Complete payment to proceed.'
+              : 'Your cooperative registration and agribusiness permit application has been received by Mbarara District Local Government.'}
+          </p>
         </div>
 
-        {/* Reference number — prominent, copyable */}
         <div className="bg-navy-700 rounded-xl p-5 text-center mb-6">
           <p className="text-navy-100 text-xs font-semibold uppercase tracking-wider mb-1">Your Reference Number</p>
           <div className="flex items-center justify-center gap-3">
@@ -54,9 +61,9 @@ function ConfirmationScreen({ referenceNumber, applicationId, persona, onTrack, 
 
         <div className="bg-navy-50 rounded-xl p-5 space-y-3 mb-5">
           {[
-            { label: 'Service', value: 'Cooperative Registration & Agribusiness Permit' },
+            { label: 'Service', value: isTrading ? 'Trading Licence' : 'Cooperative Registration & Agribusiness Permit' },
             { label: 'SLA — Initial Response', value: 'Within 2 working days', green: true },
-            { label: 'SLA — Resolution', value: 'Within 14 working days', green: true },
+            { label: 'SLA — Resolution', value: isTrading ? 'Within 10 working days' : 'Within 14 working days', green: true },
             { label: 'MDA', value: 'Mbarara District Local Government' },
           ].map(f => (
             <div key={f.label} className="flex justify-between text-sm">
@@ -66,9 +73,18 @@ function ConfirmationScreen({ referenceNumber, applicationId, persona, onTrack, 
           ))}
         </div>
 
+        {isTrading && (
+          <div className="bg-gold-50 border-2 border-gold-500 rounded-xl p-4 mb-6">
+            <p className="text-sm font-bold text-yellow-900 mb-1">💳 Payment Required</p>
+            <p className="text-sm text-yellow-800">
+              Your application requires a UGX 120,000 processing fee. Track your application to complete payment via MTN/Airtel Mobile Money or Card.
+            </p>
+          </div>
+        )}
+
         <div className="bg-gold-50 border border-gold-500 rounded-lg p-4 mb-6">
           <p className="text-sm text-yellow-900">
-            <strong>What happens next?</strong> A District Agricultural Officer will review your application and may contact you within 2 working days if additional information is required. Your application status will update automatically.
+            <strong>What happens next?</strong> A District Officer will review your application and may contact you within 2 working days if additional information is required.
           </p>
         </div>
 
@@ -100,6 +116,14 @@ export default function ApplicationForm() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const persona = params.get('persona') || 'citizen';
+  const serviceParam = params.get('service') || 'cooperative-permit';
+  const isTrading = serviceParam === 'trading-licence';
+
+  const { data: serviceInfo } = useQuery({
+    queryKey: ['service', serviceParam],
+    queryFn: () => axios.get('/api/services').then(r => (r.data as any[]).find((s: any) => s.code === serviceParam)),
+    staleTime: 60000,
+  });
 
   const [step, setStep] = useState<Step>(1);
   const [nin, setNin] = useState('CM93019100ABC1J');
@@ -108,7 +132,8 @@ export default function ApplicationForm() {
   const [showNiraBanner, setShowNiraBanner] = useState(false);
   const [niraError, setNiraError] = useState('');
 
-  const [cooperativeName, setCooperativeName] = useState('Mbarara Coffee Growers Cooperative');
+  const [cooperativeName, setCooperativeName] = useState(isTrading ? '' : 'Mbarara Coffee Growers Cooperative');
+  const [businessName, setBusinessName] = useState('Nakayima General Merchandise');
   const [proposedTin, setProposedTin] = useState('1000000042');
   const [uraData, setUraData] = useState<UraData | null>(null);
   const [uraLoading, setUraLoading] = useState(false);
@@ -118,13 +143,16 @@ export default function ApplicationForm() {
 
   const [bylaws, setBylaws] = useState<File | null>(null);
   const [memberRoster, setMemberRoster] = useState<File | null>(null);
+  const [tradingDoc, setTradingDoc] = useState<File | null>(null);
   const [fileError, setFileError] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<{ referenceNumber: string; id: number } | null>(null);
+  const [submitError, setSubmitError] = useState('');
 
   const bylawsRef = useRef<HTMLInputElement>(null);
   const rosterRef = useRef<HTMLInputElement>(null);
+  const tradingDocRef = useRef<HTMLInputElement>(null);
 
   const verifyNira = async () => {
     if (!nin.trim()) { setNiraError('Please enter your NIN'); return; }
@@ -152,8 +180,6 @@ export default function ApplicationForm() {
     setter(file);
   };
 
-  const [submitError, setSubmitError] = useState('');
-
   const handleSubmit = async () => {
     setSubmitting(true);
     setSubmitError('');
@@ -164,13 +190,19 @@ export default function ApplicationForm() {
       fd.append('dateOfBirth', niraData!.dateOfBirth);
       fd.append('district', niraData!.district);
       fd.append('gender', niraData!.gender);
-      fd.append('cooperativeName', cooperativeName);
+      fd.append('serviceCode', serviceParam);
+      if (isTrading) {
+        fd.append('businessName', businessName);
+      } else {
+        fd.append('cooperativeName', cooperativeName);
+      }
       fd.append('proposedTin', proposedTin);
       fd.append('taxStatus', uraData!.taxStatus);
       fd.append('taxClearanceValidUntil', uraData!.clearanceValidUntil);
       fd.append('consentTimestamp', new Date().toISOString());
       if (bylaws) fd.append('bylaws', bylaws);
       if (memberRoster) fd.append('memberRoster', memberRoster);
+      if (tradingDoc) fd.append('tradingDoc', tradingDoc);
 
       const res = await axios.post('/api/applications', fd);
       setSubmitted(res.data);
@@ -182,14 +214,11 @@ export default function ApplicationForm() {
     }
   };
 
-  const stepLabels = [
-    'Identity Verification',
-    'Regulatory Check',
-    'Consent',
-    'Documents',
-    'Review & Submit',
-    'Confirmation',
-  ];
+  const docsReady = isTrading ? !!tradingDoc : (!!bylaws && !!memberRoster);
+
+  const stepLabels = isTrading
+    ? ['Identity', 'Tax Check', 'Consent', 'Documents', 'Review & Submit', 'Confirmation']
+    : ['Identity Verification', 'Regulatory Check', 'Consent', 'Documents', 'Review & Submit', 'Confirmation'];
 
   if (submitted && step === 6) {
     return (
@@ -197,6 +226,7 @@ export default function ApplicationForm() {
         referenceNumber={submitted.referenceNumber}
         applicationId={submitted.id}
         persona={persona}
+        serviceCode={serviceParam}
         onTrack={() => navigate(`/portal/application/${submitted.id}?persona=${persona}`)}
         onPortal={() => navigate(`/portal?persona=${persona}`)}
       />
@@ -206,9 +236,15 @@ export default function ApplicationForm() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-navy-700">Cooperative Registration & Agribusiness Permit</h1>
+        <h1 className="text-2xl font-extrabold text-navy-700">
+          {isTrading ? 'Trading Licence Application' : 'Cooperative Registration & Agribusiness Permit'}
+        </h1>
         <div className="w-16 h-0.5 bg-gold-500 mt-1 mb-1" />
-        <p className="text-sm text-gray-600">Mbarara District Local Government · No fee · SLA: 14 working days</p>
+        <p className="text-sm text-gray-600">
+          Mbarara District Local Government ·{' '}
+          {serviceInfo ? (serviceInfo.feeAmount > 0 ? `${serviceInfo.feeCurrency} ${Number(serviceInfo.feeAmount).toLocaleString()} fee` : 'No fee') : '…'}{' '}
+          · SLA: {serviceInfo ? `${Math.round(serviceInfo.slaResolveHours / 24)} working days` : '…'}
+        </p>
       </div>
 
       {/* Step indicator */}
@@ -296,34 +332,40 @@ export default function ApplicationForm() {
           )}
 
           <div className="flex justify-end">
-            <button
-              onClick={() => setStep(2)}
-              disabled={!niraData}
-              className="btn-primary"
-            >
-              Continue →
-            </button>
+            <button onClick={() => setStep(2)} disabled={!niraData} className="btn-primary">Continue →</button>
           </div>
         </div>
       )}
 
-      {/* STEP 2: Cooperative + URA */}
+      {/* STEP 2: Business/Cooperative + URA */}
       {step === 2 && (
         <div className="card space-y-5">
-          <h2 className="section-title">Step 2 — Cooperative Details & Tax Status (URA)</h2>
+          <h2 className="section-title">Step 2 — {isTrading ? 'Business Details' : 'Cooperative Details'} & Tax Status (URA)</h2>
+
+          {isTrading ? (
+            <div>
+              <label className="form-label">Business / Trading Name</label>
+              <input
+                className="form-input"
+                value={businessName}
+                onChange={e => setBusinessName(e.target.value)}
+                placeholder="e.g. Nakayima General Merchandise"
+              />
+            </div>
+          ) : (
+            <div>
+              <label className="form-label">Cooperative Name</label>
+              <input
+                className="form-input"
+                value={cooperativeName}
+                onChange={e => setCooperativeName(e.target.value)}
+                placeholder="e.g. Mbarara Coffee Growers Cooperative"
+              />
+            </div>
+          )}
 
           <div>
-            <label className="form-label">Cooperative Name</label>
-            <input
-              className="form-input"
-              value={cooperativeName}
-              onChange={e => setCooperativeName(e.target.value)}
-              placeholder="e.g. Mbarara Coffee Growers Cooperative"
-            />
-          </div>
-
-          <div>
-            <label className="form-label">Proposed Tax Identification Number (TIN)</label>
+            <label className="form-label">Tax Identification Number (TIN)</label>
             <div className="flex gap-2">
               <input
                 className="form-input"
@@ -347,6 +389,7 @@ export default function ApplicationForm() {
                 ) : uraData ? '✓ Verified' : 'Verify Tax Status'}
               </button>
             </div>
+            <p className="text-xs text-gray-500 mt-1">Demo TIN: 1000000042</p>
           </div>
 
           {showUraBanner && <SimulatedBanner service="URA" />}
@@ -371,7 +414,7 @@ export default function ApplicationForm() {
 
           <div className="flex justify-between">
             <button onClick={() => setStep(1)} className="btn-secondary">← Back</button>
-            <button onClick={() => setStep(3)} disabled={!uraData} className="btn-primary">Continue →</button>
+            <button onClick={() => setStep(3)} disabled={!uraData || (isTrading ? !businessName.trim() : !cooperativeName.trim())} className="btn-primary">Continue →</button>
           </div>
         </div>
       )}
@@ -389,8 +432,8 @@ export default function ApplicationForm() {
             <ul className="text-sm text-gray-700 space-y-1 ml-4 list-disc">
               <li>Identity information retrieved from NIRA (name, date of birth, district, gender)</li>
               <li>Tax status information retrieved from URA</li>
-              <li>Cooperative registration details provided by you</li>
-              <li>Uploaded documents (cooperative bylaws, member roster)</li>
+              <li>{isTrading ? 'Business details' : 'Cooperative registration details'} provided by you</li>
+              <li>Uploaded documents</li>
             </ul>
             <div className="border-t border-navy-100 pt-3">
               <p className="text-sm text-gray-700 leading-relaxed">
@@ -438,59 +481,62 @@ export default function ApplicationForm() {
           )}
 
           <div className="space-y-4">
-            {[
-              { label: 'Cooperative Bylaws', key: 'bylaws', file: bylaws, setter: setBylaws, ref: bylawsRef, required: true },
-              { label: 'Member Roster', key: 'roster', file: memberRoster, setter: setMemberRoster, ref: rosterRef, required: true },
-            ].map(doc => (
-              <div key={doc.key} className="border-2 border-dashed border-gray-300 rounded-xl p-5 hover:border-navy-700 transition-colors">
+            {isTrading ? (
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-5 hover:border-navy-700 transition-colors">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-sm text-gray-700">{doc.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">PDF or image · Max 5MB{doc.required ? ' · Required' : ''}</p>
+                    <p className="font-semibold text-sm text-gray-700">Business Registration Certificate / Application Letter</p>
+                    <p className="text-xs text-gray-500 mt-0.5">PDF or image · Max 5MB · Required</p>
                   </div>
-                  {doc.file ? (
+                  {tradingDoc ? (
                     <div className="flex items-center gap-2 text-status-green text-sm font-medium">
                       <span>✅</span>
-                      <span className="max-w-[160px] truncate">{doc.file.name}</span>
-                      <button
-                        onClick={() => doc.setter(null)}
-                        className="text-gray-400 hover:text-status-red text-xs ml-1"
-                      >✕</button>
+                      <span className="max-w-[160px] truncate">{tradingDoc.name}</span>
+                      <button onClick={() => setTradingDoc(null)} className="text-gray-400 hover:text-status-red text-xs ml-1">✕</button>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => doc.ref.current?.click()}
-                      className="btn-secondary text-sm py-2"
-                    >
-                      Choose File
-                    </button>
+                    <button onClick={() => tradingDocRef.current?.click()} className="btn-secondary text-sm py-2">Choose File</button>
                   )}
                 </div>
-                <input
-                  ref={doc.ref}
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  className="hidden"
-                  onChange={e => handleFile(e.target.files?.[0] || null, doc.setter)}
-                />
+                <input ref={tradingDocRef} type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden"
+                  onChange={e => handleFile(e.target.files?.[0] || null, setTradingDoc)} />
               </div>
-            ))}
+            ) : (
+              [
+                { label: 'Cooperative Bylaws', file: bylaws, setter: setBylaws, ref: bylawsRef },
+                { label: 'Member Roster', file: memberRoster, setter: setMemberRoster, ref: rosterRef },
+              ].map(doc => (
+                <div key={doc.label} className="border-2 border-dashed border-gray-300 rounded-xl p-5 hover:border-navy-700 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-sm text-gray-700">{doc.label}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">PDF or image · Max 5MB · Required</p>
+                    </div>
+                    {doc.file ? (
+                      <div className="flex items-center gap-2 text-status-green text-sm font-medium">
+                        <span>✅</span>
+                        <span className="max-w-[160px] truncate">{doc.file.name}</span>
+                        <button onClick={() => doc.setter(null)} className="text-gray-400 hover:text-status-red text-xs ml-1">✕</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => doc.ref.current?.click()} className="btn-secondary text-sm py-2">Choose File</button>
+                    )}
+                  </div>
+                  <input ref={doc.ref} type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden"
+                    onChange={e => handleFile(e.target.files?.[0] || null, doc.setter)} />
+                </div>
+              ))
+            )}
           </div>
 
           <div className="flex justify-between">
             <button onClick={() => setStep(3)} className="btn-secondary">← Back</button>
-            <button
-              onClick={() => setStep(5)}
-              disabled={!bylaws || !memberRoster}
-              className="btn-primary"
-            >
-              Continue →
-            </button>
+            <button onClick={() => setStep(5)} disabled={!docsReady} className="btn-primary">Continue →</button>
           </div>
         </div>
       )}
 
-      {/* STEP 5: Review */}
+      {/* STEP 5: Review & Submit */}
       {step === 5 && (
         <div className="card space-y-5">
           <h2 className="section-title">Step 5 — Review & Submit</h2>
@@ -507,10 +553,16 @@ export default function ApplicationForm() {
             </div>
 
             <div className="bg-navy-50 rounded-xl p-4 space-y-2">
-              <h3 className="font-bold text-navy-700 text-sm uppercase tracking-wide">Cooperative Details</h3>
+              <h3 className="font-bold text-navy-700 text-sm uppercase tracking-wide">
+                {isTrading ? 'Business Details' : 'Cooperative Details'}
+              </h3>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <span className="text-gray-500">Name</span><span className="font-medium">{cooperativeName}</span>
-                <span className="text-gray-500">Proposed TIN</span><span className="font-medium">{proposedTin}</span>
+                {isTrading ? (
+                  <><span className="text-gray-500">Business Name</span><span className="font-medium">{businessName}</span></>
+                ) : (
+                  <><span className="text-gray-500">Cooperative Name</span><span className="font-medium">{cooperativeName}</span></>
+                )}
+                <span className="text-gray-500">TIN</span><span className="font-medium">{proposedTin}</span>
                 <span className="text-gray-500">Tax Status</span><span className="font-medium text-status-green">{uraData?.taxStatus}</span>
                 <span className="text-gray-500">Valid Until</span><span className="font-medium">{uraData?.clearanceValidUntil}</span>
               </div>
@@ -519,13 +571,22 @@ export default function ApplicationForm() {
             <div className="bg-navy-50 rounded-xl p-4 space-y-2">
               <h3 className="font-bold text-navy-700 text-sm uppercase tracking-wide">Documents</h3>
               <div className="space-y-1 text-sm">
-                <div className="flex items-center gap-2"><span className="text-status-green">✓</span>{bylaws?.name}</div>
-                <div className="flex items-center gap-2"><span className="text-status-green">✓</span>{memberRoster?.name}</div>
+                {isTrading && tradingDoc && <div className="flex items-center gap-2"><span className="text-status-green">✓</span>{tradingDoc.name}</div>}
+                {!isTrading && bylaws && <div className="flex items-center gap-2"><span className="text-status-green">✓</span>{bylaws.name}</div>}
+                {!isTrading && memberRoster && <div className="flex items-center gap-2"><span className="text-status-green">✓</span>{memberRoster.name}</div>}
               </div>
             </div>
 
+            {isTrading && serviceInfo && (
+              <div className="bg-gold-50 border-2 border-gold-500 rounded-xl p-4">
+                <p className="text-sm font-bold text-yellow-900 mb-1">💳 Fee: {serviceInfo.feeCurrency} {Number(serviceInfo.feeAmount).toLocaleString()}</p>
+                <p className="text-sm text-yellow-800">Payment will be required after submission. You can pay via MTN Mobile Money, Airtel Money, Card, or Bank Transfer through the Pesapal Sandbox (simulation only).</p>
+              </div>
+            )}
+
             <div className="bg-gold-50 border border-gold-500 rounded-lg p-4 text-sm text-yellow-900">
-              <strong>SLA Commitment:</strong> Mbarara District Local Government will respond within <strong>2 working days</strong> and resolve your application within <strong>14 working days</strong>.
+              <strong>SLA Commitment:</strong> Mbarara District Local Government will respond within <strong>2 working days</strong> and resolve within{' '}
+              <strong>{isTrading ? '10' : '14'} working days</strong>.
             </div>
           </div>
 
