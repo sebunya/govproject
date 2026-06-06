@@ -104,12 +104,187 @@ function _showStatusIndicator(frm) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Real-time ticking SLA Countdown
+// ─────────────────────────────────────────────────────────────────────────────
+function _startSlaCountdown(frm) {
+    if (frm.nilegov_timer) {
+        clearInterval(frm.nilegov_timer);
+        frm.nilegov_timer = null;
+    }
+
+    const doc = frm.doc;
+    const resolutionDue = doc.resolution_due_at || doc.sla_deadline;
+    const submittedAt = doc.submitted_at;
+    const status = doc.internal_status || '';
+
+    // Only render ticking countdown for active, open requests
+    if (!resolutionDue || !submittedAt || ['Closed', 'Rejected'].includes(status)) {
+        frm.dashboard.wrapper.find('.nilegov-sla-timer-container').remove();
+        return;
+    }
+
+    const deadline = new Date(resolutionDue).getTime();
+    const submitted = new Date(submittedAt).getTime();
+    const totalMs = deadline - submitted;
+
+    if (totalMs <= 0) return;
+
+    let container = frm.dashboard.wrapper.find('.nilegov-sla-timer-container');
+    if (container.length === 0) {
+        container = $(`
+            <div class="nilegov-sla-timer-container" style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 5px solid #1A1A1A; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:bold;">
+                    <span style="color:#555;">SLA RESOLUTION TIMELINE</span>
+                    <span class="nilegov-sla-countdown-text" style="font-family:monospace; font-weight:bold;">--d --h --m --s</span>
+                </div>
+                <div style="width:100%; background:#e9ecef; height:8px; border-radius:4px; overflow:hidden;">
+                    <div class="nilegov-sla-progress-bar" style="width:100%; height:100%; background:#28a745; transition: width 1s linear;"></div>
+                </div>
+            </div>
+        `);
+        frm.dashboard.wrapper.append(container);
+    }
+
+    const tick = () => {
+        const now = Date.now();
+        const remainingMs = deadline - now;
+        const pct = Math.max(0, Math.min(100, (remainingMs / totalMs) * 100));
+
+        const totalSecs = Math.max(0, Math.floor(remainingMs / 1000));
+        const days = Math.floor(totalSecs / 86400);
+        const hrs = Math.floor((totalSecs % 86400) / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
+
+        const isBreached = remainingMs <= 0;
+        const isCritical = pct < 15 && !isBreached;
+        const isWarning = pct < 50 && pct >= 15;
+
+        let barColor = '#28a745'; // Green
+        let textColor = '#28a745';
+        if (isBreached || isCritical) {
+            barColor = '#C8102E'; // Uganda Crimson
+            textColor = '#C8102E';
+        } else if (isWarning) {
+            barColor = '#F5C000'; // Uganda Gold
+            textColor = '#856404';
+        }
+
+        let label = '';
+        if (isBreached) {
+            label = '⚠ SLA BREACHED';
+        } else {
+            label = `${days}d ${hrs}h ${mins}m ${secs}s remaining`;
+        }
+
+        container.find('.nilegov-sla-countdown-text').text(label).css('color', textColor);
+        container.find('.nilegov-sla-progress-bar').css({
+            'width': `${isBreached ? 100 : pct}%`,
+            'background-color': barColor
+        });
+    };
+
+    tick();
+    frm.nilegov_timer = setInterval(tick, 1000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SOP Checklist Visualizer
+// ─────────────────────────────────────────────────────────────────────────────
+function _renderSopChecklist(frm) {
+    frm.dashboard.wrapper.find('.nilegov-sop-container').remove();
+
+    const status = frm.doc.internal_status || '';
+    if (['Closed', 'Rejected'].includes(status)) {
+        return;
+    }
+
+    const doc = frm.doc;
+
+    const checks = [
+        {
+            label: 'NIN Verified via NIRA',
+            status: doc.identity_status === 'Matched',
+            desc: 'Requires simulated NIRA check verification.'
+        },
+        {
+            label: 'Applicant Identity Confirmed',
+            status: !!doc.citizen_full_name,
+            desc: 'Citizen full name must be filled.'
+        },
+        {
+            label: 'District Jurisdiction Validated',
+            status: !!doc.location,
+            desc: 'Application location must reside in the service district.'
+        },
+        {
+            label: 'Data Protection Consent Captured',
+            status: doc.consent_confirmed === 1,
+            desc: 'Requires citizen consent check in intake.'
+        },
+        {
+            label: 'Payment Verified or Not Required',
+            status: ['Verified', 'Not Required'].includes(doc.payment_status),
+            desc: 'Requires fee processing clearance.'
+        },
+        {
+            label: 'SLA Timeline Rules Engaged',
+            status: !!doc.sla_deadline || !!doc.resolution_due_at,
+            desc: 'SLA timeline parameters must be configured.'
+        },
+        {
+            label: 'Officer Allocated to Case',
+            status: !!doc.assigned_officer && doc.assignment_status !== 'Unassigned',
+            desc: 'Case must be assigned to an active officer.'
+        }
+    ];
+
+    let checklistHtml = `
+        <div class="nilegov-sop-container" style="margin: 15px 0; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #ddd; border-top: 4px solid #C8102E; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h4 style="margin-top:0; margin-bottom:12px; font-weight:700; font-size:12px; letter-spacing:0.5px; color:#1A1A1A; text-transform:uppercase;">
+                SOP Checklist (District Service Protocol)
+            </h4>
+            <div class="nilegov-sop-items" style="display:flex; flex-direction:column; gap:10px;">
+    `;
+
+    checks.forEach(check => {
+        const icon = check.status ? '✓' : '⚠';
+        const color = check.status ? '#28a745' : '#dc3545';
+        const bgColor = check.status ? '#e2f0d9' : '#fce4d6';
+        const titleStyle = check.status ? 'text-decoration: none; color: #333;' : 'font-weight: bold; color: #c00000;';
+
+        checklistHtml += `
+            <div class="nilegov-sop-item" style="display:flex; align-items:start; gap:10px; font-size:12px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:${bgColor}; color:${color}; font-weight:bold; flex-shrink:0;">
+                    ${icon}
+                </span>
+                <div>
+                    <div style="${titleStyle}">${check.label}</div>
+                    ${!check.status ? `<div style="font-size:10px; color:#888;">${check.desc}</div>` : ''}
+                </div>
+            </div>
+        `;
+    });
+
+    checklistHtml += `
+            </div>
+        </div>
+    `;
+
+    frm.dashboard.wrapper.append(checklistHtml);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Main form event handler
 // ─────────────────────────────────────────────────────────────────────────────
 frappe.ui.form.on('NileGov Service Request', {
 
     // ── onload ────────────────────────────────────────────────────────────────
     onload: function(frm) {
+        if (frm.nilegov_timer) {
+            clearInterval(frm.nilegov_timer);
+            frm.nilegov_timer = null;
+        }
         // Prototype banner — always visible
         if (!frm.is_new()) {
             frm.set_intro(
@@ -127,6 +302,10 @@ frappe.ui.form.on('NileGov Service Request', {
 
         // Status indicator banner
         _showStatusIndicator(frm);
+
+        // Start countdown and SOP checklist
+        _startSlaCountdown(frm);
+        _renderSopChecklist(frm);
 
         var doc = frm.doc;
 

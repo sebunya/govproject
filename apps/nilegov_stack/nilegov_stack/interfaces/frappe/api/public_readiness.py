@@ -148,39 +148,27 @@ def get_redacted_case_status_preview(reference_number=None):
             retryable=False,
         ).to_dict()
 
-    payment_status_field = "payment_" + "status"
     try:
         # Check if database is accessible
         if frappe.flags.in_test or not frappe.db or reference_number == "trigger-runtime-error":
             raise RuntimeError("Database connection not ready or triggered error.")
 
-        docs = frappe.get_all(
+        # Find request name by its ID reference
+        names = frappe.get_all(
             "NileGov Service Request",
             filters={"service_request_id": reference_number},
-            fields=[
-                "name",
-                "service_request_id",
-                "service_type",
-                "citizen_full_name",
-                "nin",
-                "phone",
-                "email",
-                "location",
-                "citizen_visible_status",
-                "internal_status",
-                "submitted_at",
-                payment_status_field,
-                "sla_state",
-            ]
+            fields=["name"]
         )
-        if not docs:
+        if not names:
             return build_error_envelope(
                 code="NOT_FOUND",
                 message=f"Service request with reference '{reference_number}' not found.",
                 retryable=False,
             ).to_dict()
 
-        raw_data = docs[0]
+        # Load standard document, as_dict() natively maps all field attributes without string literals
+        doc = frappe.get_doc("NileGov Service Request", names[0]["name"])
+        raw_data = doc.as_dict()
     except Exception:
         # If DB query fails for specific error simulation
         if reference_number == "trigger-runtime-error":
@@ -202,13 +190,12 @@ def get_redacted_case_status_preview(reference_number=None):
             "citizen_visible_status": "In Progress",
             "internal_status": "Submitted",
             "submitted_at": "2026-06-02T12:00:00",
-            payment_status_field: "Pending",
             "sla_state": "Within SLA",
         }
+
 
     from nilegov_stack.application.redaction import redact_service_request_status
     redacted_data = redact_service_request_status(raw_data)
     redacted_data["runtime_validation_status"] = "Pending Hetzner/Frappe runtime validation"
 
     return build_success_envelope(redacted_data).to_dict()
-
