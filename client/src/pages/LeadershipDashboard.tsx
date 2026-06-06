@@ -67,7 +67,7 @@ export default function LeadershipDashboard() {
       ...(metrics.districtStats || []).map((d: any) => [d.district, d.total, d.onTime, d.avgHours ?? '—']),
       [],
       ['Officer', 'Total', 'Active', 'SLA %', 'Avg Resolution (h)'],
-      ...(officerStats as any[]).map((o: any) => [o.name, o.total, o.active, o.slaPercent, o.avgResolutionHours ?? '—']),
+      ...(officerStats as any[]).map((o: any) => [o.name, o.total, o.active, o.slaCompliance, o.avgResolutionHours ?? '—']),
     ];
     const csv = rows.map(r => r.join(',')).join('\n');
     const a = document.createElement('a');
