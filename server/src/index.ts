@@ -442,8 +442,8 @@ app.patch('/api/applications/:id/escalate', (req, res) => {
 
   db.prepare(`UPDATE applications SET escalationState = 'escalated' WHERE id = ?`).run(req.params.id);
 
-  const row = db.prepare(`SELECT fullName, referenceNumber FROM applications WHERE id = ?`)
-    .get(req.params.id) as { fullName: string; referenceNumber: string };
+  const row = db.prepare(`SELECT fullName, referenceNumber, phoneNumber, email FROM applications WHERE id = ?`)
+    .get(req.params.id) as { fullName: string; referenceNumber: string; phoneNumber: string; email: string };
 
   db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt)
     VALUES (?, 'Application escalated to supervisor — SLA breach', 'officer', 'Tumusiime Robert', ?, ?)
@@ -453,6 +453,12 @@ app.patch('/api/applications/:id/escalate', (req, res) => {
     VALUES (?, 'supervisor', 'internal', 'Nakamya Grace', ?, 'simulated_sent', ?)
   `).run(req.params.id,
     `ESCALATION: Application ${row.referenceNumber} has exceeded SLA. Requires immediate supervisor review.`, now);
+
+  notifyCitizen(
+    { phone: row.phoneNumber, email: row.email, name: row.fullName },
+    { type: 'escalation', referenceNumber: row.referenceNumber,
+      message: `Your application ${row.referenceNumber} has been escalated to a supervisor due to SLA delays. We apologise for the wait and are prioritising your case.` }
+  ).catch(() => {});
 
   const updated = db.prepare(`SELECT * FROM applications WHERE id = ?`).get(req.params.id);
   res.json(updated);
@@ -473,6 +479,15 @@ app.patch('/api/applications/:id/reassign', (req, res) => {
   db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt)
     VALUES (?, ?, 'supervisor', 'Nakamya Grace', ?, ?)
   `).run(req.params.id, `Application reassigned to ${officer.name}`, `Workload rebalancing — reassigned to ${officer.name}`, now);
+
+  const appRow = db.prepare(`SELECT fullName, referenceNumber, phoneNumber, email FROM applications WHERE id = ?`).get(req.params.id) as any;
+  if (appRow) {
+    notifyCitizen(
+      { phone: appRow.phoneNumber, email: appRow.email, name: appRow.fullName },
+      { type: 'reassignment', referenceNumber: appRow.referenceNumber,
+        message: `Your application ${appRow.referenceNumber} has been reassigned to a different officer. It remains active in our system and will be processed promptly.` }
+    ).catch(() => {});
+  }
 
   res.json(db.prepare(`SELECT * FROM applications WHERE id = ?`).get(req.params.id));
 });
@@ -608,8 +623,8 @@ app.patch('/api/applications/:id/citizen-response', upload.single('additionalDoc
   const now = new Date().toISOString();
   const file = req.file;
 
-  const row = db.prepare(`SELECT status, fullName FROM applications WHERE id = ?`)
-    .get(req.params.id) as { status: string; fullName: string } | undefined;
+  const row = db.prepare(`SELECT status, fullName, phoneNumber, email, referenceNumber FROM applications WHERE id = ?`)
+    .get(req.params.id) as { status: string; fullName: string; phoneNumber: string; email: string; referenceNumber: string } | undefined;
   if (!row) return res.status(404).json({ error: 'Not found' });
   if (row.status !== 'more_info_requested')
     return res.status(400).json({ error: 'Application is not awaiting additional information.' });
@@ -628,6 +643,12 @@ app.patch('/api/applications/:id/citizen-response', upload.single('additionalDoc
   db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt)
     VALUES (?, 'citizen', 'portal', ?, 'Application resubmitted with additional information.', 'simulated_sent', ?)
   `).run(req.params.id, row.fullName, now);
+
+  notifyCitizen(
+    { phone: row.phoneNumber, email: row.email, name: row.fullName },
+    { type: 'resubmission', referenceNumber: row.referenceNumber,
+      message: `Your application ${row.referenceNumber} has been resubmitted with additional information and is back in the review queue.` }
+  ).catch(() => {});
 
   const updated = db.prepare(`SELECT * FROM applications WHERE id = ?`).get(req.params.id);
   const docs = db.prepare(`SELECT * FROM documents WHERE applicationId = ? ORDER BY uploadedAt`).all(req.params.id);
@@ -872,12 +893,17 @@ app.get('/api/track/:ref', (req, res) => {
 // Application withdrawal (citizen)
 app.patch('/api/applications/:id/withdraw', (req, res) => {
   const now = new Date().toISOString();
-  const row = db.prepare('SELECT status, fullName, referenceNumber FROM applications WHERE id = ?').get(req.params.id) as any;
+  const row = db.prepare('SELECT status, fullName, referenceNumber, phoneNumber, email FROM applications WHERE id = ?').get(req.params.id) as any;
   if (!row) return res.status(404).json({ error: 'Not found' });
   if (!['submitted'].includes(row.status)) return res.status(409).json({ error: 'Only submitted applications can be withdrawn.' });
   db.prepare(`UPDATE applications SET status = 'withdrawn', resolvedAt = ? WHERE id = ?`).run(now, req.params.id);
   db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt) VALUES (?, 'Application withdrawn by citizen', 'citizen', ?, 'Citizen requested withdrawal before officer review.', ?)`).run(req.params.id, row.fullName, now);
   db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt) VALUES (?, 'citizen', 'portal', ?, ?, 'simulated_sent', ?)`).run(req.params.id, row.fullName, `Your application ${row.referenceNumber} has been withdrawn as requested.`, now);
+  notifyCitizen(
+    { phone: row.phoneNumber, email: row.email, name: row.fullName },
+    { type: 'withdrawal', referenceNumber: row.referenceNumber,
+      message: `Your application ${row.referenceNumber} has been withdrawn as requested. You may submit a new application at any time.` }
+  ).catch(() => {});
   res.json({ ok: true });
 });
 

@@ -4,12 +4,14 @@ import axios from 'axios';
 const CHANNEL_ICON: Record<string, string> = {
   sms: '📱',
   email: '📧',
+  whatsapp: '💬',
   portal: '🌐',
   internal: '🔔',
 };
 const CHANNEL_LABEL: Record<string, string> = {
   sms: 'SMS',
   email: 'Email',
+  whatsapp: 'WhatsApp',
   portal: 'Portal',
   internal: 'Internal',
 };
@@ -59,11 +61,12 @@ export default function NotificationsPanel({ applicationId }: { applicationId: n
                     </span>
                     <span className="text-xs text-gray-500">→ {n.recipient}</span>
                     <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${
-                      n.status === 'simulated_sent' ? 'bg-status-greenBg text-status-green'
+                      n.status === 'sent' ? 'bg-status-greenBg text-status-green'
+                      : n.status === 'simulated_sent' ? 'bg-blue-50 text-blue-600'
                       : n.status === 'simulated_failed' ? 'bg-status-redBg text-status-red'
                       : 'bg-gray-100 text-gray-500'
                     }`}>
-                      {n.status === 'simulated_sent' ? '✓ Simulated Sent' : n.status}
+                      {n.status === 'sent' ? '✓ Live Sent' : n.status === 'simulated_sent' ? '~ Simulated' : n.status}
                     </span>
                   </div>
                   <p className="text-xs text-gray-700 leading-relaxed">{n.message}</p>

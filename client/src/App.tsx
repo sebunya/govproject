@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import PersonaSwitcher from './components/PersonaSwitcher';
 import DemoGuide from './components/DemoGuide';
 import { ToastProvider } from './components/Toast';
+import ErrorBoundary from './components/ErrorBoundary';
 import CitizenPortal from './pages/CitizenPortal';
 import OfficerDesk from './pages/OfficerDesk';
 import LeadershipDashboard from './pages/LeadershipDashboard';
@@ -17,6 +18,7 @@ export default function App() {
   const persona = params.get('persona') || 'citizen';
 
   return (
+    <ErrorBoundary>
     <ToastProvider>
       <div className="min-h-screen bg-gray-50">
         <PersonaSwitcher currentPersona={persona} />
@@ -35,5 +37,6 @@ export default function App() {
         </Routes>
       </div>
     </ToastProvider>
+    </ErrorBoundary>
   );
 }

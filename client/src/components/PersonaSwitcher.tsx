@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import IntegrationStatusBar from './IntegrationStatusBar';
 
 const personas = [
   { id: 'citizen', label: 'Akello Sarah', role: 'Citizen', route: '/portal', icon: '👩🏾‍🌾' },
@@ -16,6 +17,7 @@ export default function PersonaSwitcher({ currentPersona }: { currentPersona: st
   };
 
   return (
+    <>
     <div className="bg-navy-900 border-b border-navy-700 px-4 py-2">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <span className="text-gold-500 text-xs font-semibold tracking-wide uppercase">
@@ -40,5 +42,7 @@ export default function PersonaSwitcher({ currentPersona }: { currentPersona: st
         </div>
       </div>
     </div>
+    <IntegrationStatusBar />
+    </>
   );
 }

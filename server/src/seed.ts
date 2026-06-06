@@ -232,7 +232,7 @@ const bizNames = [
 const insertApp = db.prepare(`
   INSERT INTO applications (
     referenceNumber, serviceCode, serviceType, nin, fullName, dateOfBirth,
-    district, gender, cooperativeName, businessName,
+    district, gender, phoneNumber, email, cooperativeName, businessName,
     proposedTin, taxStatus, taxClearanceValidUntil,
     consentTimestamp, status, escalationState, slaResponseHours, slaResolveHours,
     submittedAt, respondedAt, resolvedAt, assignedOfficerId, assignedOfficerName,
@@ -240,7 +240,7 @@ const insertApp = db.prepare(`
     rating, ratingComment, ratedAt
   ) VALUES (
     ?, ?, ?, ?, ?, ?,
-    ?, ?, ?, ?,
+    ?, ?, ?, ?, ?, ?,
     ?, 'Compliant', '2026-12-31',
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?,
@@ -295,11 +295,15 @@ apps.forEach((app, i) => {
     ? (app.rating >= 5 ? 'Excellent service, very prompt response!' : app.rating >= 4 ? 'Good service, timely processing.' : 'Service was acceptable but could be faster.')
     : null;
 
+  const appId = i + 1;
+  const phone = issarah ? '+256700123456' : `+25670${String(7000000 + appId).slice(1)}`;
+  const email = `${fullName.toLowerCase().replace(/ /g, '.')}@demo.ug`;
+
   insertApp.run(
     app.ref, app.serviceCode, serviceTypes[app.serviceCode],
     nin, fullName,
     issarah ? '1991-04-12' : `199${(i % 9) + 1}-0${(i % 9) + 1}-1${(i % 9) + 1}`,
-    app.district, gender, cooperativeName, businessName,
+    app.district, gender, phone, email, cooperativeName, businessName,
     `100${String(i + 1).padStart(9, '0')}`,
     app.submittedAt,
     app.status, escalationState, sla.r, sla.res,
@@ -308,10 +312,6 @@ apps.forEach((app, i) => {
     officerNotes, officerDecision, supervisorNotes, supervisorDecision,
     app.rating, ratingComment, ratedAt,
   );
-
-  const appId = i + 1;
-  const phone = `+25670${String(7000000 + appId).slice(1)}`;
-  const email = `${fullName.toLowerCase().replace(/ /g, '.')}@demo.ug`;
   const submitAt = app.submittedAt;
   const claimAt = new Date(new Date(submitAt).getTime() + 2 * 3600000).toISOString();
   const decisionAt = app.resolvedAt
