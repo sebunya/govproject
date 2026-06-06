@@ -12,7 +12,7 @@ The safety cleanup has been fully verified. The codebase is clean of unapproved 
 
 ## 2. Branch and Commit Reviewed
 * **Branch name:** `recovery/frappe-first-cleanup`
-* **Commit hash:** `f083d4163f610a51352a07fc8cf5b130bc62d8c4`
+* **Commit hash:** `4b72126ee827bc0a3d03205a3ea923b1d89e5db1`
 * **Target branch:** `main`
 
 ---
