@@ -58,6 +58,85 @@ app.post('/api/simulate/pesapal', (req, res) => {
   });
 });
 
+app.post('/api/simulate/erp-sync', (req, res) => {
+  const { target = 'erpnext', applicationId, referenceNumber, serviceCode, permitNumber, feeAmount, feeCurrency, receiptRef, tin, fullName, district } = req.body;
+  const correlationId = `ERP-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+  const idempotencyKey = `IDEM-${referenceNumber || 'REF'}-${Date.now()}`;
+
+  const targets: Record<string, object> = {
+    erpnext: {
+      target: 'ERPNext / Frappe ERP',
+      action: 'create_journal_entry',
+      payload: {
+        doctype: 'Journal Entry',
+        voucher_type: 'Journal Entry',
+        posting_date: new Date().toISOString().split('T')[0],
+        company: 'Mbarara District Local Government',
+        accounts: [
+          { account: '1110 - Cash and Bank', debit_in_account_currency: feeAmount || 0 },
+          { account: '4110 - Non-Tax Revenue — Licences', credit_in_account_currency: feeAmount || 0 },
+        ],
+        user_remark: `Permit fee for ${referenceNumber || 'N/A'} — ${serviceCode || 'service'} — ${fullName || 'applicant'}`,
+        custom_permit_number: permitNumber || `MDLG-PERM-${referenceNumber}`,
+        custom_reference_number: referenceNumber,
+        custom_tin: tin,
+        custom_pesapal_receipt: receiptRef,
+        currency: feeCurrency || 'UGX',
+      },
+    },
+    ifmis: {
+      target: 'IFMIS (Integrated Financial Management Information System)',
+      action: 'record_ntr',
+      payload: {
+        transaction_type: 'NTR',
+        revenue_head: '1421300 — Licences and Permits',
+        amount: feeAmount || 0,
+        currency: feeCurrency || 'UGX',
+        payer_name: fullName,
+        payer_tin: tin,
+        district_code: 'MBR',
+        district_name: district || 'Mbarara',
+        reference: referenceNumber,
+        pesapal_receipt: receiptRef,
+        consolidated_fund_ref: `CFR-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+        posting_date: new Date().toISOString(),
+      },
+    },
+    opm: {
+      target: 'OPM Performance Scorecard',
+      action: 'push_kpi_event',
+      payload: {
+        district: district || 'Mbarara',
+        service: serviceCode,
+        permit_issued: true,
+        permit_number: permitNumber,
+        reference: referenceNumber,
+        date: new Date().toISOString().split('T')[0],
+        kpi_tags: ['service_delivery', 'permit_issued', 'sla_met'],
+      },
+    },
+  };
+
+  const targetPayload = targets[target] || targets.erpnext;
+
+  res.json({
+    schemaVersion: '1.0',
+    correlationId,
+    idempotencyKey,
+    timestamp: new Date().toISOString(),
+    source: 'NileGov Stack / Mbarara District Local Government',
+    destination: (targetPayload as any).target,
+    action: (targetPayload as any).action,
+    status: 'SIMULATED_SUCCESS',
+    syncedAt: new Date().toISOString(),
+    applicationId,
+    referenceNumber,
+    ...(targetPayload as any),
+    _simulated: true,
+    disclaimer: 'Prototype simulation only. No live ERP, IFMIS, or OPM system was contacted. Production integration requires NITA-U UGHub routing, signed DSA, and district API credentials.',
+  });
+});
+
 // ─── SERVICE CATALOGUE ─────────────────────────────────────────────────────
 
 app.get('/api/services', (_req, res) => {

@@ -412,7 +412,7 @@ export default function ReviewInterface() {
           <NotificationsPanel applicationId={Number(id)} />
 
           {/* API Interoperability Panel */}
-          <ApiInteropPanel niraData={niraData} uraData={uraData} applicationRef={app.referenceNumber} />
+          <ApiInteropPanel niraData={niraData} uraData={uraData} applicationRef={app.referenceNumber} app={app} />
         </div>
 
         {/* Sidebar */}

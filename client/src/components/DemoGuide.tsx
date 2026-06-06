@@ -55,7 +55,7 @@ const STEPS = [
     persona: 'officer',
     label: 'Review Interface — Docs, SOP, Escalate (Modules 03–05)',
     paths: ['/desk/review'],
-    action: 'SOP checklist (8 items) auto-populated from data — "fee paid" item for Trading Licence. Per-document View / ✓ Verify / ✕ Reject. SLA >75% elapsed → red escalation banner → "🚨 Escalate". Open API Interop panel (Module 10) to inspect UGHub envelope.',
+    action: 'SOP checklist (8 items) auto-populated from data — "fee paid" item for Trading Licence. Per-document View / ✓ Verify / ✕ Reject. SLA >75% elapsed → red escalation banner → "🚨 Escalate". Open API Interop panel (Module 10): tabs show NIRA response, URA response, UGHub envelope, and 🏢 ERP Sync — fire a live simulated sync to ERPNext, IFMIS, or OPM Scorecard.',
     next: 'Select ✅ Approve → Submit Decision',
   },
   {

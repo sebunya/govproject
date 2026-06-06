@@ -88,6 +88,42 @@ const ENDPOINTS: Endpoint[] = [
     response: `[{ "id": 1, "name": "Tumusiime Robert", "role": "officer", "total": 8, "active": 2, "resolved": 6, "slaCompliance": 100, "avgResolutionHours": 36 }]` },
   { method: 'GET', path: '/api/dashboard/district-trend', summary: '5-week SLA compliance trend by district', module: 'MOD-09 M&E', auth: 'Leadership',
     response: `{ "trend": { "Mbarara": [{ "week": "2026-W18", "compliance": 100, "total": 5, "onTime": 5, "slaBreached": 0 }, ...] } }` },
+  { method: 'POST', path: '/api/simulate/erp-sync', summary: 'Simulate ERP / IFMIS / OPM enterprise integration sync', module: 'MOD-10 API Interop — Enterprise', auth: 'None',
+    request: `{
+  "target": "erpnext" | "ifmis" | "opm",
+  "applicationId": 5,
+  "referenceNumber": "NGS-2026-0005",
+  "serviceCode": "trading-licence",
+  "permitNumber": "MDLG-TL-2026-0005",
+  "feeAmount": 120000,
+  "feeCurrency": "UGX",
+  "receiptRef": "SIM-RECEIPT-ABC123",
+  "tin": "1000000042",
+  "fullName": "Akello Sarah Namugenyi",
+  "district": "Mbarara"
+}`,
+    response: `{
+  "schemaVersion": "1.0",
+  "correlationId": "ERP-1748952000000-A3F9K",
+  "idempotencyKey": "IDEM-NGS-2026-0005-1748952000000",
+  "timestamp": "2026-06-06T10:00:00.000Z",
+  "source": "NileGov Stack / Mbarara District Local Government",
+  "destination": "ERPNext / Frappe ERP",
+  "action": "create_journal_entry",
+  "status": "SIMULATED_SUCCESS",
+  "payload": {
+    "doctype": "Journal Entry",
+    "voucher_type": "Journal Entry",
+    "accounts": [
+      { "account": "1110 - Cash and Bank", "debit_in_account_currency": 120000 },
+      { "account": "4110 - Non-Tax Revenue — Licences", "credit_in_account_currency": 120000 }
+    ],
+    "custom_permit_number": "MDLG-TL-2026-0005",
+    "currency": "UGX"
+  },
+  "_simulated": true
+}`,
+    notes: 'SIMULATED. Three targets: erpnext (journal entry), ifmis (NTR receipt), opm (KPI event). Each response is wrapped in the UGHub envelope with correlationId + idempotencyKey. Production integration requires signed DSA and NITA-U routing.' },
 ];
 
 const METHOD_COLOR: Record<string, string> = {

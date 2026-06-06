@@ -140,6 +140,139 @@ Payment (Pesapal)
           </div>
         </div>
 
+        {/* Enterprise Integration */}
+        <div>
+          <h2 className="text-xl font-bold text-navy-700 mb-2">Enterprise System Integration</h2>
+          <p className="text-sm text-gray-600 mb-5 max-w-3xl">
+            NileGov Stack is designed as a <strong>citizen-facing workflow orchestration layer</strong> — not a replacement for enterprise back-office systems.
+            Its REST API acts as a clean integration surface, allowing downstream enterprise platforms (ERPNext, IFMIS, OPM scorecards) to consume
+            verified, structured permit data without needing to touch the citizen workflow engine directly.
+          </p>
+
+          {/* Architecture diagram */}
+          <div className="bg-navy-900 rounded-2xl p-6 text-white font-mono text-xs leading-relaxed overflow-x-auto mb-6">
+            <pre>{`CITIZEN / OFFICER / SUPERVISOR / LEADERSHIP
+─────────────────────────────────────────────────────────────────────────────
+        │                                │
+   NileGov Stack REST API          NileGov Stack Workflow Engine
+   (27 documented endpoints)       (SLA · Notifications · Payments · M&E)
+        │                                │
+        └────────────┬───────────────────┘
+                     │
+        ┌────────────▼────────────────────────────────────────────────┐
+        │              Enterprise Integration Layer                    │
+        │                                                              │
+        │   Webhook / Scheduled Sync / REST Pull                       │
+        │   Authorization: District-issued API key (production)        │
+        │   Envelope: UGHub correlationId + idempotencyKey             │
+        └──┬──────────────┬───────────────┬──────────────┬────────────┘
+           │              │               │              │
+    ┌──────▼──────┐ ┌─────▼──────┐ ┌─────▼──────┐ ┌────▼──────────┐
+    │  ERPNext /  │ │   IFMIS    │ │    OPM     │ │  NITA-U UGHub │
+    │  Frappe ERP │ │ (Treasury) │ │ Scorecard  │ │ Integration   │
+    │             │ │            │ │            │ │ Spine         │
+    │ - Revenue   │ │ - Fee      │ │ - KPI      │ │ - NIRA        │
+    │   ledger    │ │   receipts │ │   reports  │ │ - URA         │
+    │ - Asset     │ │ - Budget   │ │ - District │ │ - Pesapal     │
+    │   register  │ │   codes    │ │   ranking  │ │   (Payment)   │
+    └─────────────┘ └────────────┘ └────────────┘ └───────────────┘
+
+    [SIMULATED — production integration requires signed DSAs and NITA-U approval]`}</pre>
+          </div>
+
+          {/* Integration cards */}
+          <div className="grid md:grid-cols-2 gap-5 mb-5">
+            {[
+              {
+                icon: '🏢',
+                title: 'ERPNext / Frappe ERP',
+                role: 'Back-office Finance & Asset Management',
+                how: 'NileGov Stack fires a webhook (or accepts a scheduled pull) when a permit is approved and fee is verified. ERPNext receives a structured payload — permit number, applicant TIN, service code, amount, receipt reference — and creates the corresponding revenue ledger entry under the correct budget code. District assets tied to permits (market stalls, premises) update the asset register.',
+                endpoint: 'POST /api/simulate/erp-sync',
+                status: 'SIMULATED',
+                why: 'ERPNext handles treasury accounting. NileGov handles the citizen workflow. Separation of concerns — neither system does the other\'s job.',
+              },
+              {
+                icon: '🏦',
+                title: 'IFMIS (Integrated Financial Management)',
+                role: 'Ministry of Finance Treasury System',
+                how: 'Verified fee payments from NileGov\'s Pesapal integration are forwarded to IFMIS as non-tax revenue receipts. The UGHub envelope (correlationId + idempotencyKey) ensures each payment is recorded exactly once. IFMIS assigns a consolidated fund reference that NileGov stores against the application for audit.',
+                endpoint: 'POST /api/simulate/erp-sync (target: ifmis)',
+                status: 'SIMULATED',
+                why: 'IFMIS is the authoritative treasury ledger. NileGov does not attempt to replicate it — it feeds it.',
+              },
+              {
+                icon: '📊',
+                title: 'OPM Performance Scorecards',
+                role: 'Office of the Prime Minister — District Rankings',
+                how: 'The /api/dashboard/reports endpoint exposes structured M&E data (SLA compliance, approval rates, avg resolution time, officer workload) in a format designed to feed OPM\'s district service delivery scorecards. A scheduled export (daily or weekly) pushes this snapshot via NITA-U UGHub to the national reporting spine.',
+                endpoint: 'GET /api/dashboard/reports',
+                status: 'SIMULATED',
+                why: 'OPM rankings currently rely on manual district returns. NileGov makes this automatic and trustworthy.',
+              },
+              {
+                icon: '🔌',
+                title: 'NITA-U UGHub Integration Spine',
+                role: 'National IT Authority — Inter-Agency Middleware',
+                how: 'All external API calls (NIRA identity, URA tax clearance, Pesapal payments, ERP sync) are wrapped in the UGHub envelope schema: schemaVersion, correlationId, idempotencyKey, source, destination, timestamp, and payload. In production, each call is routed through UGHub, logged for audit, and signed with government certificates under a Data Sharing Agreement.',
+                endpoint: 'POST /api/simulate/nira · /api/simulate/ura · /api/simulate/pesapal · /api/simulate/erp-sync',
+                status: 'SIMULATED',
+                why: 'NITA-U is the single gateway for all government API traffic. NileGov is designed to plug in — not bypass it.',
+              },
+            ].map(item => (
+              <div key={item.title} className="card border-l-4 border-l-navy-700 space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">{item.icon}</span>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-bold text-navy-700">{item.title}</h3>
+                      <span className="text-xs bg-status-orange text-white font-bold px-2 py-0.5 rounded-full">{item.status}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 font-semibold">{item.role}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-700 leading-relaxed">{item.how}</p>
+                <div className="bg-navy-50 rounded-lg p-2">
+                  <span className="text-xs text-gray-500 font-semibold">Endpoint: </span>
+                  <code className="text-xs font-mono text-navy-700">{item.endpoint}</code>
+                </div>
+                <div className="bg-gold-50 border border-gold-500 rounded-lg p-2 text-xs text-yellow-900">
+                  <strong>Why separate?</strong> {item.why}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Integration decision note */}
+          <div className="bg-navy-50 border border-navy-700 rounded-xl p-5">
+            <h3 className="font-bold text-navy-700 mb-2">The Integration Decision</h3>
+            <p className="text-sm text-gray-700 leading-relaxed mb-3">
+              Whether Mbarara District adopts ERPNext, continues with IFMIS, or connects to a future national ERP is a procurement and policy decision
+              for the Ministry of Finance and Ministry of Local Government. NileGov Stack is <strong>neutral on that decision</strong>.
+            </p>
+            <p className="text-sm text-gray-700 leading-relaxed mb-3">
+              What NileGov Stack provides is a <strong>clean, documented REST API</strong> and a <strong>UGHub-compatible envelope pattern</strong>
+              so that whatever enterprise system is chosen downstream can consume permit data, fee receipts, and M&E metrics without
+              requiring changes to the citizen-facing workflow.
+            </p>
+            <div className="grid md:grid-cols-3 gap-3 text-xs mt-3">
+              {[
+                { label: 'Integration method', value: 'Webhook push or REST pull — configurable per system' },
+                { label: 'Auth in production', value: 'District-issued API key + NITA-U UGHub certificate' },
+                { label: 'Data format', value: 'JSON with UGHub envelope (correlationId + idempotencyKey)' },
+                { label: 'Idempotency', value: 'Each event carries a unique idempotencyKey — safe to retry' },
+                { label: 'Audit trail', value: 'Every sync event logged in NileGov audit log with correlationId' },
+                { label: 'DSA requirement', value: 'Formal Data Sharing Agreement required per PDPA 2019 §28' },
+              ].map(f => (
+                <div key={f.label} className="bg-white rounded-lg p-3 border border-navy-100">
+                  <p className="text-gray-500 font-semibold mb-0.5">{f.label}</p>
+                  <p className="text-navy-700 font-medium">{f.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="bg-gold-50 border border-gold-500 rounded-xl p-5 text-sm text-yellow-900">
           <strong>Prototype Disclaimer:</strong> NileGov Stack is a demonstration prototype. All government integrations (NIRA, URA, Pesapal) are simulated. No real citizen data is processed. This system is not connected to any live government database. Presented for evaluation purposes only.
         </div>
