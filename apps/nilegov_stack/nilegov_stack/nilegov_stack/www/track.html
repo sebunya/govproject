@@ -1,0 +1,279 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<div class="nilegov-track-container" style="max-width: 650px; margin: 40px auto; padding: 0 15px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+    
+    <!-- Header Block -->
+    <div style="text-align: center; margin-bottom: 30px;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: #C8102E; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+            <span style="font-size: 14px;">🇺🇬</span> Local Government Portal
+        </div>
+        <h2 style="margin-top: 15px; margin-bottom: 5px; font-weight: 800; color: #1A1A1A; font-size: 24px;">
+            NileGov Service Tracker
+        </h2>
+        <p style="color: #666; font-size: 14px; margin-top: 5px;">
+            Track your license or replacement application status in real-time.
+        </p>
+    </div>
+
+    <!-- Prototype Disclaimer Banner -->
+    <div style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; line-height: 1.5; border-left: 4px solid #ffc107;">
+        <strong>Prototype status preview only.</strong> Runtime publication and rate limiting must be validated before public use.
+    </div>
+
+    <!-- Search Card -->
+    <div style="background: white; border: 1px solid #ddd; border-top: 4px solid #F5C000; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px;">
+        <h4 style="margin-top: 0; margin-bottom: 15px; font-weight: 700; font-size: 13px; color: #1A1A1A; text-transform: uppercase; letter-spacing: 0.5px;">
+            Enter Reference Number
+        </h4>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="ref-input" placeholder="e.g. NGS-2026-0001" style="flex: 1; padding: 10px 12px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 14px; text-transform: uppercase;" />
+            <button id="btn-track" style="background: #1A1A1A; color: #F5C000; font-weight: bold; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 13px; transition: background 0.2s;">
+                Track Status
+            </button>
+        </div>
+        <div id="alert-box" style="display: none; margin-top: 15px; padding: 10px 15px; border-radius: 4px; font-size: 13px;"></div>
+    </div>
+
+    <!-- Status Output Card (Initially Hidden) -->
+    <div id="status-card" style="display: none; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px;">
+        
+        <!-- Header Info -->
+        <div style="display: flex; justify-content: space-between; align-items: start; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+            <div>
+                <span style="font-size: 11px; text-transform: uppercase; color: #888; font-weight: bold; letter-spacing: 0.5px;">Service Request Reference</span>
+                <div id="val-reference" style="font-family: monospace; font-weight: bold; font-size: 18px; color: #1A1A1A; margin-top: 2px;"></div>
+            </div>
+            <div id="val-status-badge" style="padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase;"></div>
+        </div>
+
+        <!-- Custom Timeline Progress -->
+        <div style="margin-bottom: 30px;">
+            <h4 style="margin-top: 0; margin-bottom: 15px; font-weight: 700; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 0.5px;">Processing Milestone</h4>
+            <div style="display: flex; justify-content: space-between; position: relative; padding: 0 10px;">
+                <!-- Line background -->
+                <div style="position: absolute; top: 12px; left: 10%; right: 10%; height: 2px; background: #e0e0e0; z-index: 1;"></div>
+                <div id="timeline-line-active" style="position: absolute; top: 12px; left: 10%; width: 0%; height: 2px; background: #28a745; z-index: 2; transition: width 0.5s ease;"></div>
+
+                <!-- Steps -->
+                <div class="t-step" id="step-submitted" style="text-align: center; z-index: 3; width: 60px;">
+                    <div class="t-circle" style="width: 26px; height: 26px; border-radius: 50%; background: #e0e0e0; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 auto 5px;">1</div>
+                    <span style="font-size: 10px; font-weight: bold; color: #888;">Submitted</span>
+                </div>
+                <div class="t-step" id="step-review" style="text-align: center; z-index: 3; width: 60px;">
+                    <div class="t-circle" style="width: 26px; height: 26px; border-radius: 50%; background: #e0e0e0; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 auto 5px;">2</div>
+                    <span style="font-size: 10px; font-weight: bold; color: #888;">In Review</span>
+                </div>
+                <div class="t-step" id="step-payment" style="text-align: center; z-index: 3; width: 60px;">
+                    <div class="t-circle" style="width: 26px; height: 26px; border-radius: 50%; background: #e0e0e0; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 auto 5px;">3</div>
+                    <span style="font-size: 10px; font-weight: bold; color: #888;">Payment</span>
+                </div>
+                <div class="t-step" id="step-closed" style="text-align: center; z-index: 3; width: 60px;">
+                    <div class="t-circle" style="width: 26px; height: 26px; border-radius: 50%; background: #e0e0e0; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 auto 5px;">4</div>
+                    <span style="font-size: 10px; font-weight: bold; color: #888;">Closed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Redacted Details Grid -->
+        <div style="background: #f8f9fa; border-radius: 6px; padding: 15px; border-left: 4px solid #C8102E;">
+            <h4 style="margin-top: 0; margin-bottom: 12px; font-weight: 700; font-size: 12px; color: #1A1A1A; text-transform: uppercase; letter-spacing: 0.5px;">Redacted Case Details</h4>
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                <tr style="border-bottom: 1px solid #eaeaea;">
+                    <td style="padding: 6px 0; color: #666; font-weight: 600;">Applicant Name</td>
+                    <td id="val-name" style="padding: 6px 0; text-align: right; font-weight: bold; color: #333;"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eaeaea;">
+                    <td style="padding: 6px 0; color: #666; font-weight: 600;">National ID (NIN)</td>
+                    <td id="val-nin" style="padding: 6px 0; text-align: right; font-family: monospace; color: #333;"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eaeaea;">
+                    <td style="padding: 6px 0; color: #666; font-weight: 600;">Phone Number</td>
+                    <td id="val-phone" style="padding: 6px 0; text-align: right; color: #333;"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eaeaea;">
+                    <td style="padding: 6px 0; color: #666; font-weight: 600;">Service Type</td>
+                    <td id="val-service" style="padding: 6px 0; text-align: right; color: #333;"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eaeaea;">
+                    <td style="padding: 6px 0; color: #666; font-weight: 600;">SLA Compliance Status</td>
+                    <td id="val-sla" style="padding: 6px 0; text-align: right; font-weight: bold;"></td>
+                </tr>
+                <tr>
+                    <td style="padding: 6px 0; color: #666; font-weight: 600;">Payment Gateway Status</td>
+                    <td id="val-payment" style="padding: 6px 0; text-align: right; font-weight: bold;"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Legal Footer Banner -->
+    <div style="background: #eef1f6; border-radius: 6px; padding: 15px; border-left: 4px solid #1A1A1A; font-size: 11px; line-height: 1.5; color: #555;">
+        <strong>Data Protection Notice:</strong> 
+        All personal identifiers (NIN, Phone number, Email) are cryptographically redacted on public-facing nodes in accordance with data protection guidelines. 
+        Identity validation and payment indicators operate under simulated prototype settings.
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const refInput = document.getElementById('ref-input');
+    const btnTrack = document.getElementById('btn-track');
+    const alertBox = document.getElementById('alert-box');
+    const statusCard = document.getElementById('status-card');
+
+    const trackCase = () => {
+        const refVal = refInput.value.trim().toUpperCase();
+        if (!refVal) {
+            showAlert('Please enter a valid Service Request reference number.', 'danger');
+            return;
+        }
+
+        showAlert('Performing redacted lookup...', 'info');
+        statusCard.style.display = 'none';
+
+        // Call the whitelisted status lookup API
+        const url = `/api/method/nilegov_stack.interfaces.frappe.api.public_readiness.get_redacted_case_status_preview?reference_number=${encodeURIComponent(refVal)}`;
+        
+        fetch(url)
+            .then(res => res.json())
+            .then(resData => {
+                const envelope = resData.message || resData;
+                
+                if (envelope.status === 'success') {
+                    hideAlert();
+                    renderStatus(envelope.data);
+                } else {
+                    showAlert(envelope.error ? envelope.error.message : 'Lookup failed. Case reference not found.', 'danger');
+                }
+            })
+            .catch(err => {
+                showAlert('Communication error. Please verify database runtime validation settings.', 'danger');
+                console.error(err);
+            });
+    };
+
+    const showAlert = (msg, type) => {
+        alertBox.textContent = msg;
+        alertBox.style.display = 'block';
+        if (type === 'danger') {
+            alertBox.style.background = '#f8d7da';
+            alertBox.style.color = '#721c24';
+            alertBox.style.border = '1px solid #f5c6cb';
+        } else if (type === 'info') {
+            alertBox.style.background = '#d1ecf1';
+            alertBox.style.color = '#0c5460';
+            alertBox.style.border = '1px solid #bee5eb';
+        }
+    };
+
+    const hideAlert = () => {
+        alertBox.style.display = 'none';
+    };
+
+    const renderStatus = (data) => {
+        document.getElementById('val-reference').textContent = data.service_request_id || '---';
+        
+        // Status indicator badge
+        const badge = document.getElementById('val-status-badge');
+        const status = data.citizen_visible_status || 'Submitted';
+        badge.textContent = status;
+
+        if (['Approved', 'Ready for Collection', 'Closed'].includes(status)) {
+            badge.style.background = '#d4edda';
+            badge.style.color = '#155724';
+        } else if (['Under Review', 'Information Required', 'Payment Pending'].includes(status)) {
+            badge.style.background = '#fff3cd';
+            badge.style.color = '#856404';
+        } else {
+            badge.style.background = '#e2e3e5';
+            badge.style.color = '#383d41';
+        }
+
+        // Details grid mapping
+        document.getElementById('val-name').textContent = data.citizen_full_name || '---';
+        document.getElementById('val-nin').textContent = data.nin || '---';
+        document.getElementById('val-phone').textContent = data.phone || '---';
+        document.getElementById('val-service').textContent = (data.service_type || 'LOST_NATIONAL_ID').replace(/_/g, ' ');
+        
+        // SLA compliance styling
+        const sla = data.sla_state || 'Within SLA';
+        const slaCell = document.getElementById('val-sla');
+        slaCell.textContent = sla;
+        if (sla === 'Overdue') {
+            slaCell.style.color = '#C8102E';
+        } else if (sla === 'At Risk') {
+            slaCell.style.color = '#856404';
+        } else {
+            slaCell.style.color = '#28a745';
+        }
+
+        // Payment status styling
+        const payment = data.payment_status || 'Pending';
+        const payCell = document.getElementById('val-payment');
+        payCell.textContent = payment;
+        if (payment === 'Verified') {
+            payCell.style.color = '#28a745';
+        } else if (payment === 'Failed') {
+            payCell.style.color = '#C8102E';
+        } else {
+            payCell.style.color = '#856404';
+        }
+
+        // Timeline progress bar calculation
+        const steps = ['submitted', 'review', 'payment', 'closed'];
+        let activeIndex = 0; // default Submitted
+        
+        if (['Under Review', 'Information Required'].includes(status)) {
+            activeIndex = 1;
+        } else if (status === 'Payment Pending') {
+            activeIndex = 2;
+        } else if (['Approved', 'Ready for Collection', 'Closed', 'Rejected'].includes(status)) {
+            activeIndex = 3;
+        }
+
+        // Reset timeline nodes
+        steps.forEach((stepId, idx) => {
+            const stepNode = document.getElementById(`step-${stepId}`);
+            const circle = stepNode.querySelector('.t-circle');
+            const label = stepNode.querySelector('span');
+
+            if (idx <= activeIndex) {
+                circle.style.background = '#28a745';
+                circle.style.color = 'white';
+                label.style.color = '#28a745';
+            } else {
+                circle.style.background = '#e0e0e0';
+                circle.style.color = 'white';
+                label.style.color = '#888';
+            }
+        });
+
+        // Set active line width
+        const lineWidth = (activeIndex / (steps.length - 1)) * 80;
+        document.getElementById('timeline-line-active').style.width = `${lineWidth}%`;
+
+        statusCard.style.display = 'block';
+    };
+
+    // Listen to trigger button
+    btnTrack.addEventListener('click', trackCase);
+    
+    // Listen to Enter key
+    refInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            trackCase();
+        }
+    });
+
+    // Check query params ref
+    const params = new URLSearchParams(window.location.search);
+    const queryRef = params.get('ref');
+    if (queryRef) {
+        refInput.value = queryRef;
+        trackCase();
+    }
+});
+</script>
+{% endblock %}
