@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NileGov — Brand Identity System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111315;
+  --basalt:#16191d;
+  --slate:#1f242a;
+  --slate-2:#2a3138;
+  --line:#2d343b;
+  --paper:#F7F4EC;
+  --paper-dim:#cfcabd;
+  --muted:#8b9097;
+  --gold:#F4C20D;
+  --gold-deep:#C7960A;
+  --red:#D7261E;
+  --mist:#F4F5F6;
+  --link:#5a8bba;
+  --maxw:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--ink);color:var(--paper);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(1200px 600px at 80% -10%, rgba(244,194,13,.06), transparent 60%),
+                   radial-gradient(900px 500px at -10% 20%, rgba(215,38,30,.05), transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+h1,h2,h3,h4{font-family:"Fraunces",Georgia,serif;font-weight:500;line-height:1.08;letter-spacing:-.01em}
+.mono{font-family:"IBM Plex Mono",monospace}
+a{color:var(--link);text-decoration:none}
+section{padding:80px 0;border-top:1px solid var(--line)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:500;margin:0 0 18px}
+.lead{font-size:19px;line-height:1.6;color:var(--paper-dim);font-weight:300;max-width:62ch}
+p{max-width:70ch}
+.small{font-size:13.5px;color:var(--muted)}
+
+/* top nav */
+nav.top{position:sticky;top:0;z-index:50;background:rgba(17,19,21,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex;align-items:center;gap:22px;height:62px}
+nav.top .brand{display:flex;align-items:center;gap:11px;font-weight:600;font-size:15px;letter-spacing:.01em}
+nav.top .brand svg{width:30px;height:30px}
+nav.top .links{margin-left:auto;display:flex;gap:22px;flex-wrap:wrap}
+nav.top .links a{color:var(--paper-dim);font-size:13px;font-weight:400;letter-spacing:.02em}
+nav.top .links a:hover{color:var(--gold)}
+@media(max-width:880px){nav.top .links{display:none}}
+
+/* hero */
+.hero{padding:90px 0 70px;border-top:none}
+.hero h1{font-size:clamp(48px,9vw,104px);font-weight:600;margin:18px 0 0;letter-spacing:-.025em}
+.hero h1 .g{color:var(--gold)}
+.hero .sub{margin-top:26px;font-size:clamp(18px,2.4vw,23px);color:var(--paper-dim);font-weight:300;max-width:56ch}
+.hero .meta{margin-top:40px;display:flex;gap:42px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:26px}
+.hero .meta div{min-width:130px}
+.hero .meta .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.hero .meta .v{font-size:15px;color:var(--paper);margin-top:5px}
+.heromark{display:flex;align-items:center;justify-content:center;padding:8px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(160deg,var(--basalt),#0d0f11);width:96px;height:96px}
+.heromark svg{width:74px;height:74px}
+
+/* layout helpers */
+.grid{display:grid;gap:24px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:linear-gradient(165deg,var(--basalt),#0e1012);border:1px solid var(--line);border-radius:16px;padding:26px}
+.card h3{font-size:21px;margin:0 0 6px}
+.card .tag{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep)}
+.divider-num{font-family:"Fraunces",serif;font-size:13px;color:var(--gold)}
+
+/* logo stage */
+.stage{background:#fbfaf6;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:40px;min-height:180px;color:#111}
+.stage.dark{background:linear-gradient(160deg,#1a1d21,#0c0e10)}
+.stage.gold{background:var(--gold)}
+.stage.red{background:var(--red)}
+.stagelabel{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:14px 2px 0}
+
+/* lockups */
+.lockup{display:flex;align-items:center;gap:16px}
+.lockup.stacked{flex-direction:column;gap:12px}
+.wordmark{font-family:"IBM Plex Sans",sans-serif;font-weight:300;letter-spacing:-.01em;line-height:1;white-space:nowrap}
+.wordmark b{font-weight:600}
+.wm-ink{color:#111}
+.wm-paper{color:#F7F4EC}
+.tagline{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;margin-top:6px}
+
+/* swatches */
+.swatch{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.swatch .chip{height:104px}
+.swatch .info{padding:14px 16px;background:var(--basalt)}
+.swatch .nm{font-weight:500;font-size:15px}
+.swatch .hex{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--gold);margin-top:3px}
+.swatch .role{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* type specimen */
+.specimen{border:1px solid var(--line);border-radius:14px;padding:26px;background:var(--basalt)}
+.specimen .big{font-size:54px;line-height:1;margin:0}
+.specimen .scale{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td .mono{color:var(--gold)}
+
+/* do / dont */
+.do,.dont{border-radius:14px;padding:20px 22px;border:1px solid var(--line)}
+.do{background:rgba(46,125,50,.08);border-color:rgba(46,125,50,.35)}
+.dont{background:rgba(215,38,30,.07);border-color:rgba(215,38,30,.35)}
+.do h4,.dont h4{margin:0 0 10px;font-size:16px}
+.do ul,.dont ul{margin:0;padding-left:18px}
+.do li,.dont li{margin:7px 0;font-size:14px;color:var(--paper-dim)}
+
+/* favicon mock */
+.tabbar{background:#23282d;border-radius:10px 10px 0 0;padding:8px 8px 0;display:flex;gap:6px;max-width:420px}
+.tab{background:#fbfaf6;color:#111;border-radius:8px 8px 0 0;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500}
+.tab svg{width:16px;height:16px;flex:none}
+.appicons{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end}
+.appicon{display:flex;flex-direction:column;align-items:center;gap:8px}
+.appicon .ios{width:84px;height:84px;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.appicon .android{width:84px;height:84px;border-radius:50%;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.appicon span{font-size:11px;color:var(--muted)}
+
+/* UI mock */
+.ui-login{background:#fbfaf6;border-radius:16px;overflow:hidden;border:1px solid var(--line);color:#111;max-width:380px;margin:0 auto}
+.ui-login .top{height:6px;background:linear-gradient(90deg,var(--ink) 0 33%,var(--gold) 33% 66%,var(--red) 66% 100%)}
+.ui-login .body{padding:30px 30px 34px;text-align:center}
+.ui-login .field{height:38px;border:1px solid #d8d4c8;border-radius:8px;margin-top:12px;background:#fff}
+.ui-login .btn{height:40px;border-radius:8px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:14px;margin-top:16px}
+.ui-login .btn .bar{width:14px;height:3px;background:var(--gold);margin-right:8px;border-radius:2px}
+
+.ui-desk{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ui-desk .bar{height:46px;background:var(--ink);display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:2px solid var(--gold)}
+.ui-desk .bar .wm{font-weight:600;font-size:14px;color:#fff}
+.ui-desk .bar .pill{margin-left:auto;width:26px;height:26px;border-radius:50%;background:var(--slate-2)}
+.ui-desk .work{display:flex;min-height:150px;background:var(--basalt)}
+.ui-desk .side{width:54px;background:#0e1012;border-right:1px solid var(--line);padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ui-desk .side .ico{width:24px;height:24px;border-radius:6px;background:var(--slate-2)}
+.ui-desk .side .ico.on{background:var(--gold)}
+.ui-desk .cards{flex:1;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ui-desk .wc{background:#fff;color:#111;border-radius:10px;padding:12px;border-left:3px solid var(--gold)}
+.ui-desk .wc.r{border-left-color:var(--red)}
+.ui-desk .wc .t{font-weight:600;font-size:13px}
+.ui-desk .wc .s{font-size:11px;color:#666;margin-top:4px}
+
+.modecard{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.modecard .hd{height:54px;display:flex;align-items:center;gap:8px;padding:0 16px;font-weight:600;font-size:13px}
+.modecard .bd{padding:16px;background:var(--basalt);font-size:13px;color:var(--paper-dim)}
+
+/* code block */
+pre{background:#0c0e10;border:1px solid var(--line);border-radius:12px;padding:20px;overflow:auto;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;color:#cdd6df}
+pre .c{color:#6b7681}
+pre .k{color:var(--gold)}
+.checklist{counter-reset:step;list-style:none;padding:0;margin:0}
+.checklist li{position:relative;padding:14px 14px 14px 56px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:var(--basalt)}
+.checklist li::before{counter-increment:step;content:counter(step,decimal-leading-zero);position:absolute;left:16px;top:14px;font-family:"IBM Plex Mono",monospace;color:var(--gold);font-size:13px;font-weight:600}
+.checklist li b{display:block;margin-bottom:4px;font-weight:600;color:var(--paper)}
+.checklist li span{font-size:13.5px;color:var(--paper-dim)}
+
+footer{padding:60px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.callout{border-left:3px solid var(--gold);padding:4px 0 4px 20px;margin:24px 0;color:var(--paper-dim)}
+.pill-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pill{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--paper-dim)}
+.winner{border:1px solid var(--gold);background:linear-gradient(165deg,rgba(244,194,13,.08),rgba(244,194,13,.02))}
+.winner .badge{display:inline-block;background:var(--gold);color:#111;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;padding:5px 11px;border-radius:999px;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="top"><div class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 128 128" aria-hidden="true"><use href="#nilegov-mark"/></svg>
+    <span>NileGov</span>
+  </div>
+  <div class="links">
+    <a href="#strategy">Strategy</a>
+    <a href="#routes">Routes</a>
+    <a href="#winner">Selected</a>
+    <a href="#suite">Logo Suite</a>
+    <a href="#favicon">Icons</a>
+    <a href="#frappe">Frappe</a>
+    <a href="#color">Color</a>
+    <a href="#type">Type</a>
+    <a href="#rules">Usage</a>
+    <a href="#build">Implementation</a>
+  </div>
+</div></nav>
+
+<!-- ============ SVG SYMBOL DEF (reused everywhere) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Primary full-colour Sentinel mark -->
+    <symbol id="nilegov-mark" viewBox="0 0 128 128">
+      <rect x="6" y="6" width="116" height="116" rx="28" fill="#111315"/>
+      <rect x="6.75" y="6.75" width="114.5" height="114.5" rx="27.25" fill="none" stroke="#2c333b" stroke-width="1.5"/>
+      <!-- left upright -->
+      <rect x="36" y="34" width="13" height="60" rx="2" fill="#F7F4EC"/>
+      <!-- right upright -->
+      <rect x="79" y="34" width="13" height="60" rx="2" fill="#F7F4EC"/>
+      <!-- diagonal river (tapered: source narrow, delta wide) -->
+      <path d="M48 37 L92 86 L80 95 L40 44 Z" fill="#F4C20D"/>
+      <!-- red foundation rule -->
+      <rect x="36" y="99" width="56" height="4" rx="2" fill="#D7261E"/>
+    </symbol>
+
+    <!-- Favicon-simplified (no red rule, bolder) -->
+    <symbol id="nilegov-fav" viewBox="0 0 128 128">
+      <rect x="2" y="2" width="124" height="124" rx="26" fill="#111315"/>
+      <rect x="34" y="32" width="15" height="64" rx="2" fill="#F7F4EC"/>
+      <rect x="79" y="32" width="15" height="64" rx="2" fill="#F7F4EC"/>
+      <path d="M47 35 L95 88 L81 98 L37 43 Z" fill="#F4C20D"/>
+    </symbol>
+
+    <!-- Monochrome (single fill via currentColor) -->
+    <symbol id="nilegov-mono" viewBox="0 0 128 128">
+      <rect x="6" y="6" width="116" height="116" rx="28" fill="none" stroke="currentColor" stroke-width="6"/>
+      <rect x="38" y="36" width="12" height="56" rx="2" fill="currentColor"/>
+      <rect x="78" y="36" width="12" height="56" rx="2" fill="currentColor"/>
+      <path d="M49 38 L90 84 L79 93 L41 44 Z" fill="currentColor"/>
+      <rect x="38" y="97" width="52" height="4" rx="2" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ HERO ============ -->
+<header class="hero"><div class="wrap">
+  <div style="display:flex;gap:30px;align-items:center;flex-wrap:wrap">
+    <div class="heromark"><svg viewBox="0 0 128 128"><use href="#nilegov-mark"/></svg></div>
+    <p class="eyebrow" style="margin:0">Brand Identity System · v1.0 · Confidential</p>
+  </div>
+  <h1>Nile<span class="g">Gov</span></h1>
+  <p class="sub">The brand identity system for Uganda's national e‑governance ERP platform — a single, secure digital backbone for citizen services across ministries, agencies, districts and local government.</p>
+  <div class="meta">
+    <div><div class="k">Platform</div><div class="v">Frappe v15 e‑Gov ERP</div></div>
+    <div><div class="k">Sector</div><div class="v">Public / Government</div></div>
+    <div><div class="k">Palette</div><div class="v">Black · Gold · Red</div></div>
+    <div><div class="k">Posture</div><div class="v">Institutional · Digital‑first</div></div>
+  </div>
+</div></header>
+
+<!-- ============ 01 STRATEGY ============ -->
+<section id="strategy"><div class="wrap">
+  <p class="eyebrow">01 — Brand Strategy Summary</p>
+  <h2 style="font-size:clamp(30px,5vw,44px);max-width:18ch">A national digital backbone — not a product, an institution.</h2>
+  <p class="lead" style="margin-top:22px">NileGov is the orchestration layer for public service delivery in Uganda. The brand must read as state‑grade infrastructure: secure, calm, permanent, and unmistakably Ugandan — while still feeling like modern enterprise software that civil servants and citizens actually want to use.</p>
+
+  <div class="grid g3" style="margin-top:40px">
+    <div class="card"><div class="tag">Positioning</div><h3>Uganda's public digital backbone</h3><p class="small" style="margin-top:8px;color:var(--paper-dim)">The connective tissue between every ministry, department, agency and district — one identity, one standard, many services.</p></div>
+    <div class="card"><div class="tag">Promise</div><h3>Trusted by design</h3><p class="small" style="margin-top:8px;color:var(--paper-dim)">Every interaction is secure, auditable and accountable. The brand signals stability before it signals novelty.</p></div>
+    <div class="card"><div class="tag">Tension resolved</div><h3>Authority &times; Access</h3><p class="small" style="margin-top:8px;color:var(--paper-dim)">Institutional enough for a Permanent Secretary; legible and warm enough for a citizen at a sub‑county office.</p></div>
+  </div>
+
+  <div class="pill-row" style="margin-top:30px">
+    <span class="pill">Trusted</span><span class="pill">Secure</span><span class="pill">Institutional</span><span class="pill">Calm</span><span class="pill">Scalable</span><span class="pill">Citizen‑centred</span><span class="pill">Proudly Ugandan</span><span class="pill">Future‑ready</span>
+  </div>
+</div></section>
+
+<!-- ============ 02 INSPIRATION LENS ============ -->
+<section id="lens"><div class="wrap">
+  <p class="eyebrow">02 — Creative Inspiration Lens</p>
+  <div class="grid g2">
+    <div>
+      <p class="lead">The work is read through four disciplines, held in deliberate tension.</p>
+      <p style="color:var(--paper-dim);margin-top:16px">Strategic brand architecture (Landor) gives the system its hierarchy and meaning. Digital product elegance (AKQA) keeps it from feeling like a static logo and ties it to a living interface. Design‑system rigor (Design Bridge & Partners) ensures every asset is governed, tokenised and reproducible. And public‑sector usability discipline (GOV.UK, Singapore GovTech / USWDS, e‑Estonia) keeps the brand accountable to the citizen first — legible, accessible, never decorative for its own sake.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Reference posture</div>
+      <table style="margin-top:10px">
+        <tr><td><b>Landor</b></td><td class="small">Meaning &amp; hierarchy</td></tr>
+        <tr><td><b>AKQA</b></td><td class="small">Brand‑in‑interface</td></tr>
+        <tr><td><b>Design Bridge</b></td><td class="small">System governance</td></tr>
+        <tr><td><b>GOV.UK / USWDS</b></td><td class="small">Plain, accessible service</td></tr>
+        <tr><td><b>e‑Estonia</b></td><td class="small">Digital‑state confidence</td></tr>
+      </table>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 03 ROUTES ============ -->
+<section id="routes"><div class="wrap">
+  <p class="eyebrow">03 — Three Logo Routes</p>
+  <h2 style="font-size:clamp(28px,4.5vw,40px)">Three defensible directions, one common spine.</h2>
+  <p class="lead" style="margin-top:18px">Every route is built from the same monogram logic — the letter <b>N</b> whose diagonal is the Nile, a continuous flow of public value moving through the structure of the state. They differ in what they emphasise: <em>authority</em>, <em>systems</em>, or <em>access</em>.</p>
+
+  <!-- Route A -->
+  <div class="grid g2" style="margin-top:46px;align-items:center">
+    <div>
+      <div class="divider-num">ROUTE A</div>
+      <h3 style="font-size:30px;margin:6px 0 2px">Sentinel</h3>
+      <p class="small" style="color:var(--gold-deep);letter-spacing:.04em">Institutional · Authoritative · Government‑grade</p>
+      <p style="color:var(--paper-dim);margin-top:14px"><b>Concept.</b> A civic gateway. The monogram sits inside a rounded structural frame — a portal every public service passes through. The N's diagonal is a tapered river (source narrow, delta wide), and a red rule grounds it as the constitutional foundation.</p>
+      <p style="color:var(--paper-dim);margin-top:10px"><b>Why it works.</b> A solid framed mark survives at 16px, in a single colour, embossed on paper or pressed into a seal. It reads as permanent state infrastructure without copying the coat of arms. <b>Best for:</b> official portal, document &amp; print headers, ministry co‑branding.</p>
+    </div>
+    <div>
+      <div class="stage"><svg style="width:120px;height:120px"><use href="#nilegov-mark"/></svg></div>
+      <div class="stagelabel">Route A — Sentinel · the framed civic gateway</div>
+    </div>
+  </div>
+
+  <!-- Route B -->
+  <div class="grid g2" style="margin-top:46px;align-items:center">
+    <div class="stage" style="order:2"><svg viewBox="0 0 128 128" style="width:120px;height:120px">
+      <!-- grid -->
+      <g stroke="#e7e3d6" stroke-width="1">
+        <line x1="32" y1="20" x2="32" y2="108"/><line x1="64" y1="20" x2="64" y2="108"/><line x1="96" y1="20" x2="96" y2="108"/>
+      </g>
+      <!-- connections -->
+      <g stroke="#111315" stroke-width="5" fill="none" stroke-linecap="round">
+        <line x1="32" y1="30" x2="32" y2="98"/>
+        <line x1="96" y1="30" x2="96" y2="98"/>
+      </g>
+      <g stroke="#C7960A" stroke-width="5" stroke-linecap="round"><line x1="32" y1="30" x2="96" y2="98"/></g>
+      <!-- nodes -->
+      <g>
+        <circle cx="32" cy="30" r="8" fill="#F4C20D"/><circle cx="32" cy="98" r="8" fill="#F4C20D"/>
+        <circle cx="96" cy="30" r="8" fill="#F4C20D"/><circle cx="96" cy="98" r="8" fill="#F4C20D"/>
+        <circle cx="64" cy="64" r="9" fill="#D7261E"/>
+      </g>
+    </svg>
+      <div class="stagelabel" style="text-align:center;color:#9a958a">Route B — Meridian · the connected service network</div>
+    </div>
+    <div style="order:1">
+      <div class="divider-num">ROUTE B</div>
+      <h3 style="font-size:30px;margin:6px 0 2px">Meridian</h3>
+      <p class="small" style="color:var(--gold-deep);letter-spacing:.04em">Digital Infrastructure · Systems‑driven · Technology‑forward</p>
+      <p style="color:var(--paper-dim);margin-top:14px"><b>Concept.</b> The N drawn as a network. Four gold nodes (MDAs, districts, services) are linked by a flowing diagonal data‑path; a single red node at the centre is the live citizen transaction moving through the system. Built on an explicit modular grid.</p>
+      <p style="color:var(--paper-dim);margin-top:10px"><b>Why it works.</b> It tells the ERP story directly — connected, orchestrated, scalable. <b>Best for:</b> developer &amp; platform contexts, dashboards, technical documentation, integration / API surfaces. <b>Risk:</b> node detail can soften at very small sizes.</p>
+    </div>
+  </div>
+
+  <!-- Route C -->
+  <div class="grid g2" style="margin-top:46px;align-items:center">
+    <div>
+      <div class="divider-num">ROUTE C</div>
+      <h3 style="font-size:30px;margin:6px 0 2px">Threshold</h3>
+      <p class="small" style="color:var(--gold-deep);letter-spacing:.04em">Citizen Services · Accessible · Warm‑but‑official</p>
+      <p style="color:var(--paper-dim);margin-top:14px"><b>Concept.</b> A doorway to public services. A rounded gold arch (the open gateway) holds a flowing Nile curve across its threshold; the negative space reads as a soft N. Geometry is rounder and more human.</p>
+      <p style="color:var(--paper-dim);margin-top:10px"><b>Why it works.</b> It lowers the barrier — it invites rather than commands. <b>Best for:</b> public‑facing citizen portals, service kiosks, outreach &amp; onboarding. <b>Risk:</b> can read slightly less "state authority" on its own.</p>
+    </div>
+    <div>
+      <div class="stage"><svg viewBox="0 0 128 128" style="width:120px;height:120px">
+        <path d="M28 104 L28 60 A36 36 0 0 1 100 60 L100 104" fill="none" stroke="#C7960A" stroke-width="10" stroke-linecap="round"/>
+        <path d="M40 92 C58 70 70 86 88 64" fill="none" stroke="#111315" stroke-width="9" stroke-linecap="round"/>
+        <rect x="44" y="100" width="40" height="6" rx="3" fill="#D7261E"/>
+      </svg></div>
+      <div class="stagelabel">Route C — Threshold · the civic gateway / doorway</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 04 WINNER ============ -->
+<section id="winner"><div class="wrap">
+  <p class="eyebrow">04 — Selected Winning Route</p>
+  <div class="card winner">
+    <span class="badge">Selected · Route A — Sentinel</span>
+    <h2 style="font-size:clamp(28px,4vw,40px);margin:0 0 8px">Sentinel wins on the only criteria that matter for the state.</h2>
+    <div class="grid g2" style="margin-top:18px">
+      <div>
+        <p style="color:var(--paper-dim)">For a national governance platform, the deciding tests are <b>permanence, reproducibility and small‑size survival</b> — not visual novelty. Sentinel is the only route that holds as a one‑colour seal on a printed certificate, as a 16px favicon, and as an embossed mark, while still carrying the full meaning: a structured gateway, the Nile as continuous public value, and a red foundation of law.</p>
+        <p style="color:var(--paper-dim);margin-top:12px">Meridian's network and Threshold's arch are excellent <em>expressions</em> of the same idea and are retained as a secondary motif language (used in dashboards and citizen‑portal art). But the master mark must be the most robust and the most institutional. That is Sentinel.</p>
+      </div>
+      <div class="card" style="background:#0d0f11">
+        <div class="tag">Decision scorecard</div>
+        <table style="margin-top:8px">
+          <tr><th>Criterion</th><th>A</th><th>B</th><th>C</th></tr>
+          <tr><td>Small‑size legibility</td><td class="mono">●●●</td><td>●●</td><td>●●</td></tr>
+          <tr><td>One‑colour / seal</td><td class="mono">●●●</td><td>●</td><td>●●</td></tr>
+          <tr><td>Institutional gravity</td><td class="mono">●●●</td><td>●●</td><td>●●</td></tr>
+          <tr><td>Citizen warmth</td><td>●●</td><td>●●</td><td class="mono">●●●</td></tr>
+          <tr><td>Systems story</td><td>●●</td><td class="mono">●●●</td><td>●</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 05 FINAL MARK ============ -->
+<section id="final"><div class="wrap">
+  <p class="eyebrow">05 — Detailed Final Logo Description</p>
+  <div class="grid g2" style="align-items:center">
+    <div class="stage dark"><svg style="width:170px;height:170px"><use href="#nilegov-mark"/></svg></div>
+    <div>
+      <h3 style="font-size:26px">Anatomy of the Sentinel mark</h3>
+      <table style="margin-top:12px">
+        <tr><td><b>The frame</b></td><td class="small">Rounded structural square = the civic gateway and the container of the state. Permanent, symmetric, contained.</td></tr>
+        <tr><td><b>The uprights</b></td><td class="small">Two clean pillars in paper‑white = institutions / pillars of governance, and the literal strokes of the <b>N</b>.</td></tr>
+        <tr><td><b>The diagonal</b></td><td class="small">A tapered gold band — the Nile. Narrow at the source, widening toward the delta = public value flowing and growing as it moves through the system.</td></tr>
+        <tr><td><b>The rule</b></td><td class="small">A thin red baseline = the constitutional / legal foundation and the line of accountability.</td></tr>
+        <tr><td><b>Construction</b></td><td class="small">Built on a 128‑unit grid; corner radius and stroke weights are proportional so the mark scales without redrawing.</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="callout">Clear space = the height of one upright on every side. Minimum size: 20px (digital), 8mm (print). Never place the mark on a busy photograph without the dark or paper containment plate.</div>
+</div></section>
+
+<!-- ============ 06 SUITE ============ -->
+<section id="suite"><div class="wrap">
+  <p class="eyebrow">06 — Full Logo Asset System</p>
+  <h2 style="font-size:clamp(26px,4vw,38px)">One mark, governed across every context.</h2>
+
+  <div class="grid g2" style="margin-top:36px">
+    <div>
+      <div class="stage"><div class="lockup">
+        <svg style="width:64px;height:64px"><use href="#nilegov-mark"/></svg>
+        <div class="wordmark wm-ink" style="font-size:38px">Nile<b>Gov</b></div>
+      </div></div>
+      <div class="stagelabel">Primary horizontal lockup</div>
+    </div>
+    <div>
+      <div class="stage"><div class="lockup stacked">
+        <svg style="width:72px;height:72px"><use href="#nilegov-mark"/></svg>
+        <div class="wordmark wm-ink" style="font-size:30px">Nile<b>Gov</b></div>
+        <div class="tagline" style="color:var(--gold-deep)">Uganda · Digital Government</div>
+      </div></div>
+      <div class="stagelabel">Stacked / vertical lockup (with descriptor)</div>
+    </div>
+    <div>
+      <div class="stage"><div class="wordmark wm-ink" style="font-size:40px">Nile<b>Gov</b></div></div>
+      <div class="stagelabel">Wordmark only</div>
+    </div>
+    <div>
+      <div class="stage"><svg style="width:96px;height:96px"><use href="#nilegov-mark"/></svg></div>
+      <div class="stagelabel">Symbol only</div>
+    </div>
+    <div>
+      <div class="stage"><div class="lockup" style="color:#111">
+        <svg style="width:60px;height:60px;color:#111"><use href="#nilegov-mono"/></svg>
+        <div class="wordmark wm-ink" style="font-size:34px">Nile<b>Gov</b></div>
+      </div></div>
+      <div class="stagelabel">Monochrome black (one‑colour)</div>
+    </div>
+    <div>
+      <div class="stage dark"><div class="lockup" style="color:#F7F4EC">
+        <svg style="width:60px;height:60px;color:#F7F4EC"><use href="#nilegov-mono"/></svg>
+        <div class="wordmark wm-paper" style="font-size:34px">Nile<b>Gov</b></div>
+      </div></div>
+      <div class="stagelabel">Monochrome white (reversed)</div>
+    </div>
+    <div>
+      <div class="stage gold"><div class="lockup" style="color:#111">
+        <svg style="width:60px;height:60px;color:#111"><use href="#nilegov-mono"/></svg>
+        <div class="wordmark wm-ink" style="font-size:34px">Nile<b>Gov</b></div>
+      </div></div>
+      <div class="stagelabel">One‑colour on gold field</div>
+    </div>
+    <div>
+      <div class="stage red"><div class="lockup" style="color:#fff">
+        <svg style="width:60px;height:60px;color:#fff"><use href="#nilegov-mono"/></svg>
+        <div class="wordmark wm-paper" style="font-size:34px">Nile<b>Gov</b></div>
+      </div></div>
+      <div class="stagelabel">Reversed on red field</div>
+    </div>
+    <div>
+      <div class="stage"><svg style="width:40px;height:40px"><use href="#nilegov-fav"/></svg></div>
+      <div class="stagelabel">Small‑size simplified mark (favicon master)</div>
+    </div>
+    <div>
+      <div class="stage"><div class="lockup" style="color:#111">
+        <svg style="width:34px;height:34px;color:#111"><use href="#nilegov-mono"/></svg>
+        <div class="wordmark wm-ink" style="font-size:18px">Nile<b>Gov</b></div>
+      </div></div>
+      <div class="stagelabel">Compact UI lockup (navbar size)</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 07 FAVICON / APP ICONS ============ -->
+<section id="favicon"><div class="wrap">
+  <p class="eyebrow">07 — Favicon &amp; App Icon Specifications</p>
+  <div class="grid g2" style="align-items:center">
+    <div>
+      <h3 style="font-size:24px">Browser tab</h3>
+      <div class="tabbar">
+        <div class="tab"><svg><use href="#nilegov-fav"/></svg> NileGov · Citizen Portal</div>
+      </div>
+      <table style="margin-top:22px">
+        <tr><th>Asset</th><th>Size</th><th>Treatment</th></tr>
+        <tr><td>favicon.ico</td><td class="mono">16 · 32 · 48</td><td class="small">Simplified mark, no red rule below 32px</td></tr>
+        <tr><td>favicon.svg</td><td class="mono">scalable</td><td class="small">Full vector master, theme‑aware</td></tr>
+        <tr><td>apple‑touch‑icon</td><td class="mono">180×180</td><td class="small">Mark on ink, 18% safe padding</td></tr>
+        <tr><td>maskable (Android)</td><td class="mono">512×512</td><td class="small">Mark centred in 80% safe zone</td></tr>
+        <tr><td>theme‑color</td><td class="mono">#111315</td><td class="small">Browser chrome tint</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3 style="font-size:24px">App icons</h3>
+      <div class="appicons" style="margin-top:18px">
+        <div class="appicon"><div class="ios"><svg viewBox="0 0 128 128" style="width:100%;height:100%;display:block"><rect width="128" height="128" fill="#111315"/><rect x="34" y="32" width="15" height="64" rx="2" fill="#F7F4EC"/><rect x="79" y="32" width="15" height="64" rx="2" fill="#F7F4EC"/><path d="M47 35 L95 88 L81 98 L37 43 Z" fill="#F4C20D"/></svg></div><span>iOS</span></div>
+        <div class="appicon"><div class="android"><svg viewBox="0 0 128 128" style="width:100%;height:100%;display:block"><rect width="128" height="128" fill="#111315"/><rect x="34" y="32" width="15" height="64" rx="2" fill="#F7F4EC"/><rect x="79" y="32" width="15" height="64" rx="2" fill="#F7F4EC"/><path d="M47 35 L95 88 L81 98 L37 43 Z" fill="#F4C20D"/></svg></div><span>Android</span></div>
+        <div class="appicon"><div class="ios" style="border-radius:14px"><svg viewBox="0 0 128 128" style="width:100%;height:100%;display:block"><rect width="128" height="128" fill="#F4C20D"/><rect x="34" y="32" width="15" height="64" rx="2" fill="#111315"/><rect x="79" y="32" width="15" height="64" rx="2" fill="#111315"/><path d="M47 35 L95 88 L81 98 L37 43 Z" fill="#111315"/></svg></div><span>Desktop</span></div>
+      </div>
+      <p class="small" style="margin-top:18px;color:var(--paper-dim)">Default app icon is the mark on ink. A gold‑field inverse is reserved for the desktop shortcut so it reads against the OS taskbar. Splash / loading screen: centred mono‑white mark on ink, with the gold diagonal animating in along its flow path (300ms ease‑out).</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 08 FRAPPE REBRAND ============ -->
+<section id="frappe"><div class="wrap">
+  <p class="eyebrow">08 — Frappe / ERP Rebrand Recommendations</p>
+  <h2 style="font-size:clamp(26px,4vw,38px)">Replacing the generic ERPNext skin, surface by surface.</h2>
+  <p class="lead" style="margin-top:16px">Every default Frappe touchpoint is re‑skinned to the NileGov system. Below: the three highest‑impact surfaces, rendered.</p>
+
+  <div class="grid g3" style="margin-top:34px">
+    <div>
+      <div class="ui-login">
+        <div class="top"></div>
+        <div class="body">
+          <svg style="width:52px;height:52px"><use href="#nilegov-mark"/></svg>
+          <div class="wordmark wm-ink" style="font-size:22px;margin-top:10px">Nile<b>Gov</b></div>
+          <div class="tagline" style="color:var(--gold-deep)">Sign in to continue</div>
+          <div class="field"></div><div class="field"></div>
+          <div class="btn"><span class="bar"></span>Sign in</div>
+        </div>
+      </div>
+      <div class="stagelabel">Login screen — replaces /login</div>
+    </div>
+    <div>
+      <div class="ui-desk">
+        <div class="bar"><svg style="width:26px;height:26px"><use href="#nilegov-mark"/></svg><span class="wm">NileGov</span><span class="pill"></span></div>
+        <div class="work">
+          <div class="side"><div class="ico on"></div><div class="ico"></div><div class="ico"></div></div>
+          <div class="cards">
+            <div class="wc"><div class="t">Citizen Services</div><div class="s">142 open requests</div></div>
+            <div class="wc r"><div class="t">Approvals</div><div class="s">9 pending</div></div>
+            <div class="wc"><div class="t">Records</div><div class="s">Case workflows</div></div>
+            <div class="wc"><div class="t">Reports</div><div class="s">Compliance</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="stagelabel">Desk shell — top bar, sidebar, workspace cards</div>
+    </div>
+    <div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="height:6px;background:linear-gradient(90deg,var(--ink) 0 33%,var(--gold) 33% 66%,var(--red) 66%)"></div>
+        <div style="background:#fbfaf6;color:#111;padding:18px">
+          <div style="display:flex;align-items:center;gap:8px;border-bottom:1px solid #e2ddcf;padding-bottom:10px">
+            <svg style="width:30px;height:30px"><use href="#nilegov-mark"/></svg>
+            <div><div style="font-weight:600;font-size:13px">REPUBLIC OF UGANDA</div><div style="font-size:10px;color:#777">NileGov · Official Document</div></div>
+          </div>
+          <div style="font-size:11px;color:#555;margin-top:12px;line-height:1.7">Service Request Acknowledgement<br>Ref: <span class="mono" style="color:#b8860b">NG‑2026‑0481</span><br>Generated by NileGov ERP</div>
+          <div style="margin-top:14px;height:2px;background:var(--red);width:60px"></div>
+        </div>
+      </div>
+      <div class="stagelabel">Print / PDF / email header</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:22px;margin:46px 0 16px">Surface‑by‑surface scope</h3>
+  <table>
+    <tr><th>Surface</th><th>NileGov treatment</th></tr>
+    <tr><td>Login screen</td><td class="small">Mark + wordmark on paper card; tri‑colour rule at top; ink primary button with gold accent bar.</td></tr>
+    <tr><td>Top bar / navbar</td><td class="small">Ink bar, gold underline (2px), compact mark + wordmark left, neutral avatar right.</td></tr>
+    <tr><td>Side navigation</td><td class="small">Near‑black; active item marked with gold; module icons in single‑weight line style.</td></tr>
+    <tr><td>Workspace cards</td><td class="small">White cards with a 3px left rule — gold for standard, red for action/approval, slate for archive.</td></tr>
+    <tr><td>Module icons</td><td class="small">Monoline, 1.75px stroke, 24px grid, rounded joins — never filled illustrative icons.</td></tr>
+    <tr><td>Reports / tables</td><td class="small">IBM Plex Mono for IDs &amp; figures; gold for the single key metric; zebra rows in Mist.</td></tr>
+    <tr><td>Forms</td><td class="small">8px field radius, ink labels, gold focus ring, red only for validation errors.</td></tr>
+    <tr><td>Print views</td><td class="small">Tri‑colour rule + "REPUBLIC OF UGANDA / NileGov" lockup; ref number in mono; red footer rule.</td></tr>
+    <tr><td>Email templates</td><td class="small">Ink header band, mark reversed white, gold CTA; plain‑language body.</td></tr>
+    <tr><td>System notifications</td><td class="small">Gold = info, red = action required, green = complete; mark as 24px avatar.</td></tr>
+    <tr><td>Loading screens</td><td class="small">Centred mono‑white mark; gold diagonal animates along its flow path.</td></tr>
+    <tr><td>Favicon / theme‑color</td><td class="small">Simplified mark; <span class="mono">#111315</span> chrome tint.</td></tr>
+    <tr><td>Admin area</td><td class="small">Same shell, a slate "ADMIN" tag in the top bar — no separate brand.</td></tr>
+    <tr><td>Landing pages</td><td class="small">Dark institutional hero, Meridian network motif as background art, tri‑colour rule.</td></tr>
+    <tr><td>Ministry / agency co‑brand</td><td class="small">"NileGov for [Agency]" lockup: NileGov mark + vertical hairline + agency name, equal weight.</td></tr>
+  </table>
+
+  <h3 style="font-size:22px;margin:46px 0 16px">Three brand modes</h3>
+  <div class="grid g3">
+    <div class="modecard"><div class="hd" style="background:var(--ink);color:#fff"><svg style="width:22px;height:22px"><use href="#nilegov-mark"/></svg> Government Portal</div><div class="bd">Full institutional weight. Tri‑colour rule, "Republic of Uganda" descriptor, maximum formality. For official records &amp; inter‑agency surfaces.</div></div>
+    <div class="modecard"><div class="hd" style="background:var(--slate);color:#fff"><svg style="width:22px;height:22px"><use href="#nilegov-mark"/></svg> Internal Staff</div><div class="bd">Denser, utilitarian. Calm neutrals, gold reserved for the one key action. Built for speed and long work sessions.</div></div>
+    <div class="modecard"><div class="hd" style="background:var(--gold);color:#111"><svg style="width:22px;height:22px"><use href="#nilegov-mark"/></svg> Citizen Service</div><div class="bd">Warmer, more whitespace, larger type, Threshold motif. Plain language, high accessibility, friendly onboarding.</div></div>
+  </div>
+</div></section>
+
+<!-- ============ 09 COLOR ============ -->
+<section id="color"><div class="wrap">
+  <p class="eyebrow">09 — Color System</p>
+  <h2 style="font-size:clamp(26px,4vw,38px)">Uganda's colours, used with institutional restraint.</h2>
+  <p class="lead" style="margin-top:14px">Black carries the structure, gold carries the value, red carries the foundation — never a flag collage. The national palette is the brand; neutrals exist only to make screens legible.</p>
+
+  <h3 style="font-size:18px;margin:36px 0 14px">Primary</h3>
+  <div class="grid g4">
+    <div class="swatch"><div class="chip" style="background:#111315"></div><div class="info"><div class="nm">Ink</div><div class="hex">#111315</div><div class="role">Structure, type, frame</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F4C20D"></div><div class="info"><div class="nm">Sun (Gold)</div><div class="hex">#F4C20D</div><div class="role">Value, accent, the Nile</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#D7261E"></div><div class="info"><div class="nm">Crane (Red)</div><div class="hex">#D7261E</div><div class="role">Foundation, alert, action</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F7F4EC;border-bottom:1px solid var(--line)"></div><div class="info"><div class="nm">Paper</div><div class="hex">#F7F4EC</div><div class="role">Light surfaces, reversed mark</div></div></div>
+  </div>
+
+  <h3 style="font-size:18px;margin:36px 0 14px">Supporting neutrals (digital UI only)</h3>
+  <div class="grid g4">
+    <div class="swatch"><div class="chip" style="background:#16191d"></div><div class="info"><div class="nm">Basalt</div><div class="hex">#16191D</div><div class="role">Dark surfaces</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#2a3138"></div><div class="info"><div class="nm">Slate</div><div class="hex">#2A3138</div><div class="role">Cards, dividers, inactive</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F4F5F6;border-bottom:1px solid var(--line)"></div><div class="info"><div class="nm">Mist</div><div class="hex">#F4F5F6</div><div class="role">Light app background</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#243B53"></div><div class="info"><div class="nm">Civic Slate</div><div class="hex">#243B53</div><div class="role">UI links only — not brand</div></div></div>
+  </div>
+
+  <h3 style="font-size:18px;margin:36px 0 14px">Functional UI states</h3>
+  <div class="grid g4">
+    <div class="swatch"><div class="chip" style="background:#2E7D32"></div><div class="info"><div class="nm">Success</div><div class="hex">#2E7D32</div><div class="role">Complete / approved</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#C7960A"></div><div class="info"><div class="nm">Warning</div><div class="hex">#C7960A</div><div class="role">Deep‑gold, not Sun</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#D7261E"></div><div class="info"><div class="nm">Error</div><div class="hex">#D7261E</div><div class="role">Crane family</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#243B53"></div><div class="info"><div class="nm">Info</div><div class="hex">#243B53</div><div class="role">Neutral information</div></div></div>
+  </div>
+
+  <div class="card" style="margin-top:30px">
+    <div class="tag">Accessibility — WCAG 2.1</div>
+    <table style="margin-top:8px">
+      <tr><th>Pairing</th><th>Ratio</th><th>Verdict</th></tr>
+      <tr><td>Paper on Ink</td><td class="mono">15.8:1</td><td class="small">AAA — body text ✓</td></tr>
+      <tr><td>Ink on Mist</td><td class="mono">15.1:1</td><td class="small">AAA — body text ✓</td></tr>
+      <tr><td>Gold on Ink</td><td class="mono">10.4:1</td><td class="small">Passes — but reserve for accents / large only</td></tr>
+      <tr><td>Red on Paper</td><td class="mono">4.6:1</td><td class="small">AA large / UI; always pair with an icon or label</td></tr>
+      <tr><td>Gold on White</td><td class="mono">1.4:1</td><td class="small">FAIL — never set gold as text on white</td></tr>
+    </table>
+    <p class="small" style="margin-top:10px">Never rely on colour alone to carry meaning (icons + labels accompany every status). Honour <span class="mono">prefers‑reduced‑motion</span> for the loading animation.</p>
+  </div>
+</div></section>
+
+<!-- ============ 10 TYPE ============ -->
+<section id="type"><div class="wrap">
+  <p class="eyebrow">10 — Typography System</p>
+  <h2 style="font-size:clamp(26px,4vw,38px)">One open‑source family. State‑ready, free to deploy.</h2>
+  <p class="lead" style="margin-top:14px">The brand and UI typeface is <b>IBM Plex Sans</b>, with <b>IBM Plex Mono</b> for data, IDs and audit trails. Chosen deliberately: institutional pedigree, excellent legibility, broad Latin coverage for local languages, and an SIL Open Font License — no licensing cost or risk across an entire government estate.</p>
+
+  <div class="grid g2" style="margin-top:34px">
+    <div class="specimen">
+      <div class="tag" style="color:var(--gold-deep)">Brand &amp; UI — IBM Plex Sans</div>
+      <p class="big" style="font-family:'IBM Plex Sans';font-weight:600;margin-top:14px">NileGov</p>
+      <div class="scale" style="font-family:'IBM Plex Sans'">
+        <div style="font-size:26px;font-weight:600">Display / Headlines — SemiBold</div>
+        <div style="font-size:18px;font-weight:500">Subheads &amp; labels — Medium</div>
+        <div style="font-size:15px;font-weight:400">Body copy and service descriptions — Regular</div>
+        <div style="font-size:13px;font-weight:300;color:var(--paper-dim)">Captions and metadata — Light</div>
+      </div>
+    </div>
+    <div class="specimen">
+      <div class="tag" style="color:var(--gold-deep)">Data &amp; audit — IBM Plex Mono</div>
+      <p class="big mono" style="margin-top:14px">NG‑2026</p>
+      <div class="scale mono" style="font-size:14px;line-height:1.9">
+        <div>REF&nbsp;&nbsp;NG‑2026‑000481</div>
+        <div>TIN&nbsp;&nbsp;1009‑4471‑22</div>
+        <div>STATUS&nbsp;&nbsp;<span style="color:var(--gold)">PENDING‑APPROVAL</span></div>
+        <div>HASH&nbsp;&nbsp;a3f9c1…e07b</div>
+      </div>
+    </div>
+  </div>
+
+  <table style="margin-top:30px">
+    <tr><th>Role</th><th>Face / weight</th><th>Use</th></tr>
+    <tr><td>Wordmark</td><td class="small">Plex Sans — Light + SemiBold ("Nile"+"Gov")</td><td class="small">The weight split encodes public + government</td></tr>
+    <tr><td>Headlines</td><td class="small">Plex Sans SemiBold, tight tracking</td><td class="small">Page &amp; section titles</td></tr>
+    <tr><td>Body / UI</td><td class="small">Plex Sans Regular / Medium</td><td class="small">All interface and content text</td></tr>
+    <tr><td>Data / IDs</td><td class="small">Plex Mono Regular / Medium</td><td class="small">Reference numbers, codes, tables, audit logs</td></tr>
+    <tr><td>Optional display</td><td class="small">A refined serif (e.g. Fraunces) — comms only</td><td class="small">Reports &amp; this brand book; never in‑product</td></tr>
+  </table>
+</div></section>
+
+<!-- ============ 11 IDENTITY SYSTEM EXTRAS ============ -->
+<section id="system"><div class="wrap">
+  <p class="eyebrow">11 — Visual Identity System</p>
+  <div class="grid g3">
+    <div class="card"><h3 style="font-size:19px">Iconography</h3><p class="small" style="color:var(--paper-dim);margin-top:8px">Monoline, 1.75px stroke on a 24px grid, rounded joins, square‑ish silhouettes echoing the frame. Single weight; never duotone or filled‑illustrative.</p></div>
+    <div class="card"><h3 style="font-size:19px">Grid &amp; spacing</h3><p class="small" style="color:var(--paper-dim);margin-top:8px">8‑point spatial system. Generous, calm density on citizen surfaces; tighter on staff surfaces. 12‑column responsive content grid.</p></div>
+    <div class="card"><h3 style="font-size:19px">Pattern / motif</h3><p class="small" style="color:var(--paper-dim);margin-top:8px">The "Meridian" node‑network as a faint background texture (≤6% opacity) — the connected‑services story, used as art, never behind body text.</p></div>
+    <div class="card"><h3 style="font-size:19px">Illustration</h3><p class="small" style="color:var(--paper-dim);margin-top:8px">Geometric, line‑led, built from the same stroke language. Diverse, dignified depictions of Ugandans accessing services — never clip‑art or generic stock metaphors.</p></div>
+    <div class="card"><h3 style="font-size:19px">Photography</h3><p class="small" style="color:var(--paper-dim);margin-top:8px">Documentary, natural light, real civil servants and citizens. Warm but truthful colour grade. A consistent gold or ink duotone overlay for hero use.</p></div>
+    <div class="card"><h3 style="font-size:19px">Motion</h3><p class="small" style="color:var(--paper-dim);margin-top:8px">Calm and purposeful. The signature gesture: the gold diagonal drawing along its flow path (200–320ms, ease‑out). No bounce, no spin. Respects reduced‑motion.</p></div>
+  </div>
+
+  <h3 style="font-size:22px;margin:42px 0 14px">The "seal" motif (design element — not an official seal)</h3>
+  <div class="grid g2" style="align-items:center">
+    <div class="stage"><svg viewBox="0 0 160 160" style="width:150px;height:150px">
+      <circle cx="80" cy="80" r="74" fill="none" stroke="#111315" stroke-width="2"/>
+      <circle cx="80" cy="80" r="66" fill="none" stroke="#C7960A" stroke-width="1.2"/>
+      <g><text x="80" y="22" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" letter-spacing="3" fill="#111">NILEGOV</text>
+      <text x="80" y="146" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" letter-spacing="2" fill="#777">DIGITAL GOVERNMENT · UGANDA</text></g>
+      <g transform="translate(56,52)"><svg viewBox="0 0 128 128" width="48" height="48"><use href="#nilegov-mark"/></svg></g>
+      <circle cx="38" cy="80" r="1.6" fill="#D7261E"/><circle cx="122" cy="80" r="1.6" fill="#D7261E"/>
+    </svg></div>
+    <div>
+      <p style="color:var(--paper-dim)">A circular containment motif for certificates, verified documents and stamps. It deliberately avoids the national coat of arms and any official state seal — it is a brand graphic that signals authenticity and verification, paired with the mono reference number and verification hash from the type system.</p>
+      <div class="callout">Use only on issued / verified artefacts. It is never a substitute for the legally mandated seals of state.</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ 12 USAGE / DO DON'T ============ -->
+<section id="rules"><div class="wrap">
+  <p class="eyebrow">12 — Usage Guidelines &amp; Do / Don't</p>
+  <div class="grid g2">
+    <div class="do">
+      <h4>✓ Do</h4>
+      <ul>
+        <li>Keep one full upright of clear space around the mark.</li>
+        <li>Use the mono‑white mark on photography, always on a dark plate.</li>
+        <li>Let one colour lead per surface — usually ink, with a single gold accent.</li>
+        <li>Use IBM Plex Mono for every reference number and ID.</li>
+        <li>Co‑brand with agencies using the equal‑weight hairline lockup.</li>
+        <li>Reserve red for foundation, action and error only.</li>
+      </ul>
+    </div>
+    <div class="dont">
+      <h4>✕ Don't</h4>
+      <ul>
+        <li>Recolour the mark outside the four brand colours.</li>
+        <li>Set gold as text on a white background (fails contrast).</li>
+        <li>Stretch, rotate, add gradients, shadows or 3‑D to the mark.</li>
+        <li>Use all three flag colours at equal weight (no flag collage).</li>
+        <li>Imitate the coat of arms or any official state seal.</li>
+        <li>Place the mark on a busy image without a containment plate.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin-top:26px">
+    <div class="tag">One‑line brand rationale</div>
+    <p style="font-family:'Fraunces';font-size:clamp(22px,3.4vw,30px);font-weight:500;margin:10px 0 0;line-height:1.2">NileGov is the <span style="color:var(--gold)">structure of the state</span> with the <span style="color:var(--gold)">Nile of public value</span> flowing through it — permanent, secure and proudly Ugandan.</p>
+  </div>
+</div></section>
+
+<!-- ============ 13 AI PROMPT ============ -->
+<section id="prompt"><div class="wrap">
+  <p class="eyebrow">13 — Generator / Designer Prompt</p>
+  <h2 style="font-size:clamp(24px,3.6vw,34px)">Render prompt for the Sentinel mark</h2>
+  <p class="small" style="margin-top:8px;color:var(--paper-dim)">Hand to a designer or an image / vector generator to reproduce the chosen direction.</p>
+  <pre style="margin-top:18px"><span class="c">/* NileGov — primary logo, "Sentinel" route */</span>
+A <span class="k">minimal, institutional logo</span> for "NileGov", a national e-government
+ERP platform for Uganda. A <span class="k">rounded-square civic frame</span> in deep
+black (#111315) contains a bold geometric letter <span class="k">"N"</span>. The two
+uprights of the N are clean off-white (#F7F4EC) pillars. The diagonal
+stroke of the N is a <span class="k">tapered golden band</span> (#F4C20D) — narrow at
+top, wider at the bottom — reading as the <span class="k">River Nile flowing</span>
+through the structure. A thin <span class="k">red baseline</span> (#D7261E) sits beneath
+the monogram as a foundation rule. Flat vector, no gradients, no
+shadows, perfectly symmetric, geometric precision, scalable to a
+16px favicon. Premium, calm, governmental — NOT a flag collage, NOT
+a coat of arms, NOT a fintech or telecom logo. Wordmark "NileGov"
+set beside it in IBM Plex Sans (Light "Nile" + SemiBold "Gov").
+Style references: GOV.UK, Singapore GovTech, e-Estonia, Landor.
+Output: clean SVG, transparent background, 1:1 and horizontal lockup.</pre>
+</div></section>
+
+<!-- ============ 14 IMPLEMENTATION ============ -->
+<section id="build"><div class="wrap">
+  <p class="eyebrow">14 — Frappe / ERPNext Implementation Checklist</p>
+  <h2 style="font-size:clamp(24px,3.6vw,34px)">Exactly how to apply NileGov in Frappe v15.</h2>
+  <p class="lead" style="margin-top:14px">A developer‑ready sequence. Most lives in a custom app's <span class="mono">hooks.py</span>, a brand CSS bundle, and the <span class="mono">Website Settings</span> / <span class="mono">Navbar Settings</span> doctypes.</p>
+
+  <ol class="checklist" style="margin-top:28px">
+    <li><b>App identity &amp; logo</b><span>Set <span class="mono">app_logo_url</span>, <span class="mono">app_name="NileGov"</span> and <span class="mono">app_title</span> in <code>hooks.py</code>. Upload the SVG mark to <code>/assets/nilegov/img/</code>.</span></li>
+    <li><b>Favicon &amp; theme‑color</b><span>Website Settings → Favicon = <code>favicon.svg</code>. Add <code>&lt;meta name="theme-color" content="#111315"&gt;</code> and the maskable / apple‑touch icons via <span class="mono">web_include_html</span>.</span></li>
+    <li><b>Splash / loading</b><span>Override the Frappe splash with the mono‑white mark on ink; add the gold‑diagonal draw animation in the brand CSS, gated on <span class="mono">prefers-reduced-motion</span>.</span></li>
+    <li><b>Login screen</b><span>Set <span class="mono">login_with_email_link</span> branding; override <code>login.html</code> / inject CSS for the tri‑colour top rule, paper card, ink button with gold accent bar.</span></li>
+    <li><b>Navbar &amp; top bar</b><span>Navbar Settings → brand HTML = compact mark + "NileGov". Brand CSS: ink background, 2px gold bottom border, neutral avatar.</span></li>
+    <li><b>Desk theme tokens</b><span>Map CSS variables (<span class="mono">--primary</span>, <span class="mono">--text-color</span>, sidebar, card) to the NileGov palette in a <span class="mono">app_include_css</span> bundle; set active‑nav and focus states to gold.</span></li>
+    <li><b>Workspace &amp; module icons</b><span>Replace default module icons with the monoline 24px set; apply the 3px left‑rule colour logic (gold / red / slate) to workspace cards.</span></li>
+    <li><b>Forms, tables &amp; reports</b><span>8px field radius, gold focus ring, red validation only; force IBM Plex Mono on <span class="mono">.dt-cell</span> numeric / ID columns; highlight the single key metric in gold.</span></li>
+    <li><b>Print formats</b><span>Build a NileGov Letterhead (tri‑colour rule, "Republic of Uganda / NileGov" lockup, mono ref number, red footer rule); set as default Print Format header.</span></li>
+    <li><b>Email templates</b><span>Override the standard email header: ink band, reversed‑white mark, gold CTA button, plain‑language body, mono ref in the footer.</span></li>
+    <li><b>System &amp; notification states</b><span>Standardise toast / alert colours: gold = info, red = action required, green = complete — each with an icon, never colour alone.</span></li>
+    <li><b>Fonts</b><span>Self‑host IBM Plex Sans + Mono under <code>/assets/nilegov/fonts/</code> (OFL); declare <span class="mono">@font-face</span> and set the global font stack — no external CDN dependency for a government deployment.</span></li>
+    <li><b>Brand modes</b><span>Expose a body class (<span class="mono">.mode-portal / .mode-staff / .mode-citizen</span>) toggled by role / site, swapping density, descriptor and motif per the three‑mode spec.</span></li>
+    <li><b>Governance</b><span>Commit the tokens, SVGs, fonts and CSS as a versioned <span class="mono">nilegov_branding</span> app so every site, ministry and district inherits one source of truth.</span></li>
+  </ol>
+</div></section>
+
+<footer><div class="wrap">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+    <svg style="width:34px;height:34px"><use href="#nilegov-mark"/></svg>
+    <div class="wordmark wm-paper" style="font-size:20px">Nile<b>Gov</b></div>
+  </div>
+  NileGov Brand Identity System · v1.0 · Prepared for Digi‑Verse Uganda Limited.<br>
+  All marks rendered as live SVG in this document. National colours used under institutional discipline — this is a brand graphic system and not an official emblem of the Republic of Uganda.
+</div></footer>
+
+<script>
+// gentle staggered reveal on load
+document.querySelectorAll('section').forEach((s,i)=>{
+  s.style.opacity=0;s.style.transform='translateY(14px)';
+  s.style.transition='opacity .6s ease, transform .6s ease';
+});
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.style.opacity=1;e.target.style.transform='none';io.unobserve(e.target)}})},{threshold:.08});
+document.querySelectorAll('section').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

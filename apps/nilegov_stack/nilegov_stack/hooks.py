@@ -9,6 +9,27 @@ app_description = "Uganda service delivery and case-management accountability pl
 app_email = "info@digiverse.co.ug"
 app_license = "mit"
 
+# Assets Inclusion
+app_logo_url = "/assets/nilegov_stack/branding/nilegov-symbol.svg"
+
+app_include_css = [
+    "/assets/nilegov_stack/branding/css/nilegov_brand_final.css"
+]
+
+web_include_css = [
+    "/assets/nilegov_stack/branding/css/nilegov_brand_final.css"
+]
+
+app_include_js = [
+    "/assets/nilegov_stack/branding/js/nilegov_brand_final.js"
+]
+
+web_include_js = [
+    "/assets/nilegov_stack/branding/js/nilegov_brand_final.js"
+]
+
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Role Fixtures (Pass 11B-2 aligned)
 #
@@ -36,6 +57,7 @@ fixtures = [
     {"dt": "Workspace", "filters": [[
         "name", "in", [
             "nilegov_case_operations",
+            "nilegov_insights_reporting",
         ]
     ]]},
     # ── Reports (Pass 11B-5A) ─────────────────────────────────────────────────
@@ -50,6 +72,15 @@ fixtures = [
             "NileGov Notification Delivery",
             "NileGov Integration Simulation Report",
             "NileGov Reporting Snapshot Summary",
+            "NileGov Service Delivery Executive Summary",
+            "NileGov Backlog Ageing Report",
+            "NileGov Payment Monitoring Report",
+            "NileGov Escalation Risk Report",
+            "NileGov Audit & Integrity Report",
+            "NileGov Service Catalogue Performance Report",
+            "NileGov Data Quality & Exceptions Report",
+            "NileGov Equity & Access Report",
+            "NileGov Weekly Management Review Report",
         ]
     ]]},
     # ── Number Cards (Pass 11B-5A) ────────────────────────────────────────────
@@ -64,6 +95,21 @@ fixtures = [
             "NileGov Evidence Incomplete",
             "NileGov Simulated Notifications Sent",
             "NileGov Reporting Snapshots",
+            "NileGov Closed Requests",
+            "NileGov Submitted Requests",
+            "NileGov Under Review Requests",
+            "NileGov Approved Requests",
+            "NileGov Cases Due Today",
+            "NileGov Unresolved Escalations",
+            "NileGov Pending Reconciliation",
+            "NileGov Failed Payments",
+            "NileGov Evidence Pending Verification",
+            "NileGov Failed Identity Verifications",
+            "NileGov Failed Notifications",
+            "NileGov Integration Errors",
+            "NileGov Successful Integrations",
+            "NileGov Active Citizen Profiles",
+            "NileGov Data Quality Exceptions",
         ]
     ]]},
     # ── Dashboard Charts (Pass 11B-5A) ────────────────────────────────────────
@@ -77,12 +123,21 @@ fixtures = [
             "NileGov Notification Delivery Chart",
             "NileGov Officer Workload Chart",
             "NileGov Integration Simulation Chart",
+            "NileGov Reconciliation Status Chart",
+            "NileGov Escalations by Status Chart",
+            "NileGov Identity Verification Status Chart",
+            "NileGov Notifications by Channel Chart",
+            "NileGov Audit Events by Action Chart",
+            "NileGov Services by Category Chart",
+            "NileGov Active Citizens by Location Chart",
+            "NileGov Data Quality Exceptions Chart",
         ]
     ]]},
     # ── Dashboards (Pass 11B-5A) ──────────────────────────────────────────────
     {"dt": "Dashboard", "filters": [[
         "name", "in", [
             "NileGov Case Operations Dashboard",
+            "NileGov Insights Dashboard",
         ]
     ]]},
     # ── Print Formats (Pass 11B-6B) ───────────────────────────────────────────
