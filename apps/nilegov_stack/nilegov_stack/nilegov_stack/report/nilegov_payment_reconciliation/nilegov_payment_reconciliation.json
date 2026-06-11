@@ -17,12 +17,20 @@
  "report_name": "NileGov Payment Reconciliation",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov Payments Officer"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov Payments Officer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype payment reconciliation view. All transaction references are simulated sandbox values. No real money moved. Not live payment clearance.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_payment_record.verification_timestamp desc\",\"fields\":[[\"NileGov Payment Record\",\"service_request\"],[\"NileGov Payment Record\",\"payment_status\"],[\"NileGov Payment Record\",\"payment_purpose\"],[\"NileGov Payment Record\",\"amount\"],[\"NileGov Payment Record\",\"currency\"],[\"NileGov Payment Record\",\"payment_channel\"],[\"NileGov Payment Record\",\"verification_status\"],[\"NileGov Payment Record\",\"simulated_transaction_reference\"],[\"NileGov Payment Record\",\"provider\"],[\"NileGov Payment Record\",\"verification_timestamp\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"verification_timestamp desc\", \"fields\": [[\"NileGov Payment Record\", \"service_request\"], [\"NileGov Payment Record\", \"payment_status\"], [\"NileGov Payment Record\", \"payment_purpose\"], [\"NileGov Payment Record\", \"amount\"], [\"NileGov Payment Record\", \"currency\"], [\"NileGov Payment Record\", \"payment_channel\"], [\"NileGov Payment Record\", \"verification_status\"], [\"NileGov Payment Record\", \"simulated_transaction_reference\"], [\"NileGov Payment Record\", \"provider\"], [\"NileGov Payment Record\", \"verification_timestamp\"]], \"filters\": []}"
 }

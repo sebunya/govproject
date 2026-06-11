@@ -17,13 +17,23 @@
  "report_name": "NileGov SLA Compliance",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov SLA Supervisor"},
-  {"role": "NileGov M&E Viewer"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov SLA Supervisor"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype SLA compliance view. Uses completed_at (not resolved_at). Derived from fictional demo seed data. Not official government statistics.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_sla_event.due_at asc\",\"fields\":[[\"NileGov SLA Event\",\"service_request\"],[\"NileGov SLA Event\",\"event_type\"],[\"NileGov SLA Event\",\"status\"],[\"NileGov SLA Event\",\"breach_risk\"],[\"NileGov SLA Event\",\"due_at\"],[\"NileGov SLA Event\",\"completed_at\"],[\"NileGov SLA Event\",\"notes\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"due_at asc\", \"fields\": [[\"NileGov SLA Event\", \"service_request\"], [\"NileGov SLA Event\", \"event_type\"], [\"NileGov SLA Event\", \"status\"], [\"NileGov SLA Event\", \"breach_risk\"], [\"NileGov SLA Event\", \"due_at\"], [\"NileGov SLA Event\", \"completed_at\"], [\"NileGov SLA Event\", \"notes\"]], \"filters\": []}"
 }

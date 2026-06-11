@@ -1,0 +1,39 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-06-08 00:00:00.000000",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-08 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Payment Monitoring Report",
+ "owner": "Administrator",
+ "ref_doctype": "NileGov Payment Record",
+ "report_name": "NileGov Payment Monitoring Report",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "NileGov SLA Supervisor"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
+ ],
+ "description": "Prototype payment monitoring report. Derived from fictional simulated records only. Not official government payment data.",
+ "query": "",
+ "json": "{\"fields\": [[\"NileGov Payment Record\", \"name\"], [\"NileGov Payment Record\", \"service_request\"], [\"NileGov Payment Record\", \"payment_channel\"], [\"NileGov Payment Record\", \"amount\"], [\"NileGov Payment Record\", \"payment_status\"], [\"NileGov Payment Record\", \"verification_status\"]], \"filters\": [], \"order_by\": \"name asc\"}"
+}

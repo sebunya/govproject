@@ -17,12 +17,20 @@
  "report_name": "NileGov Officer Workload",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov SLA Supervisor"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov SLA Supervisor"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype officer workload view. Fictional demo data only. Not official MDA staffing or performance data.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_service_request.submitted_at desc\",\"fields\":[[\"NileGov Service Request\",\"assigned_officer\"],[\"NileGov Service Request\",\"internal_status\"],[\"NileGov Service Request\",\"sla_state\"],[\"NileGov Service Request\",\"name\"],[\"NileGov Service Request\",\"service_type\"],[\"NileGov Service Request\",\"submitted_at\"],[\"NileGov Service Request\",\"assigned_department\"],[\"NileGov Service Request\",\"escalation_status\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"submitted_at desc\", \"fields\": [[\"NileGov Service Request\", \"assigned_officer\"], [\"NileGov Service Request\", \"internal_status\"], [\"NileGov Service Request\", \"sla_state\"], [\"NileGov Service Request\", \"name\"], [\"NileGov Service Request\", \"service_type\"], [\"NileGov Service Request\", \"submitted_at\"], [\"NileGov Service Request\", \"assigned_department\"], [\"NileGov Service Request\", \"escalation_status\"]], \"filters\": []}"
 }

@@ -17,11 +17,17 @@
  "report_name": "NileGov Integration Simulation Report",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype interoperability simulation log. All integration calls are simulated. No live NIRA, UGHub, URA or government registry was contacted.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_integration_simulation_log.simulated_at desc\",\"fields\":[[\"NileGov Integration Simulation Log\",\"service_request\"],[\"NileGov Integration Simulation Log\",\"integration_name\"],[\"NileGov Integration Simulation Log\",\"simulation_type\"],[\"NileGov Integration Simulation Log\",\"status\"],[\"NileGov Integration Simulation Log\",\"simulated_at\"],[\"NileGov Integration Simulation Log\",\"request_summary\"],[\"NileGov Integration Simulation Log\",\"response_summary\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"simulated_at desc\", \"fields\": [[\"NileGov Integration Simulation Log\", \"service_request\"], [\"NileGov Integration Simulation Log\", \"integration_name\"], [\"NileGov Integration Simulation Log\", \"simulation_type\"], [\"NileGov Integration Simulation Log\", \"status\"], [\"NileGov Integration Simulation Log\", \"simulated_at\"], [\"NileGov Integration Simulation Log\", \"request_summary\"], [\"NileGov Integration Simulation Log\", \"response_summary\"]], \"filters\": []}"
 }

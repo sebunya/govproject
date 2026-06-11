@@ -17,13 +17,23 @@
  "report_name": "NileGov Notification Delivery",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov Citizen Officer"},
-  {"role": "NileGov M&E Viewer"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov Citizen Officer"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype notification delivery view. All delivery statuses are simulated. No actual SMS, email or push notifications are sent in prototype mode.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_citizen_notification.scheduled_at desc\",\"fields\":[[\"NileGov Citizen Notification\",\"service_request\"],[\"NileGov Citizen Notification\",\"channel\"],[\"NileGov Citizen Notification\",\"delivery_status\"],[\"NileGov Citizen Notification\",\"notification_type\"],[\"NileGov Citizen Notification\",\"scheduled_at\"],[\"NileGov Citizen Notification\",\"recipient_type\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"scheduled_at desc\", \"fields\": [[\"NileGov Citizen Notification\", \"service_request\"], [\"NileGov Citizen Notification\", \"channel\"], [\"NileGov Citizen Notification\", \"delivery_status\"], [\"NileGov Citizen Notification\", \"notification_type\"], [\"NileGov Citizen Notification\", \"scheduled_at\"], [\"NileGov Citizen Notification\", \"recipient_type\"]], \"filters\": []}"
 }
