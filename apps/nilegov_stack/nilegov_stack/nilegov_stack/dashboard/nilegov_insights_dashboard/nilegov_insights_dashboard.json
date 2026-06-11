@@ -1,0 +1,95 @@
+{
+ "chart_options": "{}",
+ "charts": [
+  {
+   "chart": "NileGov Reconciliation Status Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Escalations by Status Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Identity Verification Status Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Notifications by Channel Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Audit Events by Action Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Services by Category Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "NileGov Active Citizens by Location Chart",
+   "width": "Full"
+  },
+  {
+   "chart": "NileGov Data Quality Exceptions Chart",
+   "width": "Half"
+  }
+ ],
+ "creation": "2026-06-08 00:00:00.000000",
+ "dashboard_name": "NileGov Insights Dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "is_default": 0,
+ "is_standard": 1,
+ "module": "NileGov Stack",
+ "modified": "2026-06-08 02:10:00.000000",
+ "modified_by": "Administrator",
+ "name": "NileGov Insights Dashboard",
+ "owner": "Administrator",
+ "cards": [
+  {
+   "card": "NileGov Closed Requests"
+  },
+  {
+   "card": "NileGov Submitted Requests"
+  },
+  {
+   "card": "NileGov Under Review Requests"
+  },
+  {
+   "card": "NileGov Approved Requests"
+  },
+  {
+   "card": "NileGov Cases Due Today"
+  },
+  {
+   "card": "NileGov Unresolved Escalations"
+  },
+  {
+   "card": "NileGov Pending Reconciliation"
+  },
+  {
+   "card": "NileGov Failed Payments"
+  },
+  {
+   "card": "NileGov Evidence Pending Verification"
+  },
+  {
+   "card": "NileGov Failed Identity Verifications"
+  },
+  {
+   "card": "NileGov Failed Notifications"
+  },
+  {
+   "card": "NileGov Integration Errors"
+  },
+  {
+   "card": "NileGov Successful Integrations"
+  },
+  {
+   "card": "NileGov Active Citizen Profiles"
+  },
+  {
+   "card": "NileGov Data Quality Exceptions"
+  }
+ ]
+}

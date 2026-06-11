@@ -1,0 +1,39 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-06-08 00:00:00.000000",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-08 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Escalation Risk Report",
+ "owner": "Administrator",
+ "ref_doctype": "NileGov Escalation Record",
+ "report_name": "NileGov Escalation Risk Report",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "NileGov SLA Supervisor"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
+ ],
+ "description": "Prototype escalation risk report. Derived from fictional demo seed data. Not official government statistics.",
+ "query": "",
+ "json": "{\"fields\": [[\"NileGov Escalation Record\", \"name\"], [\"NileGov Escalation Record\", \"service_request\"], [\"NileGov Escalation Record\", \"escalation_reason\"], [\"NileGov Escalation Record\", \"status\"], [\"NileGov Escalation Record\", \"escalated_by\"]], \"filters\": [], \"order_by\": \"name asc\"}"
+}

@@ -17,16 +17,32 @@
  "report_name": "NileGov Requests by Status",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov Citizen Officer"},
-  {"role": "NileGov Records Officer"},
-  {"role": "NileGov Payments Officer"},
-  {"role": "NileGov SLA Supervisor"},
-  {"role": "NileGov M&E Viewer"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov Citizen Officer"
+  },
+  {
+   "role": "NileGov Records Officer"
+  },
+  {
+   "role": "NileGov Payments Officer"
+  },
+  {
+   "role": "NileGov SLA Supervisor"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype report. Derived from fictional demo seed data. Not official government statistics.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_service_request.submitted_at desc\",\"fields\":[[\"NileGov Service Request\",\"name\"],[\"NileGov Service Request\",\"internal_status\"],[\"NileGov Service Request\",\"service_type\"],[\"NileGov Service Request\",\"sla_state\"],[\"NileGov Service Request\",\"location\"],[\"NileGov Service Request\",\"submitted_at\"],[\"NileGov Service Request\",\"assigned_officer\"],[\"NileGov Service Request\",\"payment_status\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"submitted_at desc\", \"fields\": [[\"NileGov Service Request\", \"name\"], [\"NileGov Service Request\", \"internal_status\"], [\"NileGov Service Request\", \"service_type\"], [\"NileGov Service Request\", \"sla_state\"], [\"NileGov Service Request\", \"location\"], [\"NileGov Service Request\", \"submitted_at\"], [\"NileGov Service Request\", \"assigned_officer\"], [\"NileGov Service Request\", \"payment_status\"]], \"filters\": []}"
 }

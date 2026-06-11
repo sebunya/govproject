@@ -1,0 +1,39 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-06-08 00:00:00.000000",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2026-06-08 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Audit & Integrity Report",
+ "owner": "Administrator",
+ "ref_doctype": "NileGov Audit Event",
+ "report_name": "NileGov Audit & Integrity Report",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "NileGov SLA Supervisor"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
+ ],
+ "description": "Prototype audit & integrity report. Derived from fictional simulated logs only. Not official government audit data.",
+ "query": "",
+ "json": "{\"fields\": [[\"NileGov Audit Event\", \"name\"], [\"NileGov Audit Event\", \"event_type\"], [\"NileGov Audit Event\", \"actor_role\"], [\"NileGov Audit Event\", \"actor_name\"], [\"NileGov Audit Event\", \"creation\"], [\"NileGov Audit Event\", \"reference_doctype\"], [\"NileGov Audit Event\", \"reference_name\"]], \"filters\": [], \"order_by\": \"creation desc\"}"
+}

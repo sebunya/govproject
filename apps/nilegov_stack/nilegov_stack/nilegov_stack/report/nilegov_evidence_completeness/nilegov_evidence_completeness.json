@@ -17,13 +17,23 @@
  "report_name": "NileGov Evidence Completeness",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov Records Officer"},
-  {"role": "NileGov M&E Viewer"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov Records Officer"
+  },
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype evidence review report. Simulated verification statuses only. No official NIRA or court verification performed.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_evidence_document.uploaded_at desc\",\"fields\":[[\"NileGov Evidence Document\",\"service_request\"],[\"NileGov Evidence Document\",\"document_type\"],[\"NileGov Evidence Document\",\"verification_status\"],[\"NileGov Evidence Document\",\"visibility\"],[\"NileGov Evidence Document\",\"document_title\"],[\"NileGov Evidence Document\",\"uploaded_at\"],[\"NileGov Evidence Document\",\"verified_by\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"uploaded_at desc\", \"fields\": [[\"NileGov Evidence Document\", \"service_request\"], [\"NileGov Evidence Document\", \"document_type\"], [\"NileGov Evidence Document\", \"verification_status\"], [\"NileGov Evidence Document\", \"visibility\"], [\"NileGov Evidence Document\", \"document_title\"], [\"NileGov Evidence Document\", \"uploaded_at\"], [\"NileGov Evidence Document\", \"verified_by\"]], \"filters\": []}"
 }
