@@ -17,12 +17,20 @@
  "report_name": "NileGov Reporting Snapshot Summary",
  "report_type": "Report Builder",
  "roles": [
-  {"role": "NileGov M&E Viewer"},
-  {"role": "NileGov MDA Admin"},
-  {"role": "NileGov System Auditor"},
-  {"role": "NileGov System Manager"}
+  {
+   "role": "NileGov M&E Viewer"
+  },
+  {
+   "role": "NileGov MDA Admin"
+  },
+  {
+   "role": "NileGov System Auditor"
+  },
+  {
+   "role": "NileGov System Manager"
+  }
  ],
  "description": "Prototype M&E snapshot summary. All metrics are calculated from fictional seed data and are NOT official government statistics. This report does not represent live NileGov, NIRA, URA or Ministry performance data.",
  "query": "",
- "json": "{\"order_by\":\"nilegov_reporting_snapshot.generated_at desc\",\"fields\":[[\"NileGov Reporting Snapshot\",\"snapshot_name\"],[\"NileGov Reporting Snapshot\",\"reporting_period_start\"],[\"NileGov Reporting Snapshot\",\"reporting_period_end\"],[\"NileGov Reporting Snapshot\",\"total_requests\"],[\"NileGov Reporting Snapshot\",\"within_sla_count\"],[\"NileGov Reporting Snapshot\",\"at_risk_count\"],[\"NileGov Reporting Snapshot\",\"overdue_count\"],[\"NileGov Reporting Snapshot\",\"escalated_count\"],[\"NileGov Reporting Snapshot\",\"payment_pending_count\"],[\"NileGov Reporting Snapshot\",\"payment_verified_count\"],[\"NileGov Reporting Snapshot\",\"notification_simulated_sent_count\"],[\"NileGov Reporting Snapshot\",\"generated_by\"],[\"NileGov Reporting Snapshot\",\"generated_at\"]],\"filters\":[]}"
+ "json": "{\"order_by\": \"generated_at desc\", \"fields\": [[\"NileGov Reporting Snapshot\", \"snapshot_name\"], [\"NileGov Reporting Snapshot\", \"reporting_period_start\"], [\"NileGov Reporting Snapshot\", \"reporting_period_end\"], [\"NileGov Reporting Snapshot\", \"total_requests\"], [\"NileGov Reporting Snapshot\", \"within_sla_count\"], [\"NileGov Reporting Snapshot\", \"at_risk_count\"], [\"NileGov Reporting Snapshot\", \"overdue_count\"], [\"NileGov Reporting Snapshot\", \"escalated_count\"], [\"NileGov Reporting Snapshot\", \"payment_pending_count\"], [\"NileGov Reporting Snapshot\", \"payment_verified_count\"], [\"NileGov Reporting Snapshot\", \"notification_simulated_sent_count\"], [\"NileGov Reporting Snapshot\", \"generated_by\"], [\"NileGov Reporting Snapshot\", \"generated_at\"]], \"filters\": []}"
 }

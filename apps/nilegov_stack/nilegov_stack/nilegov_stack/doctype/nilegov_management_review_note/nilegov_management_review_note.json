@@ -1,0 +1,206 @@
+{
+ "custom": 0,
+ "istable": 0,
+ "issingle": 0,
+ "is_virtual": 0,
+ "actions": [],
+ "allow_events_in_timeline": 0,
+ "allow_header_image": 0,
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "field:review_note_id",
+ "creation": "2026-06-08 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "review_note_id",
+   "fieldtype": "Data",
+   "label": "Review Note ID",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "review_period",
+   "fieldtype": "Select",
+   "label": "Review Period",
+   "options": "Weekly\nMonthly\nQuarterly\nAnnual",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "review_date",
+   "fieldtype": "Date",
+   "label": "Review Date",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "prepared_by",
+   "fieldtype": "Link",
+   "label": "Prepared By",
+   "options": "User",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "summary",
+   "fieldtype": "Small Text",
+   "label": "Executive Summary",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_concerns",
+   "fieldtype": "Section Break",
+   "label": "Key Concerns and Findings"
+  },
+  {
+   "fieldname": "key_findings",
+   "fieldtype": "Small Text",
+   "label": "Key Findings"
+  },
+  {
+   "fieldname": "sla_concerns",
+   "fieldtype": "Small Text",
+   "label": "SLA & Backlog Concerns"
+  },
+  {
+   "fieldname": "payment_concerns",
+   "fieldtype": "Small Text",
+   "label": "Payment & Reconciliation Concerns"
+  },
+  {
+   "fieldname": "evidence_concerns",
+   "fieldtype": "Small Text",
+   "label": "Evidence & Verification Concerns"
+  },
+  {
+   "fieldname": "escalation_concerns",
+   "fieldtype": "Small Text",
+   "label": "Escalation Concerns"
+  },
+  {
+   "fieldname": "data_quality_concerns",
+   "fieldtype": "Small Text",
+   "label": "Data Quality Concerns"
+  },
+  {
+   "fieldname": "section_decisions",
+   "fieldtype": "Section Break",
+   "label": "Decisions and Agreed Actions"
+  },
+  {
+   "fieldname": "decisions_taken",
+   "fieldtype": "Small Text",
+   "label": "Decisions Taken"
+  },
+  {
+   "fieldname": "actions_agreed",
+   "fieldtype": "Small Text",
+   "label": "Actions Agreed"
+  },
+  {
+   "fieldname": "action_owner",
+   "fieldtype": "Link",
+   "label": "Action Owner",
+   "options": "User"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Action Due Date"
+  },
+  {
+   "fieldname": "follow_up_status",
+   "fieldtype": "Select",
+   "label": "Follow-up Status",
+   "options": "Pending\nIn Progress\nCompleted\nDeferred",
+   "default": "Pending",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supporting_report_link",
+   "fieldtype": "Data",
+   "label": "Supporting Report Link"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Additional Notes"
+  },
+  {
+   "fieldname": "disclaimer",
+   "fieldtype": "Small Text",
+   "label": "Disclaimer",
+   "reqd": 1,
+   "default": "Prototype management review note only. Observations and actions are based on simulated prototype data."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-08 02:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Management Review Note",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "NileGov M&E Viewer",
+   "read": 1,
+   "export": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "NileGov SLA Supervisor",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1
+  },
+  {
+   "role": "NileGov MDA Admin",
+   "read": 1,
+   "print": 1
+  },
+  {
+   "role": "NileGov System Auditor",
+   "read": 1,
+   "export": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "NileGov System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "report": 1
+  }
+ ],
+ "states": [],
+ "search_fields": "review_period,review_date,prepared_by",
+ "title_field": "review_note_id",
+ "sort_field": "review_date",
+ "sort_order": "DESC"
+}

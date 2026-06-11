@@ -1,0 +1,286 @@
+{
+ "charts": [
+  {
+   "chart_name": "NileGov Requests by Status Chart"
+  },
+  {
+   "chart_name": "NileGov Requests by Service Chart"
+  },
+  {
+   "chart_name": "NileGov SLA Compliance Chart"
+  },
+  {
+   "chart_name": "NileGov Escalations by Status Chart"
+  },
+  {
+   "chart_name": "NileGov Payment Status Chart"
+  },
+  {
+   "chart_name": "NileGov Identity Verification Status Chart"
+  },
+  {
+   "chart_name": "NileGov Audit Events by Action Chart"
+  },
+  {
+   "chart_name": "NileGov Data Quality Exceptions Chart"
+  }
+ ],
+ "creation": "2026-06-08 00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "label": "NileGov Insights Reporting",
+ "title": "NileGov Insights Reporting",
+ "modified": "2026-06-08 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "NileGov Stack",
+ "name": "NileGov Insights Reporting",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "is_hidden": 0,
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "content": "[{\"id\": \"hdr0\", \"type\": \"header\", \"data\": {\"text\": \"NileGov Insights & Reporting\", \"level\": 2}}, {\"id\": \"txt1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Monitoring, Evaluation, Accountability and Learning view for service delivery performance, SLA risk, payment reconciliation, integrity, equity, data quality and management review.\"}}, {\"id\": \"c1\", \"type\": \"card\", \"data\": {\"card_name\": \"Executive Command View\"}}, {\"id\": \"nc1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"NileGov Total Requests\"}}, {\"id\": \"nc2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"NileGov Open Requests\"}}, {\"id\": \"nc3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"NileGov Closed Requests\"}}, {\"id\": \"nc4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"NileGov Escalated Cases\"}}, {\"id\": \"nc5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"NileGov Failed Identity Verifications\"}}, {\"id\": \"nc6\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"NileGov Pending Reconciliation\"}}, {\"id\": \"c2\", \"type\": \"card\", \"data\": {\"card_name\": \"Service Delivery Performance\"}}, {\"id\": \"ch1\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov Requests by Status Chart\"}}, {\"id\": \"ch2\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov Requests by Service Chart\"}}, {\"id\": \"c3\", \"type\": \"card\", \"data\": {\"card_name\": \"SLA, Risk & Escalation\"}}, {\"id\": \"ch3\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov SLA Compliance Chart\"}}, {\"id\": \"ch4\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov Escalations by Status Chart\"}}, {\"id\": \"c4\", \"type\": \"card\", \"data\": {\"card_name\": \"Payments & Reconciliation\"}}, {\"id\": \"ch5\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov Payment Status Chart\"}}, {\"id\": \"c5\", \"type\": \"card\", \"data\": {\"card_name\": \"Identity, Evidence & Integrity\"}}, {\"id\": \"ch6\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov Identity Verification Status Chart\"}}, {\"id\": \"ch7\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov Audit Events by Action Chart\"}}, {\"id\": \"c6\", \"type\": \"card\", \"data\": {\"card_name\": \"Equity, Access & Learning\"}}, {\"id\": \"ch8\", \"type\": \"chart\", \"data\": {\"chart_name\": \"NileGov Data Quality Exceptions Chart\"}}, {\"id\": \"c7\", \"type\": \"card\", \"data\": {\"card_name\": \"Management Review\"}}, {\"id\": \"txt2\", \"type\": \"paragraph\", \"data\": {\"text\": \"Strategic oversight, management learning, and reporting snapshots.\"}}]",
+ "shortcuts": [],
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Executive Command View",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Open Executive Command Centre",
+   "link_to": "nilegov-command-centre-v3",
+   "link_type": "Page",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Management Review Notes",
+   "link_to": "NileGov Management Review Note",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reporting Snapshots",
+   "link_to": "NileGov Reporting Snapshot",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Delivery Performance",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Delivery Summary",
+   "link_to": "NileGov Service Delivery Executive Summary",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Service Request"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Backlog Ageing",
+   "link_to": "NileGov Backlog Ageing Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Service Request"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Catalogue Performance",
+   "link_to": "NileGov Service Catalogue Performance Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Service Catalogue"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SLA, Risk & Escalation",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Escalation Risk Report",
+   "link_to": "NileGov Escalation Risk Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Escalation Record"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Unresolved Escalations",
+   "link_to": "NileGov Escalation Record",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cases Due Today",
+   "link_to": "NileGov Service Request",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payments & Reconciliation",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Monitoring",
+   "link_to": "NileGov Payment Monitoring Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Payment Record"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Pending Reconciliation",
+   "link_to": "NileGov Payment Record",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Failed Payments",
+   "link_to": "NileGov Payment Record",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Identity, Evidence & Integrity",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Audit & Integrity",
+   "link_to": "NileGov Audit & Integrity Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Audit Event"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Evidence Pending Verification",
+   "link_to": "NileGov Evidence Document",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Failed Identity Verifications",
+   "link_to": "NileGov Simulated Identity Verification",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equity, Access & Learning",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equity & Access",
+   "link_to": "NileGov Equity & Access Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Service Request"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Data Quality Exceptions",
+   "link_to": "NileGov Data Quality & Exceptions Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Service Request"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Weekly Management Review",
+   "link_to": "NileGov Weekly Management Review Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link",
+   "report_ref_doctype": "NileGov Management Review Note"
+  }
+ ],
+ "number_cards": [
+  {
+   "number_card_name": "NileGov Total Requests"
+  },
+  {
+   "number_card_name": "NileGov Open Requests"
+  },
+  {
+   "number_card_name": "NileGov Closed Requests"
+  },
+  {
+   "number_card_name": "NileGov Escalated Cases"
+  },
+  {
+   "number_card_name": "NileGov Failed Identity Verifications"
+  },
+  {
+   "number_card_name": "NileGov Pending Reconciliation"
+  }
+ ]
+}

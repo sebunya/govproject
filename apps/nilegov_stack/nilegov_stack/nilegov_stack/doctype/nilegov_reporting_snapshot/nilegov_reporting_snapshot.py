@@ -25,7 +25,7 @@ _FORBIDDEN_CLAIM_KEYWORDS = [
 ]
 
 
-class NilegoveReportingSnapshot(Document):
+class NileGovReportingSnapshot(Document):
     """
     Frappe Document controller for NileGov Reporting Snapshot.
 

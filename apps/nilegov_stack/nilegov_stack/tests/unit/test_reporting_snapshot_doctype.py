@@ -414,7 +414,7 @@ class TestReportingSnapshotController:
         )
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-        assert hasattr(mod, "NilegoveReportingSnapshot")
+        assert hasattr(mod, "NileGovReportingSnapshot")
 
     def test_controller_defines_required_disclaimer_constant(self):
         import importlib.util
@@ -433,7 +433,7 @@ class TestReportingSnapshotController:
         )
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-        ctrl = mod.NilegoveReportingSnapshot()
+        ctrl = mod.NileGovReportingSnapshot()
         ctrl.snapshot_name = "Test Snapshot"
         ctrl.source_dataset = "Demo"
         ctrl.disclaimer = ""  # intentionally blank
@@ -447,7 +447,7 @@ class TestReportingSnapshotController:
         )
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-        ctrl = mod.NilegoveReportingSnapshot()
+        ctrl = mod.NileGovReportingSnapshot()
         ctrl.snapshot_name = ""
         ctrl.source_dataset = "Demo"
         ctrl.disclaimer = mod.REQUIRED_DISCLAIMER
