@@ -33,9 +33,11 @@ fixtures = [
         ]
     ]]},
     # ── Workspace ─────────────────────────────────────────────────────────────
+    # NOTE: filters must match the "name" field in the workspace JSON, NOT the folder slug.
     {"dt": "Workspace", "filters": [[
         "name", "in", [
-            "nilegov_case_operations",
+            "NileGov Case Operations",
+            "NileGov Insights Reporting",
         ]
     ]]},
     # ── Reports (Pass 11B-5A) ─────────────────────────────────────────────────
