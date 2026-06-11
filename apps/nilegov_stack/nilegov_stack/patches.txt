@@ -1,5 +1,4 @@
 # Newline-separated list of idempotent patches run during bench migration (Pass 2B)
 nilegov_stack.patches.seed_roles
 nilegov_stack.patches.seed_service_types_and_sla_rules
-nilegov_stack.patches.seed_demo_records
 
