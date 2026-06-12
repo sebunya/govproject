@@ -239,16 +239,19 @@ def _get_status_options(req):
     opts = _dedupe([s.internal_status for s in statuses])
     return opts or COMMAND_CENTRE_STATUS_FALLBACKS
 
-def _get_location_options(req):
-    locations = frappe.qb.from_(req).select(req.location).distinct().where(req.location.isnotnull()).run(as_dict=True)
-    opts = _dedupe([l.location for l in locations])
-    if not opts:
-        for dt in ["NileGov Location", "NileGov District", "Location", "District"]:
-            if frappe.db.exists("DocType", dt):
-                locs = frappe.get_all(dt, fields=["name"])
-                opts = _dedupe([l.name for l in locs])
-                break
-    return opts
+def _get_location_options(req=None):
+    try:
+        if not frappe.db.exists("DocType", "NileGov District"):
+            return []
+
+        return frappe.get_all(
+            "NileGov District",
+            filters={"disabled": 0},
+            pluck="district_name",
+            order_by="district_name asc",
+        )
+    except Exception:
+        return []
 
 def _clean_label(value):
     if value is None:
