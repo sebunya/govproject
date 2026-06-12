@@ -210,6 +210,46 @@ def get_policy_me_summary(filters=None):
     validate_insights_access()
     return {}
 
+COMMAND_CENTRE_STATUS_FALLBACKS = [
+    "Submitted",
+    "Pending",
+    "In Progress",
+    "Under Review",
+    "Approved",
+    "Rejected",
+    "Closed",
+    "Escalated",
+]
+
+def _dedupe(values):
+    seen = set()
+    result = []
+    for value in values:
+        if value is None:
+            continue
+        clean_value = str(value).strip()
+        if not clean_value or clean_value in seen:
+            continue
+        seen.add(clean_value)
+        result.append(clean_value)
+    return result
+
+def _get_status_options(req):
+    statuses = frappe.qb.from_(req).select(req.internal_status).distinct().where(req.internal_status.isnotnull()).run(as_dict=True)
+    opts = _dedupe([s.internal_status for s in statuses])
+    return opts or COMMAND_CENTRE_STATUS_FALLBACKS
+
+def _get_location_options(req):
+    locations = frappe.qb.from_(req).select(req.location).distinct().where(req.location.isnotnull()).run(as_dict=True)
+    opts = _dedupe([l.location for l in locations])
+    if not opts:
+        for dt in ["NileGov Location", "NileGov District", "Location", "District"]:
+            if frappe.db.exists("DocType", dt):
+                locs = frappe.get_all(dt, fields=["name"])
+                opts = _dedupe([l.name for l in locs])
+                break
+    return opts
+
 @frappe.whitelist()
 def get_command_centre_filters():
     validate_insights_access()
@@ -242,13 +282,11 @@ def get_command_centre_filters():
             if val:
                 service_options.append({"value": val, "label": val})
 
-    locations = frappe.qb.from_(req).select(req.location).distinct().where(req.location.isnotnull()).run(as_dict=True)
     officers = frappe.qb.from_(req).select(req.assigned_officer).distinct().where(req.assigned_officer.isnotnull()).run(as_dict=True)
-    statuses = frappe.qb.from_(req).select(req.internal_status).distinct().where(req.internal_status.isnotnull()).run(as_dict=True)
 
     return {
         "services": service_options,
-        "locations": [l.location for l in locations],
-        "officers": [o.assigned_officer for o in officers],
-        "statuses": [s.internal_status for s in statuses]
+        "locations": _get_location_options(req),
+        "officers": _dedupe([o.assigned_officer for o in officers]),
+        "statuses": _get_status_options(req)
     }
