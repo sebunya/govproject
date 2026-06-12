@@ -316,45 +316,7 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
 
 
 
-    function force_populate_service_select(services) {
-        var service_select = $('#filter-service');
-        var safe_services = Array.isArray(services) ? services : [];
 
-        if (!service_select.length) {
-            return {
-                service_select_count: 0,
-                service_option_count: 0
-            };
-        }
-
-        var option_count = service_select.find('option').length;
-
-        if (safe_services.length > 0 && option_count <= 1) {
-            console.warn('[NileGov Command Centre V3] service select fallback population triggered');
-
-            service_select.empty();
-            service_select.append($('<option>', {
-                value: '',
-                text: 'All Services'
-            }));
-
-            safe_services
-                .map(normalize_option)
-                .filter(Boolean)
-                .forEach(function(option) {
-                    service_select.append($('<option>', {
-                        value: option.value,
-                        text: option.label
-                    }));
-                });
-
-            option_count = service_select.find('option').length;
-        }
-        return {
-            service_select_count: service_select.length,
-            service_option_count: option_count
-        };
-    }
 
     function hydrate_filters() {
         console.log('[NileGov Command Centre V3] filter hydration started');
@@ -364,14 +326,12 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             callback: function(r) {
                 var filters = resolve_message(r);
                 var services = Array.isArray(filters.services) ? filters.services : [];
-                var statuses = Array.isArray(filters.statuses) ? filters.statuses : [];
+                var statuses = Array.isArray(filters.statuses) ? filters.statuses : (Array.isArray(filters.status) ? filters.status : []);
                 var locations = Array.isArray(filters.locations) ? filters.locations : [];
 
                 populate_select('#filter-service', 'All Services', services);
                 populate_select('#filter-status', 'All Statuses', statuses);
                 populate_select('#filter-location', 'All Locations', locations);
-
-                force_populate_service_select(services);
 
                 console.log('[NileGov Command Centre V3] filter hydration completed');
                 wire_filter_events();
@@ -385,43 +345,23 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
     }
 
     function normalize_option(item) {
-        if (typeof item === 'string') {
-            return {
-                value: item,
-                label: item
-            };
-        }
+        var raw_value = item && typeof item === "object" ? (
+            item.value || item.name || item.service_type || item.service_code || item.location || item.status || item.internal_status
+        ) : item;
 
-        if (item && typeof item === 'object') {
-            var value =
-                item.value ||
-                item.name ||
-                item.service_type ||
-                item.service_code ||
-                item.location ||
-                item.status;
+        var raw_label = item && typeof item === "object" ? (
+            item.label || item.service_name || item.value || item.name || item.service_type || item.service_code || item.location || item.status || item.internal_status
+        ) : item;
 
-            var label =
-                item.label ||
-                item.service_name ||
-                item.value ||
-                item.name ||
-                item.service_type ||
-                item.service_code ||
-                item.location ||
-                item.status;
+        var value = String(raw_value || "").trim();
+        var label = String(raw_label || "").trim().replace(/\s+/g, " ");
 
-            if (!value) {
-                return null;
-            }
+        if (!value || !label) return null;
 
-            return {
-                value: String(value),
-                label: String(label || value)
-            };
-        }
-
-        return null;
+        return {
+            value: value,
+            label: label
+        };
     }
 
     function populate_select(selector, fallback_label, items) {
@@ -440,15 +380,21 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             text: fallback_label
         }));
 
-        safe_items
-            .map(normalize_option)
-            .filter(Boolean)
-            .forEach(function(option) {
-                select.append($('<option>', {
-                    value: option.value,
-                    text: option.label
-                }));
-            });
+        var seen_labels = {};
+
+        safe_items.forEach(function(item) {
+            var option = normalize_option(item);
+            if (!option) return;
+
+            var key = option.label.toLowerCase();
+            if (seen_labels[key]) return;
+
+            seen_labels[key] = true;
+            select.append($('<option>', {
+                value: option.value,
+                text: option.label
+            }));
+        });
 
         var option_count = select.find('option').length;
 
