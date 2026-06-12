@@ -340,11 +340,18 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
                 var statuses = Array.isArray(filters.statuses) && filters.statuses.length
                     ? filters.statuses
                     : (Array.isArray(filters.status) && filters.status.length ? filters.status : COMMAND_CENTRE_STATUS_FALLBACKS);
-                var locations = Array.isArray(filters.locations) ? filters.locations : [];
+                var locations = filters.locations;
 
                 populate_select('#filter-service', 'All Services', services);
                 populate_select('#filter-status', 'All Statuses', statuses);
-                populate_select('#filter-location', 'All Locations', locations);
+
+                const safe_locations = Array.isArray(locations) ? locations : [];
+
+                if (safe_locations.length === 0) {
+                    populate_select('#filter-location', 'No location master data available', []);
+                } else {
+                    populate_select('#filter-location', 'All Locations', safe_locations);
+                }
 
                 console.log('[NileGov Command Centre V3] filter hydration completed');
                 wire_filter_events();
@@ -426,7 +433,7 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         }
 
         if ($('#filter-location option').length <= 1) {
-            populate_select('#filter-location', 'All Locations', []);
+            populate_select('#filter-location', 'No location master data available', []);
         }
     }
 
