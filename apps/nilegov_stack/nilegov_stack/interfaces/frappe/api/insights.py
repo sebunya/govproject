@@ -250,6 +250,31 @@ def _get_location_options(req):
                 break
     return opts
 
+def _clean_label(value):
+    if value is None:
+        return ""
+    return " ".join(str(value).strip().split())
+
+def _service_label_key(value):
+    return _clean_label(value).casefold()
+
+def _append_service_option(service_options, seen_labels, value, label):
+    clean_value = _clean_label(value)
+    clean_label = _clean_label(label)
+
+    if not clean_value or not clean_label:
+        return
+
+    label_key = _service_label_key(clean_label)
+    if label_key in seen_labels:
+        return
+
+    seen_labels.add(label_key)
+    service_options.append({
+        "value": clean_value,
+        "label": clean_label,
+    })
+
 @frappe.whitelist()
 def get_command_centre_filters():
     validate_insights_access()
@@ -264,23 +289,26 @@ def get_command_centre_filters():
     )
 
     service_options = []
+    seen_labels = set()
+
     if catalogue_services:
-        for s in catalogue_services:
-            if s.get("active_status") == "Inactive":
+        for service in catalogue_services:
+            if service.get("active_status") == "Inactive":
                 continue
-            val = s.get("service_code") or s.get("name")
-            lbl = s.get("service_name") or s.get("service_code") or s.get("name")
-            if val:
-                service_options.append({"value": val, "label": lbl})
+
+            value = service.get("service_code") or service.get("name")
+            label = service.get("service_name") or service.get("service_code") or service.get("name")
+
+            _append_service_option(service_options, seen_labels, value, label)
     else:
         # 2. Fallback to distinct service types from requests
         services = frappe.qb.from_(req).select(req.service_type).distinct().where(
             (req.service_type.isnotnull()) & (req.service_type != '')
         ).run(as_dict=True)
-        for s in services:
-            val = s.get("service_type")
-            if val:
-                service_options.append({"value": val, "label": val})
+
+        for service in services:
+            value = service.get("service_type")
+            _append_service_option(service_options, seen_labels, value, value)
 
     officers = frappe.qb.from_(req).select(req.assigned_officer).distinct().where(req.assigned_officer.isnotnull()).run(as_dict=True)
 
