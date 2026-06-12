@@ -318,6 +318,17 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
 
 
 
+    const COMMAND_CENTRE_STATUS_FALLBACKS = [
+        "Submitted",
+        "Pending",
+        "In Progress",
+        "Under Review",
+        "Approved",
+        "Rejected",
+        "Closed",
+        "Escalated"
+    ];
+
     function hydrate_filters() {
         console.log('[NileGov Command Centre V3] filter hydration started');
 
@@ -326,7 +337,9 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             callback: function(r) {
                 var filters = resolve_message(r);
                 var services = Array.isArray(filters.services) ? filters.services : [];
-                var statuses = Array.isArray(filters.statuses) ? filters.statuses : (Array.isArray(filters.status) ? filters.status : []);
+                var statuses = Array.isArray(filters.statuses) && filters.statuses.length
+                    ? filters.statuses
+                    : (Array.isArray(filters.status) && filters.status.length ? filters.status : COMMAND_CENTRE_STATUS_FALLBACKS);
                 var locations = Array.isArray(filters.locations) ? filters.locations : [];
 
                 populate_select('#filter-service', 'All Services', services);
