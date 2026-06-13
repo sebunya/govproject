@@ -10,6 +10,41 @@ def validate_insights_access():
 
 from frappe.utils.data import getdate
 
+COMMAND_CENTRE_OPEN_STATUSES = [
+    "Submitted",
+    "Under Review",
+    "Information Required",
+    "Payment Pending",
+    "Payment Verified",
+    "Approved",
+    "Ready for Collection",
+]
+
+COMMAND_CENTRE_PAYMENT_SUCCESS_STATUSES = [
+    "Verified",
+    "Paid",
+    "Successful",
+    "Completed",
+]
+
+COMMAND_CENTRE_PAYMENT_PENDING_STATUSES = [
+    "Pending",
+    "Pending Verification",
+    "Pending Reconciliation",
+]
+
+COMMAND_CENTRE_PAYMENT_FAILED_STATUSES = [
+    "Failed",
+    "Rejected",
+    "Cancelled",
+]
+
+COMMAND_CENTRE_ESCALATION_OPEN_STATUSES = [
+    "Pending",
+    "Open",
+    "Unresolved",
+]
+
 def apply_filters(query, filters):
     if not filters:
         return query
@@ -48,23 +83,35 @@ def get_command_centre_overview(filters=None):
     validate_insights_access()
     req = frappe.qb.DocType("NileGov Service Request")
 
-    # Base query for all records
-    q_all = apply_filters(frappe.qb.from_(req).select(
+    # Base query for Service Request counts
+    q_req = apply_filters(frappe.qb.from_(req).select(
         Count(req.name).as_("total"),
         Sum(frappe.qb.terms.Case().when(req.internal_status == "Closed", 1).else_(0)).as_("completed"),
-        Sum(frappe.qb.terms.Case().when(req.internal_status == "Pending", 1).else_(0)).as_("pending"),
-        Sum(frappe.qb.terms.Case().when(req.internal_status == "In Progress", 1).else_(0)).as_("in_progress"),
+        Sum(frappe.qb.terms.Case().when(req.internal_status == "Submitted", 1).else_(0)).as_("pending"),
+        Sum(frappe.qb.terms.Case().when(req.internal_status.isin(COMMAND_CENTRE_OPEN_STATUSES), 1).else_(0)).as_("active_backlog"),
         Sum(frappe.qb.terms.Case().when(req.internal_status == "Rejected", 1).else_(0)).as_("rejected"),
-        Sum(frappe.qb.terms.Case().when(req.sla_state == "Overdue", 1).else_(0)).as_("sla_breaches"),
-        Sum(frappe.qb.terms.Case().when(req.escalation_status == "Pending", 1).else_(0)).as_("escalated"),
-        Sum(frappe.qb.terms.Case().when(req.payment_status == "Paid", req.payment_amount).else_(0)).as_("total_payments_collected"),
-        Sum(frappe.qb.terms.Case().when(req.payment_status == "Pending", 1).else_(0)).as_("pending_payments_count"),
-        Sum(frappe.qb.terms.Case().when(req.payment_status == "Failed", 1).else_(0)).as_("failed_payments_count")
+        Sum(frappe.qb.terms.Case().when(req.sla_state == "Overdue", 1).else_(0)).as_("sla_breaches")
     ), filters)
 
-    result = q_all.run(as_dict=True)[0]
+    result = q_req.run(as_dict=True)[0]
 
-    # Defaults for None
+    # Escalations
+    esc = frappe.qb.DocType("NileGov Escalation Record")
+    q_esc = apply_filters(frappe.qb.from_(req).inner_join(esc).on(esc.service_request == req.name).select(
+        Count(esc.name).as_("escalated")
+    ).where(esc.status.isin(COMMAND_CENTRE_ESCALATION_OPEN_STATUSES)), filters)
+    esc_result = q_esc.run(as_dict=True)
+    result["escalated"] = esc_result[0].escalated if esc_result and esc_result[0].escalated else 0
+
+    # Payments
+    pay = frappe.qb.DocType("NileGov Payment Record")
+    q_pay = apply_filters(frappe.qb.from_(req).inner_join(pay).on(pay.service_request == req.name).select(
+        Sum(frappe.qb.terms.Case().when(pay.payment_status.isin(COMMAND_CENTRE_PAYMENT_SUCCESS_STATUSES), pay.amount).else_(0)).as_("total_payments_collected"),
+        Sum(frappe.qb.terms.Case().when(pay.payment_status.isin(COMMAND_CENTRE_PAYMENT_PENDING_STATUSES) | pay.reconciliation_status.isin(COMMAND_CENTRE_PAYMENT_PENDING_STATUSES), 1).else_(0)).as_("pending_payments_count"),
+        Sum(frappe.qb.terms.Case().when(pay.payment_status.isin(COMMAND_CENTRE_PAYMENT_FAILED_STATUSES), 1).else_(0)).as_("failed_payments_count")
+    ), filters)
+    pay_result = q_pay.run(as_dict=True)
+
     for k, v in result.items():
         if v is None:
             result[k] = 0
@@ -76,7 +123,21 @@ def get_command_centre_overview(filters=None):
         compliance = round(((total - breaches) / total) * 100, 1)
 
     result["sla_compliance"] = compliance
-    result["active_backlog"] = result["pending"] + result["in_progress"]
+
+    # Calculate in_progress
+    active_backlog = result["active_backlog"] or 0
+    pending = result["pending"] or 0
+    result["in_progress"] = active_backlog - pending
+    result["active_backlog"] = active_backlog
+
+    if pay_result and pay_result[0]:
+        result["total_payments_collected"] = pay_result[0].total_payments_collected or 0
+        result["pending_payments_count"] = pay_result[0].pending_payments_count or 0
+        result["failed_payments_count"] = pay_result[0].failed_payments_count or 0
+    else:
+        result["total_payments_collected"] = 0
+        result["pending_payments_count"] = 0
+        result["failed_payments_count"] = 0
 
     return result
 
@@ -110,7 +171,7 @@ def get_service_delivery_analytics(filters=None):
     # 4. Oldest pending backlog (drill down)
     backlog_q = apply_filters(frappe.qb.from_(req).select(
         req.name, req.service_type, req.creation, req.location, req.internal_status, req.assigned_officer
-    ).where(req.internal_status.isin(["Pending", "In Progress"])).orderby(req.creation).limit(10), filters)
+    ).where(req.internal_status.isin(COMMAND_CENTRE_OPEN_STATUSES)).orderby(req.creation).limit(10), filters)
     backlog_data = backlog_q.run(as_dict=True)
 
     return {
@@ -124,6 +185,7 @@ def get_service_delivery_analytics(filters=None):
 def get_sla_risk_analytics(filters=None):
     validate_insights_access()
     req = frappe.qb.DocType("NileGov Service Request")
+    esc = frappe.qb.DocType("NileGov Escalation Record")
 
     # Breaches by service
     breach_q = apply_filters(frappe.qb.from_(req).select(
@@ -132,43 +194,65 @@ def get_sla_risk_analytics(filters=None):
     ).where(req.sla_state == "Overdue").groupby(req.service_type), filters)
 
     # Escalations by status
-    esc_status_q = apply_filters(frappe.qb.from_(req).select(
-        req.escalation_status,
-        Count(req.name).as_("count")
-    ).where(req.escalation_status.isnotnull()).groupby(req.escalation_status), filters)
+    esc_status_q = apply_filters(frappe.qb.from_(req).inner_join(esc).on(esc.service_request == req.name).select(
+        esc.status.as_("escalation_status"),
+        Count(esc.name).as_("count")
+    ).where(esc.status.isnotnull()).groupby(esc.status), filters)
 
     # Oldest escalations
-    esc_table_q = apply_filters(frappe.qb.from_(req).select(
-        req.name, req.service_type, req.escalation_status, req.escalated_at, req.assigned_officer
-    ).where(req.escalation_status == "Pending").orderby(req.escalated_at).limit(10), filters)
+    esc_table_q = apply_filters(frappe.qb.from_(req).inner_join(esc).on(esc.service_request == req.name).select(
+        esc.name,
+        req.service_type,
+        esc.status.as_("escalation_status"),
+        esc.creation.as_("escalated_at"),
+        req.assigned_officer,
+        req.assigned_department
+    ).where(esc.status.isin(COMMAND_CENTRE_ESCALATION_OPEN_STATUSES)).orderby(esc.creation).limit(10), filters)
+
+    oldest_escalations = esc_table_q.run(as_dict=True)
+
+    for row in oldest_escalations:
+        row["assigned_officer"] = row.get("assigned_officer") or row.get("assigned_department") or "Unassigned"
 
     return {
         "breaches_by_service": breach_q.run(as_dict=True),
         "escalations_by_status": esc_status_q.run(as_dict=True),
-        "oldest_escalations": esc_table_q.run(as_dict=True)
+        "oldest_escalations": oldest_escalations
     }
 
 @frappe.whitelist()
 def get_payment_reconciliation_analytics(filters=None):
     validate_insights_access()
     req = frappe.qb.DocType("NileGov Service Request")
+    pay = frappe.qb.DocType("NileGov Payment Record")
 
-    status_q = apply_filters(frappe.qb.from_(req).select(
-        req.payment_status,
-        Count(req.name).as_("count"),
-        Sum(req.payment_amount).as_("total_value")
-    ).where(req.payment_status.isnotnull()).groupby(req.payment_status), filters)
+    status_q = apply_filters(frappe.qb.from_(req).inner_join(pay).on(pay.service_request == req.name).select(
+        pay.payment_status.as_("status"),
+        Count(pay.name).as_("count"),
+        Sum(pay.amount).as_("total_value")
+    ).where(pay.payment_status.isnotnull()).groupby(pay.payment_status), filters)
 
-    failed_q = apply_filters(frappe.qb.from_(req).select(
-        req.name, req.service_type, req.payment_status, req.payment_amount, req.creation
-    ).where(req.payment_status == "Failed").orderby(req.creation, order=frappe.qb.desc).limit(10), filters)
+    failed_q = apply_filters(frappe.qb.from_(req).inner_join(pay).on(pay.service_request == req.name).select(
+        pay.name,
+        req.service_type,
+        pay.payment_status.as_("status"),
+        pay.amount.as_("payment_amount"),
+        pay.creation,
+        pay.modified.as_("failed_at")
+    ).where(pay.payment_status.isin(COMMAND_CENTRE_PAYMENT_FAILED_STATUSES)).orderby(pay.creation, order=frappe.qb.desc).limit(10), filters)
 
-    pending_q = apply_filters(frappe.qb.from_(req).select(
-        req.name, req.service_type, req.payment_status, req.payment_amount, req.creation
-    ).where(req.payment_status == "Pending").orderby(req.creation).limit(10), filters)
+    pending_q = apply_filters(frappe.qb.from_(req).inner_join(pay).on(pay.service_request == req.name).select(
+        pay.name,
+        req.service_type,
+        pay.payment_status.as_("status"),
+        pay.amount.as_("payment_amount"),
+        pay.creation
+    ).where(pay.payment_status.isin(COMMAND_CENTRE_PAYMENT_PENDING_STATUSES) | pay.reconciliation_status.isin(COMMAND_CENTRE_PAYMENT_PENDING_STATUSES)).orderby(pay.creation).limit(10), filters)
 
+    status_data = status_q.run(as_dict=True)
     return {
-        "status_summary": status_q.run(as_dict=True),
+        "status_summary": status_data,
+        "payment_status_summary": status_data,
         "failed_payments": failed_q.run(as_dict=True),
         "pending_payments": pending_q.run(as_dict=True)
     }
@@ -180,13 +264,38 @@ def get_officer_workload_analytics(filters=None):
 
     workload_q = apply_filters(frappe.qb.from_(req).select(
         req.assigned_officer,
-        Sum(frappe.qb.terms.Case().when(req.internal_status.isin(["Pending", "In Progress"]), 1).else_(0)).as_("active_cases"),
+        req.assigned_department,
+        Sum(frappe.qb.terms.Case().when(req.internal_status.isin(COMMAND_CENTRE_OPEN_STATUSES), 1).else_(0)).as_("active_cases"),
         Sum(frappe.qb.terms.Case().when(req.internal_status == "Closed", 1).else_(0)).as_("completed_cases"),
         Sum(frappe.qb.terms.Case().when(req.sla_state == "Overdue", 1).else_(0)).as_("breached_cases")
-    ).where(req.assigned_officer.isnotnull()).groupby(req.assigned_officer).orderby("active_cases", order=frappe.qb.desc), filters)
+    ).groupby(req.assigned_officer, req.assigned_department).orderby("active_cases", order=frappe.qb.desc), filters)
+
+    raw_rows = workload_q.run(as_dict=True)
+    grouped = {}
+
+    for row in raw_rows:
+        owner = row.get("assigned_officer") or row.get("assigned_department") or "Unassigned"
+
+        if owner not in grouped:
+            grouped[owner] = {
+                "assigned_officer": owner,
+                "active_cases": 0,
+                "completed_cases": 0,
+                "breached_cases": 0,
+            }
+
+        grouped[owner]["active_cases"] += int(row.get("active_cases") or 0)
+        grouped[owner]["completed_cases"] += int(row.get("completed_cases") or 0)
+        grouped[owner]["breached_cases"] += int(row.get("breached_cases") or 0)
+
+    officer_workload = sorted(
+        grouped.values(),
+        key=lambda item: item.get("active_cases") or 0,
+        reverse=True,
+    )
 
     return {
-        "officer_workload": workload_q.run(as_dict=True)
+        "officer_workload": officer_workload
     }
 
 @frappe.whitelist()
@@ -206,9 +315,8 @@ def get_location_performance_analytics(filters=None):
 
 @frappe.whitelist()
 def get_policy_me_summary(filters=None):
-    # Safe stub returning empty dict if no direct M&E metrics fit outside of what's already covered.
     validate_insights_access()
-    return {}
+    return {"policy_performance": []}
 
 COMMAND_CENTRE_STATUS_FALLBACKS = [
     "Submitted",
