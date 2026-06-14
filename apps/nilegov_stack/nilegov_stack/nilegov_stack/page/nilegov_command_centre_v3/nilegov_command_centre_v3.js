@@ -72,6 +72,9 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             '<div id="kpi-error-state" style="display:none; color:#ef4444; margin-bottom:20px; padding:12px 16px; background:#fee2e2; border-radius:8px; font-weight: 500; font-size: 14px; border: 1px solid #fca5a5;">' +
                 '<i class="fa fa-exclamation-circle mr-2"></i>Unable to load Overview KPIs. Please try refreshing.' +
             '</div>' +
+            '<div id="insight-strip" class="mb-4" style="display:none; background:#eef2ff; color:#3730a3; padding:16px 20px; border-radius:10px; border:1px solid #c7d2fe; font-weight:500; font-size:15px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">' +
+                '<i class="fa fa-lightbulb-o mr-2" style="font-size:16px;"></i><span id="insight-text"></span>' +
+            '</div>' +
             '<div class="row mb-5">' +
                 '<div class="col-xl-3 col-lg-4 col-md-6 mb-4">' +
                     '<div class="kpi-card" style="background:#ffffff; padding:24px; border-radius:12px; border:1px solid #e5e7eb; border-top:4px solid #2563eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;">' +
@@ -124,7 +127,8 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             '</div>' +
 
             '<!-- Service Delivery Analytics (Layer 4) -->' +
-            '<h5 class="mb-4 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Service Delivery Analytics</h5>' +
+            '<h5 class="mb-2 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Service Delivery Analytics</h5>' +
+            '<div id="service-delivery-insight" class="mb-4 text-muted small" style="font-weight:500;"></div>' +
             '<div id="service-delivery-error" style="display:none; color:#92400e; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:20px; font-weight: 500; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
                 '<i class="fa fa-info-circle mr-2"></i>Service Delivery Analytics could not be loaded. KPI cards above are not affected.' +
             '</div>' +
@@ -158,7 +162,8 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             '</div>' +
 
             '<!-- SLA / Risk Analytics (Layer 5) -->' +
-            '<h5 class="mb-4 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">SLA &amp; Risk Analytics</h5>' +
+            '<h5 class="mb-2 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">SLA &amp; Risk Analytics</h5>' +
+            '<div id="sla-risk-insight" class="mb-4 text-muted small" style="font-weight:500;"></div>' +
             '<div id="sla-risk-error" style="display:none; color:#92400e; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:20px; font-weight: 500; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
                 '<i class="fa fa-info-circle mr-2"></i>SLA &amp; Risk Analytics could not be loaded. All other sections above are not affected.' +
             '</div>' +
@@ -212,7 +217,8 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             '</div>' +
 
             '<!-- Officer Workload Analytics (Layer 7) -->' +
-            '<h5 class="mb-4 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Officer Workload Analytics</h5>' +
+            '<h5 class="mb-2 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Officer Workload Analytics</h5>' +
+            '<div id="officer-workload-insight" class="mb-4 text-muted small" style="font-weight:500;"></div>' +
             '<div id="officer-workload-error" style="display:none; color:#92400e; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:20px; font-weight: 500; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
                 '<i class="fa fa-info-circle mr-2"></i>Officer Workload Analytics could not be loaded. All other sections above are not affected.' +
             '</div>' +
@@ -226,11 +232,21 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             '</div>' +
 
             '<!-- Location Performance (Layer 8) -->' +
-            '<h5 class="mb-4 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Location Performance</h5>' +
+            '<h5 class="mb-2 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Location Performance (Geographic Insights)</h5>' +
+            '<div id="location-performance-insight" class="mb-4 text-muted small" style="font-weight:500;"></div>' +
             '<div class="row mb-5">' +
-                '<div class="col-12">' +
-                    '<div style="background:#ffffff; padding:24px; border-radius:12px; border:1px solid #e5e7eb; min-height:300px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
-                        '<h6 class="font-weight-bold mb-4" style="color: #374151;">Location Analytics</h6>' +
+                '<div class="col-lg-7 mb-4 mb-lg-0">' +
+                    '<div style="background:#ffffff; padding:24px; border-radius:12px; border:1px solid #e5e7eb; min-height:400px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; flex-direction: column;">' +
+                        '<h6 class="font-weight-bold mb-3" style="color: #374151;">Uganda District Pressure Matrix</h6>' +
+                        '<div class="alert alert-warning small mb-3" style="padding:10px; border-radius:6px; background:#fffbeb; color:#92400e; border:1px solid #fde68a;">' +
+                            '<i class="fa fa-map-o mr-2"></i>District-level view based on current case location data.' +
+                        '</div>' +
+                        '<div id="location-matrix-container" style="flex:1; overflow-y:auto; max-height:280px;"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="col-lg-5">' +
+                    '<div style="background:#ffffff; padding:24px; border-radius:12px; border:1px solid #e5e7eb; min-height:400px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
+                        '<h6 class="font-weight-bold mb-4" style="color: #374151;">Ranked District Demand</h6>' +
                         '<div id="location-performance-error" style="display:none; color:#ef4444; background:#fee2e2; border:1px solid #fca5a5; border-radius:8px; padding:12px 16px; margin-bottom:20px; font-weight: 500; font-size: 14px;">' +
                             '<i class="fa fa-exclamation-circle mr-2"></i>Failed to load Location Performance data. Please try again.' +
                         '</div>' +
@@ -240,11 +256,10 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             '</div>' +
 
             '<!-- Policy & M&E Analytics (Layer 9) -->' +
-            '<h5 class="mb-4 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Policy &amp; M&amp;E Summary</h5>' +
+            '<h5 class="mb-2 font-weight-bold" style="color: #1f2937; letter-spacing: -0.3px;">Policy &amp; M&amp;E Summary</h5>' +
             '<div class="row mb-5">' +
                 '<div class="col-12">' +
                     '<div style="background:#ffffff; padding:24px; border-radius:12px; border:1px solid #e5e7eb; min-height:200px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
-                        '<h6 class="font-weight-bold mb-4" style="color: #374151;">Policy &amp; M&amp;E Analytics</h6>' +
                         '<div id="policy-me-error" style="display:none; color:#ef4444; background:#fee2e2; border:1px solid #fca5a5; border-radius:8px; padding:12px 16px; margin-bottom:20px; font-weight: 500; font-size: 14px;">' +
                             '<i class="fa fa-exclamation-circle mr-2"></i>Failed to load Policy &amp; M&amp;E data. Please try again.' +
                         '</div>' +
@@ -255,6 +270,38 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         '</div>';
 
     $(page.main).empty().append(html);
+
+    var service_map = {};
+
+    function get_service_label(code) {
+        if (!code) return 'Unknown';
+        return service_map[code] || code;
+    }
+
+
+    function escape_html(value) {
+        if (value === null || value === undefined) return '';
+        return String(value).replace(/[&<>"']/g, function(ch) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[ch];
+        });
+    }
+
+    function short_date(value) {
+        if (!value) return '-';
+        return escape_html(String(value).substring(0, 10));
+    }
+
+    function safe_number(value) {
+        var number = Number(value || 0);
+        if (!Number.isFinite(number)) return 0;
+        return number;
+    }
 
     // ── First Paint Checks ───────────────────────────────────────────────────
 
@@ -341,6 +388,10 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
                     ? filters.statuses
                     : (Array.isArray(filters.status) && filters.status.length ? filters.status : COMMAND_CENTRE_STATUS_FALLBACKS);
                 var locations = filters.locations;
+
+                services.forEach(function(s) {
+                    if (s.value && s.label) service_map[s.value] = s.label;
+                });
 
                 populate_select('#filter-service', 'All Services', services);
                 populate_select('#filter-status', 'All Statuses', statuses);
@@ -546,6 +597,15 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         $('#kpi-sla-breaches').text(fn(data.sla_breaches));
         $('#kpi-payments-collected').text(fm(data.total_payments_collected));
         $('#kpi-payments-pending').text(fn(data.pending_payments_count));
+
+        var open_reqs = data.active_backlog || 0;
+        var esc_cases = data.escalated || 0;
+        var sla_comp = data.sla_compliance || 0;
+        var sla_breaches = data.sla_breaches || 0;
+        var payments = data.total_payments_collected || 0;
+        var text = open_reqs + ' open requests require active follow-up. ' + esc_cases + ' escalated cases need supervisory attention. SLA compliance is ' + sla_comp + '%, with ' + sla_breaches + ' recorded breaches. Payments collected stand at UGX ' + payments.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '.';
+        $('#insight-text').text(text);
+        $('#insight-strip').fadeIn(200);
     }
 
     function handle_kpi_error() {
@@ -553,6 +613,7 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         $('#kpi-error-state').show();
         $('#kpi-total, #kpi-active-backlog, #kpi-completed, #kpi-escalated, #kpi-sla-compliance, #kpi-sla-breaches, #kpi-payments-pending').text('0');
         $('#kpi-payments-collected').text('UGX 0.00');
+        $('#insight-strip').hide();
     }
 
     // ── Service Delivery Analytics (Layer 4) ──────────────────────────────────
@@ -618,15 +679,22 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         var labels = [];
         var values = [];
         for (var i = 0; i < rows.length; i++) {
-            labels.push(rows[i].service_type || 'Unknown');
+            labels.push(get_service_label(rows[i].service_type));
             values.push(rows[i].count || 0);
         }
         render_chart('#by-type-container', {
             data: { labels: labels, datasets: [{ name: 'Requests', values: values }] },
             type: 'bar',
             colors: ['#f59e0b'],
-            height: 200
+            height: 200,
+            barOptions: { spaceRatio: 0.2 }
         }, 'No service delivery data available for the selected filters.');
+
+        if (labels.length > 0) {
+            $('#service-delivery-insight').text('Demand is currently led by ' + labels[0] + '.');
+        } else {
+            $('#service-delivery-insight').text('');
+        }
     }
 
     function render_by_status(rows) {
@@ -657,10 +725,11 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             $c.html('<div class="text-muted small" style="margin-top:12px;">No open backlog items for the selected filters.</div>');
             return;
         }
-        var t = '<table class="table table-sm" style="font-size:12px;"><thead><tr><th>ID</th><th>Type</th><th>Status</th><th>Created</th></tr></thead><tbody>';
+        var t = '<table class="table table-hover table-sm" style="font-size:13px;"><thead style="background:#f3f4f6; color:#374151;"><tr><th>ID</th><th>Service</th><th>Status</th><th>Created</th></tr></thead><tbody>';
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
-            t += '<tr><td style="white-space:nowrap;">' + (r.name || '-') + '</td><td>' + (r.service_type || '-') + '</td><td>' + (r.internal_status || '-') + '</td><td>' + (r.creation ? r.creation.toString().substring(0, 10) : '-') + '</td></tr>';
+            var highlight = i === 0 ? 'style="background:#fffbeb; border-left:3px solid #f59e0b;"' : '';
+            t += '<tr ' + highlight + '><td style="white-space:nowrap; font-weight:500;">' + escape_html(r.name || '-') + '</td><td>' + escape_html(get_service_label(r.service_type)) + '</td><td><span class="badge badge-light-secondary" style="font-weight:600;">' + escape_html(r.internal_status || '-') + '</span></td><td>' + short_date(r.creation) + '</td></tr>';
         }
         $c.html(t + '</tbody></table>');
     }
@@ -710,15 +779,22 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         var labels = [];
         var values = [];
         for (var i = 0; i < rows.length; i++) {
-            labels.push(rows[i].service_type || 'Unknown');
+            labels.push(get_service_label(rows[i].service_type));
             values.push(rows[i].count || 0);
         }
         render_chart('#sla-breaches-container', {
             data: { labels: labels, datasets: [{ name: 'Breaches', values: values }] },
             type: 'bar',
             colors: ['#ef4444'],
-            height: 200
+            height: 200,
+            barOptions: { spaceRatio: 0.2 }
         }, 'No SLA breach data available for the selected filters.');
+
+        if (labels.length > 0) {
+            $('#sla-risk-insight').text('Highest SLA pressure is currently coming from ' + labels[0] + '.');
+        } else {
+            $('#sla-risk-insight').text('');
+        }
     }
 
     function render_escalations_by_status(rows) {
@@ -749,15 +825,16 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             $c.html('<div class="text-muted small" style="margin-top:12px;">No unresolved escalations for the selected filters.</div>');
             return;
         }
-        var t = '<table class="table table-sm" style="font-size:12px;"><thead><tr><th>ID</th><th>Type</th><th>Escalation Status</th><th>Escalated At</th><th>Officer</th></tr></thead><tbody>';
+        var t = '<table class="table table-hover table-sm" style="font-size:13px;"><thead style="background:#f3f4f6; color:#374151;"><tr><th>ID</th><th>Service</th><th>Escalation Status</th><th>Escalated At</th><th>Officer</th></tr></thead><tbody>';
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
-            t += '<tr>' +
-                    '<td style="white-space:nowrap;">' + (r.name || '-') + '</td>' +
-                    '<td>' + (r.service_type || '-') + '</td>' +
-                    '<td>' + (r.escalation_status || '-') + '</td>' +
-                    '<td>' + (r.escalated_at ? r.escalated_at.toString().substring(0, 10) : '-') + '</td>' +
-                    '<td>' + (r.assigned_officer || '-') + '</td>' +
+            var highlight = i === 0 ? 'style="background:#fef2f2; border-left:3px solid #ef4444;"' : '';
+            t += '<tr ' + highlight + '>' +
+                    '<td style="white-space:nowrap; font-weight:500;">' + escape_html(r.name || '-') + '</td>' +
+                    '<td>' + escape_html(get_service_label(r.service_type)) + '</td>' +
+                    '<td><span class="badge badge-light-danger" style="font-weight:600;">' + escape_html(r.escalation_status || '-') + '</span></td>' +
+                    '<td>' + short_date(r.escalated_at) + '</td>' +
+                    '<td>' + escape_html(r.assigned_officer || '-') + '</td>' +
                  '</tr>';
         }
         $c.html(t + '</tbody></table>');
@@ -823,13 +900,16 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         var $c = $('#failed-payments-container');
         if (!$c.length) return;
         if (!rows || rows.length === 0) {
-            $c.html('<div class="text-muted small" style="margin-top:12px;">No failed payments for the selected filters.</div>');
+            $c.html('<div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:24px; text-align:center;">' +
+                '<i class="fa fa-check-circle-o" style="font-size:24px; color:#10b981; margin-bottom:8px;"></i>' +
+                '<p class="small text-muted mb-0" style="font-weight:500;">No failed payments for the selected filters.</p>' +
+                '</div>');
             return;
         }
-        var t = '<table class="table table-sm" style="font-size:12px;"><thead><tr><th>ID</th><th>Type</th><th>Failed At</th></tr></thead><tbody>';
+        var t = '<table class="table table-hover table-sm" style="font-size:13px;"><thead style="background:#f3f4f6; color:#374151;"><tr><th>ID</th><th>Service</th><th>Failed At</th></tr></thead><tbody>';
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
-            t += '<tr><td style="white-space:nowrap;">' + (r.name || '-') + '</td><td>' + (r.service_type || '-') + '</td><td>' + (r.failed_at ? r.failed_at.toString().substring(0, 10) : '-') + '</td></tr>';
+            t += '<tr><td style="white-space:nowrap; font-weight:500;">' + escape_html(r.name || '-') + '</td><td>' + escape_html(get_service_label(r.service_type)) + '</td><td>' + short_date(r.failed_at) + '</td></tr>';
         }
         $c.html(t + '</tbody></table>');
     }
@@ -838,13 +918,16 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         var $c = $('#pending-payments-container');
         if (!$c.length) return;
         if (!rows || rows.length === 0) {
-            $c.html('<div class="text-muted small" style="margin-top:12px;">No pending payments for the selected filters.</div>');
+            $c.html('<div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:24px; text-align:center;">' +
+                '<i class="fa fa-check-circle-o" style="font-size:24px; color:#10b981; margin-bottom:8px;"></i>' +
+                '<p class="small text-muted mb-0" style="font-weight:500;">No pending payments for the selected filters.</p>' +
+                '</div>');
             return;
         }
-        var t = '<table class="table table-sm" style="font-size:12px;"><thead><tr><th>ID</th><th>Type</th><th>Created</th></tr></thead><tbody>';
+        var t = '<table class="table table-hover table-sm" style="font-size:13px;"><thead style="background:#f3f4f6; color:#374151;"><tr><th>ID</th><th>Service</th><th>Created</th></tr></thead><tbody>';
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
-            t += '<tr><td style="white-space:nowrap;">' + (r.name || '-') + '</td><td>' + (r.service_type || '-') + '</td><td>' + (r.creation ? r.creation.toString().substring(0, 10) : '-') + '</td></tr>';
+            t += '<tr><td style="white-space:nowrap; font-weight:500;">' + escape_html(r.name || '-') + '</td><td>' + escape_html(get_service_label(r.service_type)) + '</td><td>' + short_date(r.creation) + '</td></tr>';
         }
         $c.html(t + '</tbody></table>');
     }
@@ -899,8 +982,19 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
             data: { labels: labels, datasets: [{ name: 'Active Cases', values: values }] },
             type: 'bar',
             colors: ['#3b82f6'],
-            height: 200
+            height: 250,
+            barOptions: { spaceRatio: 0.2 }
         }, 'No officer workload data available for the selected filters.');
+
+        if (labels.length > 0) {
+            var insight_text = 'Current workload is concentrated at the ' + labels[0] + '.';
+            if (labels.length === 1) {
+                insight_text = 'All current active cases are assigned to the ' + labels[0] + '.';
+            }
+            $('#officer-workload-insight').text(insight_text);
+        } else {
+            $('#officer-workload-insight').text('');
+        }
     }
 
     function handle_officer_workload_error() {
@@ -938,23 +1032,57 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
 
     function render_location_performance(rows) {
         var $c = $('#location-performance-container');
+        var $matrix = $('#location-matrix-container');
         if (!$c.length) return;
         if (!rows || rows.length === 0) {
-            clear_chart('#location-performance-container', 'No location analytics data available for the selected filters.');
+            clear_chart('#location-performance-container', 'No location analytics data available.');
+            $matrix.html('<div class="text-muted small text-center" style="margin-top:20px;">No location analytics data available for the selected filters.</div>');
             return;
         }
         var labels = [];
         var values = [];
+        var matrix_html = '<table class="table table-hover table-sm" style="font-size:13px; margin-bottom:0;"><thead style="background:#f3f4f6; color:#374151; position:sticky; top:0; z-index:1;"><tr><th>District</th><th>Volume</th><th>Open</th><th>SLA Risk</th><th>Data</th></tr></thead><tbody>';
+
         for (var i = 0; i < rows.length; i++) {
-            labels.push(rows[i].location || 'Unknown Location');
-            values.push(rows[i].total_requests || 0);
+            var r = rows[i];
+            var loc = r.location || 'Unknown Location';
+            labels.push(loc);
+            values.push(safe_number(r.total_requests));
+            var open = safe_number(r.open_cases);
+            var breaches = safe_number(r.breaches);
+            var total = safe_number(r.total_requests);
+
+            var risk_level = '<span class="badge badge-light-success">Low</span>';
+            if (breaches > 0) {
+                risk_level = '<span class="badge badge-light-danger" style="font-weight:600;">Elevated</span>';
+            } else if (open > (total * 0.5)) {
+                risk_level = '<span class="badge badge-light-warning" style="font-weight:600;">Moderate</span>';
+            }
+
+            var data_conf = total > 5 ? '<span class="text-success"><i class="fa fa-circle" style="font-size:10px; margin-right:4px;"></i>High</span>' : '<span class="text-muted"><i class="fa fa-circle-o" style="font-size:10px; margin-right:4px;"></i>Low</span>';
+
+            matrix_html += '<tr><td style="font-weight:500;">' + escape_html(loc) + '</td>' +
+                           '<td>' + escape_html(total) + '</td>' +
+                           '<td>' + escape_html(open) + '</td>' +
+                           '<td>' + risk_level + '</td>' +
+                           '<td>' + data_conf + '</td></tr>';
         }
+        matrix_html += '</tbody></table>';
+        $matrix.html(matrix_html);
+
         render_chart('#location-performance-container', {
-            data: { labels: labels, datasets: [{ name: 'Total Requests', values: values }] },
+            data: { labels: labels.slice(0, 10), datasets: [{ name: 'Total Requests', values: values.slice(0, 10) }] },
             type: 'bar',
             colors: ['#6366f1'],
-            height: 200
+            height: 280,
+            barOptions: { spaceRatio: 0.2 }
         }, 'No location analytics data available for the selected filters.');
+
+        if (labels.length > 0) {
+            $('#location-performance-insight').text('Where is demand concentrated across Uganda? Currently led by ' + labels[0] + '.');
+        } else {
+            $('#location-performance-insight').text('');
+        }
     }
 
     function handle_location_performance_error() {
@@ -994,13 +1122,17 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         var $c = $('#policy-me-container');
         if (!$c.length) return;
         if (!rows || rows.length === 0) {
-            $c.html('<div class="text-muted small" style="margin-top:12px;">No Policy &amp; M&amp;E analytics data available for the selected filters.</div>');
+            $c.html('<div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:32px; text-align:center;">' +
+                '<i class="fa fa-bar-chart" style="font-size:24px; color:#94a3b8; margin-bottom:12px;"></i>' +
+                '<h6 style="color:#475569; margin-bottom:8px;">No policy and M&amp;E signals available for the selected filters.</h6>' +
+                '<p class="small text-muted mb-0">Signals will appear here once enough service delivery, SLA, location, payment, and escalation data is available.</p>' +
+                '</div>');
             return;
         }
-        var t = '<table class="table table-sm" style="font-size:13px;"><thead><tr><th>Policy Name</th><th>Adherence Rate</th><th>Violations</th></tr></thead><tbody>';
+        var t = '<table class="table table-hover table-sm" style="font-size:13px;"><thead style="background:#f3f4f6; color:#374151;"><tr><th>Policy Name</th><th>Adherence Rate</th><th>Violations</th></tr></thead><tbody>';
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
-            t += '<tr><td>' + (r.policy_name || 'Unknown Policy') + '</td><td>' + (r.adherence_rate || 0) + '%</td><td>' + (r.violations || 0) + '</td></tr>';
+            t += '<tr><td style="font-weight:500;">' + escape_html(r.policy_name || 'Unknown Policy') + '</td><td>' + escape_html(safe_number(r.adherence_rate)) + '%</td><td>' + escape_html(safe_number(r.violations)) + '</td></tr>';
         }
         $c.html(t + '</tbody></table>');
     }

@@ -306,6 +306,7 @@ def get_location_performance_analytics(filters=None):
     loc_q = apply_filters(frappe.qb.from_(req).select(
         req.location,
         Count(req.name).as_("total_requests"),
+        Sum(frappe.qb.terms.Case().when(req.internal_status.isin(COMMAND_CENTRE_OPEN_STATUSES), 1).else_(0)).as_("open_cases"),
         Sum(frappe.qb.terms.Case().when(req.sla_state == "Overdue", 1).else_(0)).as_("breaches")
     ).where(req.location.isnotnull()).groupby(req.location).orderby("total_requests", order=frappe.qb.desc), filters)
 
