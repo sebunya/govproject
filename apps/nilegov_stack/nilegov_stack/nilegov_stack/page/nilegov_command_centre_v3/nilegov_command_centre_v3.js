@@ -1007,22 +1007,33 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
     // ── Location Performance (Layer 8) ─────────────────────────────────────────
 
     function refresh_location_performance() {
-        console.log('[NileGov Command Centre V3] location performance hydration started');
-        var loading = '<div class="text-muted small" style="margin-top:12px;">Loading...</div>';
-        $('#location-performance-container').html(loading);
-        $('#location-performance-error').hide();
+        frappe.call({
+            method: 'nilegov_stack.interfaces.frappe.api.insights.get_location_performance_analytics_v2',
+            args: get_filter_args(),
+            callback: function(r) {
+                var payload = r && r.message ? r.message : null;
+                var normalised = normalise_location_performance_payload(payload);
 
+                if (normalised.contract_valid) {
+                    render_location_performance(normalised);
+                    return;
+                }
+
+                refresh_location_performance_v1_fallback();
+            },
+            error: function() {
+                refresh_location_performance_v1_fallback();
+            }
+        });
+    }
+
+    function refresh_location_performance_v1_fallback() {
         frappe.call({
             method: 'nilegov_stack.interfaces.frappe.api.insights.get_location_performance_analytics',
             args: get_filter_args(),
             callback: function(r) {
-                if (r && r.message) {
-                    var data = r.message;
-                    render_location_performance(data.location_performance || []);
-                    console.log('[NileGov Command Centre V3] location performance hydration completed');
-                } else {
-                    handle_location_performance_error();
-                }
+                var payload = r && r.message ? r.message : null;
+                render_location_performance(normalise_location_performance_payload(payload));
             },
             error: function() {
                 handle_location_performance_error();
@@ -1030,59 +1041,236 @@ frappe.pages['nilegov-command-centre-v3'].on_page_load = function(wrapper) {
         });
     }
 
-    function render_location_performance(rows) {
+    function normalise_location_performance_payload(payload) {
+        payload = payload || {};
+
+        if (
+            Object.prototype.hasOwnProperty.call(payload, 'summary') ||
+            Object.prototype.hasOwnProperty.call(payload, 'ranked_locations') ||
+            Object.prototype.hasOwnProperty.call(payload, 'risk_tiers') ||
+            Object.prototype.hasOwnProperty.call(payload, 'chart') ||
+            Object.prototype.hasOwnProperty.call(payload, 'metadata')
+        ) {
+            return normalise_v2_location_performance(payload);
+        }
+
+        if (Array.isArray(payload.location_performance)) {
+            return normalise_v1_location_performance(payload.location_performance);
+        }
+
+        return {
+            contract_valid: false,
+            has_data: false,
+            summary: {
+                total_locations: 0,
+                total_requests: 0,
+                total_open_cases: 0,
+                total_breaches: 0,
+                empty_reason: 'invalid_location_analytics_payload'
+            },
+            ranked_locations: [],
+            chart: {
+                labels: [],
+                requests: [],
+                open_cases: [],
+                breaches: [],
+                pressure_scores: []
+            },
+            metadata: {
+                source_contract: 'invalid'
+            }
+        };
+    }
+
+    function normalise_v2_location_performance(payload) {
+        var ranked = Array.isArray(payload.ranked_locations) ? payload.ranked_locations : [];
+        var chart = payload.chart || {};
+        var summary = payload.summary || {};
+        var has_data = ranked.length > 0 || !!summary.has_data;
+
+        return {
+            contract_valid: true,
+            has_data: has_data,
+            summary: {
+                total_locations: location_to_int(summary.total_locations || ranked.length || 0),
+                total_requests: location_to_int(summary.total_requests || 0),
+                total_open_cases: location_to_int(summary.total_open_cases || 0),
+                total_breaches: location_to_int(summary.total_breaches || 0),
+                empty_reason: summary.empty_reason || 'no_location_analytics_data'
+            },
+            ranked_locations: ranked.map(function(row, idx) {
+                var total_requests = location_to_int(row.total_requests || 0);
+                var open_cases = location_to_int(row.open_cases || 0);
+                var breaches = location_to_int(row.breaches || 0);
+                var pressure_score = location_to_int(row.pressure_score || (total_requests + (open_cases * 2) + (breaches * 3)));
+
+                return {
+                    rank: location_to_int(row.rank || idx + 1),
+                    location: row.location || 'Unknown',
+                    total_requests: total_requests,
+                    open_cases: open_cases,
+                    breaches: breaches,
+                    pressure_score: pressure_score,
+                    risk_tier: row.risk_tier || derive_location_risk_tier(open_cases, breaches, pressure_score)
+                };
+            }),
+            chart: {
+                labels: Array.isArray(chart.labels) ? chart.labels : [],
+                requests: Array.isArray(chart.requests) ? chart.requests : [],
+                open_cases: Array.isArray(chart.open_cases) ? chart.open_cases : [],
+                breaches: Array.isArray(chart.breaches) ? chart.breaches : [],
+                pressure_scores: Array.isArray(chart.pressure_scores) ? chart.pressure_scores : []
+            },
+            metadata: payload.metadata || { source_contract: 'v2' }
+        };
+    }
+
+    function normalise_v1_location_performance(rows) {
+        rows = Array.isArray(rows) ? rows : [];
+
+        var ranked = rows.map(function(row, idx) {
+            var total_requests = location_to_int(row.total_requests || 0);
+            var open_cases = location_to_int(row.open_cases || 0);
+            var breaches = location_to_int(row.breaches || 0);
+            var pressure_score = total_requests + (open_cases * 2) + (breaches * 3);
+
+            return {
+                rank: idx + 1,
+                location: row.location || 'Unknown',
+                total_requests: total_requests,
+                open_cases: open_cases,
+                breaches: breaches,
+                pressure_score: pressure_score,
+                risk_tier: derive_location_risk_tier(open_cases, breaches, pressure_score)
+            };
+        }).sort(function(a, b) {
+            if (b.pressure_score !== a.pressure_score) return b.pressure_score - a.pressure_score;
+            if (b.total_requests !== a.total_requests) return b.total_requests - a.total_requests;
+            return String(a.location).localeCompare(String(b.location));
+        }).map(function(row, idx) {
+            row.rank = idx + 1;
+            return row;
+        });
+
+        var chart_rows = ranked.slice(0, 10);
+
+        return {
+            contract_valid: true,
+            has_data: ranked.length > 0,
+            summary: {
+                total_locations: ranked.length,
+                total_requests: ranked.reduce(function(total, row) { return total + row.total_requests; }, 0),
+                total_open_cases: ranked.reduce(function(total, row) { return total + row.open_cases; }, 0),
+                total_breaches: ranked.reduce(function(total, row) { return total + row.breaches; }, 0),
+                empty_reason: ranked.length ? null : 'no_location_analytics_data'
+            },
+            ranked_locations: ranked,
+            chart: {
+                labels: chart_rows.map(function(row) { return row.location; }),
+                requests: chart_rows.map(function(row) { return row.total_requests; }),
+                open_cases: chart_rows.map(function(row) { return row.open_cases; }),
+                breaches: chart_rows.map(function(row) { return row.breaches; }),
+                pressure_scores: chart_rows.map(function(row) { return row.pressure_score; })
+            },
+            metadata: {
+                source_contract: 'v1_fallback',
+                ranking_basis: 'pressure_score_desc'
+            }
+        };
+    }
+
+    function derive_location_risk_tier(open_cases, breaches, pressure_score) {
+        if (breaches > 0 || pressure_score >= 20) return 'critical';
+        if (open_cases > 0 || pressure_score >= 10) return 'watch';
+        return 'stable';
+    }
+
+    function location_to_int(value) {
+        var parsed = parseInt(value, 10);
+        return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function location_escape_html(value) {
+        return String(value || '').replace(/[&<>"']/g, function(match) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[match];
+        });
+    }
+
+    function render_location_performance(data) {
         var $c = $('#location-performance-container');
         var $matrix = $('#location-matrix-container');
-        if (!$c.length) return;
-        if (!rows || rows.length === 0) {
-            clear_chart('#location-performance-container', 'No location analytics data available.');
-            $matrix.html('<div class="text-muted small text-center" style="margin-top:20px;">No location analytics data available for the selected filters.</div>');
+        if (!$c.length && !$matrix.length) return;
+
+        data = normalise_location_performance_payload(data);
+        var rows = data.ranked_locations || [];
+
+        if (!data.has_data || !rows.length) {
+            render_location_empty_state(data);
             return;
         }
-        var labels = [];
-        var values = [];
-        var matrix_html = '<table class="table table-hover table-sm" style="font-size:13px; margin-bottom:0;"><thead style="background:#f3f4f6; color:#374151; position:sticky; top:0; z-index:1;"><tr><th>District</th><th>Volume</th><th>Open</th><th>SLA Risk</th><th>Data</th></tr></thead><tbody>';
 
-        for (var i = 0; i < rows.length; i++) {
-            var r = rows[i];
-            var loc = r.location || 'Unknown Location';
-            labels.push(loc);
-            values.push(safe_number(r.total_requests));
-            var open = safe_number(r.open_cases);
-            var breaches = safe_number(r.breaches);
-            var total = safe_number(r.total_requests);
+        var max_requests = Math.max.apply(null, rows.map(function(row) {
+            return location_to_int(row.total_requests || 0);
+        }));
+        max_requests = Math.max(1, max_requests);
 
-            var risk_level = '<span class="badge badge-light-success">Low</span>';
-            if (breaches > 0) {
-                risk_level = '<span class="badge badge-light-danger" style="font-weight:600;">Elevated</span>';
-            } else if (open > (total * 0.5)) {
-                risk_level = '<span class="badge badge-light-warning" style="font-weight:600;">Moderate</span>';
-            }
+        var matrix_html = '<table class="table table-hover table-sm" style="font-size:13px; margin-bottom:0;"><thead style="background:#f3f4f6; color:#374151; position:sticky; top:0; z-index:1;"><tr><th>Rank</th><th>District</th><th>Volume</th><th>Open</th><th>SLA Risk</th><th>Pressure</th><th>Data</th></tr></thead><tbody>';
 
-            var data_conf = total > 5 ? '<span class="text-success"><i class="fa fa-circle" style="font-size:10px; margin-right:4px;"></i>High</span>' : '<span class="text-muted"><i class="fa fa-circle-o" style="font-size:10px; margin-right:4px;"></i>Low</span>';
+        rows.forEach(function(row) {
+            var tier = String(row.risk_tier || 'stable').toLowerCase();
+            var risk = tier === 'critical' ? 'Critical' : (tier === 'watch' ? 'Watch' : 'Stable');
+            var badge = tier === 'critical' ? 'danger' : (tier === 'watch' ? 'warning' : 'success');
 
-            matrix_html += '<tr><td style="font-weight:500;">' + escape_html(loc) + '</td>' +
-                           '<td>' + escape_html(total) + '</td>' +
-                           '<td>' + escape_html(open) + '</td>' +
-                           '<td>' + risk_level + '</td>' +
-                           '<td>' + data_conf + '</td></tr>';
-        }
+            matrix_html += '<tr>' +
+                '<td>' + (row.rank || '') + '</td>' +
+                '<td><strong>' + location_escape_html(row.location || 'Unknown') + '</strong></td>' +
+                '<td>' + (row.total_requests || 0) + '</td>' +
+                '<td>' + (row.open_cases || 0) + '</td>' +
+                '<td><span class="badge badge-' + badge + '">' + risk + '</span></td>' +
+                '<td>' + (row.pressure_score || 0) + '</td>' +
+                '<td><div class="progress" style="height:6px; width:70px;"><div class="progress-bar bg-' + badge + '" style="width:' + Math.min(100, ((row.total_requests || 0) / max_requests) * 100) + '%"></div></div></td>' +
+                '</tr>';
+        });
+
         matrix_html += '</tbody></table>';
         $matrix.html(matrix_html);
 
+        var chart_labels = data.chart.labels && data.chart.labels.length ? data.chart.labels : rows.slice(0, 10).map(function(row) {
+            return row.location || 'Unknown';
+        });
+        var chart_values = data.chart.requests && data.chart.requests.length ? data.chart.requests : rows.slice(0, 10).map(function(row) {
+            return row.total_requests || 0;
+        });
+
         render_chart('#location-performance-container', {
-            data: { labels: labels.slice(0, 10), datasets: [{ name: 'Total Requests', values: values.slice(0, 10) }] },
+            data: {
+                labels: chart_labels.slice(0, 10),
+                datasets: [{
+                    name: 'Requests',
+                    values: chart_values.slice(0, 10)
+                }]
+            },
             type: 'bar',
             colors: ['#6366f1'],
             height: 280,
             barOptions: { spaceRatio: 0.2 }
         }, 'No location analytics data available for the selected filters.');
+    }
 
-        if (labels.length > 0) {
-            $('#location-performance-insight').text('Where is demand concentrated across Uganda? Currently led by ' + labels[0] + '.');
-        } else {
-            $('#location-performance-insight').text('');
-        }
+    function render_location_empty_state(data) {
+        var empty_reason = data && data.summary ? data.summary.empty_reason : 'no_location_analytics_data';
+        var message = empty_reason === 'invalid_location_analytics_payload'
+            ? 'Location data is currently unavailable'
+            : 'No location data available';
+
+        $('#location-performance-container').html('<div class="text-muted text-center py-4">' + message + '</div>');
+        $('#location-matrix-container').html('<div class="text-muted text-center py-4">No district pressure data available</div>');
     }
 
     function handle_location_performance_error() {
