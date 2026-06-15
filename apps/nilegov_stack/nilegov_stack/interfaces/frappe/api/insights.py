@@ -411,7 +411,16 @@ def get_location_performance_analytics_v2(filters=None):
 @frappe.whitelist()
 def get_policy_me_summary(filters=None):
     validate_insights_access()
-    return {"policy_performance": []}
+    try:
+        policy = frappe.qb.DocType("NileGov Policy Compliance")
+        q = frappe.qb.from_(policy).select(
+            policy.policy_name,
+            policy.adherence_rate,
+            policy.violations
+        ).orderby(policy.adherence_rate)
+        return {"policy_performance": q.run(as_dict=True)}
+    except Exception:
+        return {"policy_performance": []}
 
 COMMAND_CENTRE_STATUS_FALLBACKS = [
     "Submitted",
