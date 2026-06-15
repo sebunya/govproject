@@ -315,6 +315,100 @@ def get_location_performance_analytics(filters=None):
     }
 
 @frappe.whitelist()
+def get_location_performance_analytics_v2(filters=None):
+    validate_insights_access()
+    req = frappe.qb.DocType("NileGov Service Request")
+
+    loc_q = apply_filters(frappe.qb.from_(req).select(
+        req.location,
+        Count(req.name).as_("total_requests"),
+        Sum(frappe.qb.terms.Case().when(req.internal_status.isin(COMMAND_CENTRE_OPEN_STATUSES), 1).else_(0)).as_("open_cases"),
+        Sum(frappe.qb.terms.Case().when(req.sla_state == "Overdue", 1).else_(0)).as_("breaches")
+    ).where(req.location.isnotnull()).groupby(req.location).orderby("total_requests", order=frappe.qb.desc), filters)
+
+    raw_data = loc_q.run(as_dict=True)
+
+    summary = {
+        "total_locations": 0,
+        "total_requests": 0,
+        "total_open_cases": 0,
+        "total_breaches": 0,
+        "has_data": False,
+        "empty_reason": "no_location_analytics_data" if not raw_data else None
+    }
+
+    ranked_locations = []
+
+    for row in raw_data:
+        total_reqs = int(row.get("total_requests") or 0)
+        open_cases = int(row.get("open_cases") or 0)
+        breaches = int(row.get("breaches") or 0)
+
+        pressure_score = total_reqs + (open_cases * 2) + (breaches * 3)
+
+        if breaches > 0 or pressure_score >= 20:
+            risk_tier = "critical"
+        elif open_cases > 0 or pressure_score >= 10:
+            risk_tier = "watch"
+        else:
+            risk_tier = "stable"
+
+        ranked_locations.append({
+            "location": row.get("location") or "Unknown",
+            "total_requests": total_reqs,
+            "open_cases": open_cases,
+            "breaches": breaches,
+            "pressure_score": pressure_score,
+            "risk_tier": risk_tier
+        })
+
+    # Sort: pressure_score desc, total_requests desc, location asc
+    ranked_locations.sort(key=lambda x: (-x["pressure_score"], -x["total_requests"], x["location"]))
+
+    for i, loc in enumerate(ranked_locations):
+        loc["rank"] = i + 1
+
+        summary["total_locations"] += 1
+        summary["total_requests"] += loc["total_requests"]
+        summary["total_open_cases"] += loc["open_cases"]
+        summary["total_breaches"] += loc["breaches"]
+
+    if summary["total_locations"] > 0:
+        summary["has_data"] = True
+
+    risk_tiers = {
+        "critical": [loc for loc in ranked_locations if loc["risk_tier"] == "critical"],
+        "watch": [loc for loc in ranked_locations if loc["risk_tier"] == "watch"],
+        "stable": [loc for loc in ranked_locations if loc["risk_tier"] == "stable"]
+    }
+
+    top_10 = ranked_locations[:10]
+
+    chart = {
+        "labels": [loc["location"] for loc in top_10],
+        "requests": [loc["total_requests"] for loc in top_10],
+        "open_cases": [loc["open_cases"] for loc in top_10],
+        "breaches": [loc["breaches"] for loc in top_10],
+        "pressure_scores": [loc["pressure_score"] for loc in top_10]
+    }
+
+    return {
+        "summary": summary,
+        "ranked_locations": ranked_locations,
+        "risk_tiers": risk_tiers,
+        "chart": chart,
+        "metadata": {
+            "ranking_basis": "pressure_score_desc",
+            "limit": 10,
+            "source": "NileGov Service Request",
+            "location_unit": "location",
+            "regional_breakdown_available": False,
+            "schema_migration_required": False,
+            "data_mutation_required": False
+        }
+    }
+
+@frappe.whitelist()
 def get_policy_me_summary(filters=None):
     validate_insights_access()
     return {"policy_performance": []}
