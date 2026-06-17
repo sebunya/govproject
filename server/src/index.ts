@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -12,15 +14,99 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 initSchema();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
-app.use('/uploads', express.static(uploadsDir));
+
+// ─── SECURITY HEADERS (helmet) ─────────────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:'],
+      connectSrc: ["'self'"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+    },
+  },
+  crossOriginResourcePolicy: { policy: 'same-site' },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+}));
+
+// ─── CORS ──────────────────────────────────────────────────────────────────
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? [process.env.APP_URL || '', 'http://localhost:3001'].filter(Boolean)
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'];
+
+app.use(cors({
+  origin: (origin, cb) => {
+    // Allow requests with no origin (curl, Pesapal IPN webhooks)
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'X-Admin-Token'],
+}));
+
+app.use(express.json({ limit: '1mb' }));
+
+// ─── RATE LIMITING ─────────────────────────────────────────────────────────
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests — please try again later.' },
+});
+
+const submitLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10,
+  message: { error: 'Too many applications submitted from this IP. Please wait before trying again.' },
+});
+
+const simLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 min
+  max: 30,
+  message: { error: 'Simulation rate limit exceeded.' },
+});
+
+app.use('/api/', generalLimiter);
+app.use('/api/applications', submitLimiter);
+app.use('/api/simulate', simLimiter);
+
+// ─── UPLOADS — served with security headers ────────────────────────────────
+app.use('/uploads', (req, res, next) => {
+  // Block any path traversal attempts
+  const safeName = path.basename(req.path);
+  if (safeName !== req.path.replace(/^\//, '')) return res.status(400).end();
+  // Force download — never execute in browser
+  res.setHeader('Content-Disposition', `attachment; filename="${safeName}"`);
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Content-Security-Policy', "default-src 'none'");
+  next();
+}, express.static(uploadsDir));
+
+// ─── FILE UPLOAD (multer) — server-side type validation ───────────────────
+const ALLOWED_MIME_TYPES = new Set([
+  'application/pdf',
+  'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+]);
 
 const storage = multer.diskStorage({
   destination: uploadsDir,
   filename: (_req, file, cb) => { cb(null, `${uuidv4()}${path.extname(file.originalname)}`); },
 });
-const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.has(file.mimetype)) return cb(null, true);
+    cb(new Error('INVALID_FILE_TYPE'));
+  },
+});
 
 // ─── SIMULATED INTEGRATIONS ────────────────────────────────────────────────
 
@@ -164,8 +250,9 @@ app.post('/api/applications', upload.fields([
   const body = req.body;
   const files = req.files as Record<string, Express.Multer.File[]>;
   const year = new Date().getFullYear();
-  const count = (db.prepare('SELECT COUNT(*) as c FROM applications').get() as { c: number }).c;
-  const refNum = `NGS-${year}-${String(count + 1).padStart(4, '0')}`;
+  // Use MAX(id) for atomic uniqueness under concurrent inserts (COUNT(*) can collide)
+  const maxId = (db.prepare('SELECT COALESCE(MAX(id), 0) as m FROM applications').get() as { m: number }).m;
+  const refNum = `NGS-${year}-${String(maxId + 1).padStart(4, '0')}`;
   const now = new Date().toISOString();
 
   const svc = db.prepare(`SELECT slaResponseHours, slaResolveHours, name FROM services WHERE code = ?`)
@@ -403,6 +490,10 @@ app.get('/api/pesapal/ipn', (req, res) => {
 // Pesapal callback after redirect (GET) — citizen returns from Pesapal hosted page
 app.get('/api/pesapal/callback', async (req, res) => {
   const { OrderTrackingId, applicationId, paymentId } = req.query;
+  // Validate applicationId is a positive integer to prevent open redirect
+  const safeAppId = /^\d+$/.test(String(applicationId)) ? String(applicationId) : null;
+  if (!safeAppId) return res.redirect('/portal?persona=citizen');
+
   if (OrderTrackingId && paymentId) {
     const status = await getPesapalTransactionStatus(String(OrderTrackingId));
     if (status.status === 'COMPLETED') {
@@ -411,13 +502,16 @@ app.get('/api/pesapal/callback', async (req, res) => {
       db.prepare(`UPDATE payments SET status = 'verified', receiptRef = ?, verifiedAt = ? WHERE id = ?`).run(rcptRef, now, paymentId);
     }
   }
-  res.redirect(`/portal/application/${applicationId}?persona=citizen`);
+  res.redirect(`/portal/application/${safeAppId}?persona=citizen`);
 });
 
 // ─── MODULE: DOCUMENT VERIFICATION ────────────────────────────────────────
 
 app.patch('/api/documents/:docId/verify', (req, res) => {
   const { status, notes, verifiedBy } = req.body;
+  if (!['verified', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'status must be verified or rejected.' });
+  }
   const now = new Date().toISOString();
 
   db.prepare(`
@@ -455,8 +549,9 @@ app.patch('/api/applications/:id/escalate', (req, res) => {
     `ESCALATION: Application ${row.referenceNumber} has exceeded SLA. Requires immediate supervisor review.`, now);
 
   notifyCitizen(
-    { phone: row.phoneNumber, email: row.email, name: row.fullName },
-    { type: 'escalation', referenceNumber: row.referenceNumber,
+    { phoneNumber: row.phoneNumber, email: row.email, fullName: row.fullName },
+    { referenceNumber: row.referenceNumber,
+      subject: `NileGov — Application Update: ${row.referenceNumber}`,
       message: `Your application ${row.referenceNumber} has been escalated to a supervisor due to SLA delays. We apologise for the wait and are prioritising your case.` }
   ).catch(() => {});
 
@@ -483,8 +578,9 @@ app.patch('/api/applications/:id/reassign', (req, res) => {
   const appRow = db.prepare(`SELECT fullName, referenceNumber, phoneNumber, email FROM applications WHERE id = ?`).get(req.params.id) as any;
   if (appRow) {
     notifyCitizen(
-      { phone: appRow.phoneNumber, email: appRow.email, name: appRow.fullName },
-      { type: 'reassignment', referenceNumber: appRow.referenceNumber,
+      { phoneNumber: appRow.phoneNumber, email: appRow.email, fullName: appRow.fullName },
+      { referenceNumber: appRow.referenceNumber,
+        subject: `NileGov — Application Update: ${appRow.referenceNumber}`,
         message: `Your application ${appRow.referenceNumber} has been reassigned to a different officer. It remains active in our system and will be processed promptly.` }
     ).catch(() => {});
   }
@@ -517,7 +613,11 @@ app.patch('/api/applications/:id/claim', (req, res) => {
 });
 
 app.patch('/api/applications/:id/officer-decision', (req, res) => {
+  const VALID_DECISIONS = ['approved', 'rejected', 'more_info_requested'] as const;
   const { decision, notes } = req.body;
+  if (!VALID_DECISIONS.includes(decision)) {
+    return res.status(400).json({ error: `decision must be one of: ${VALID_DECISIONS.join(', ')}` });
+  }
   const now = new Date().toISOString();
 
   const newStatus = decision === 'approved' ? 'pending_countersign'
@@ -566,6 +666,9 @@ app.patch('/api/applications/:id/officer-decision', (req, res) => {
 
 app.patch('/api/applications/:id/supervisor-decision', (req, res) => {
   const { decision, notes } = req.body;
+  if (!['approved', 'rejected'].includes(decision)) {
+    return res.status(400).json({ error: 'decision must be approved or rejected.' });
+  }
   const now = new Date().toISOString();
 
   db.prepare(`UPDATE applications SET status = ?, supervisorDecision = ?, supervisorNotes = ?, resolvedAt = ?
@@ -605,7 +708,11 @@ app.patch('/api/applications/:id/supervisor-decision', (req, res) => {
 });
 
 app.patch('/api/applications/:id/rate', (req, res) => {
-  const { rating, comment } = req.body;
+  const rating = Number(req.body.rating);
+  const comment = typeof req.body.comment === 'string' ? req.body.comment.slice(0, 500) : null;
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return res.status(400).json({ error: 'rating must be an integer between 1 and 5.' });
+  }
   const now = new Date().toISOString();
 
   db.prepare(`UPDATE applications SET rating = ?, ratingComment = ?, ratedAt = ? WHERE id = ?`)
@@ -645,8 +752,9 @@ app.patch('/api/applications/:id/citizen-response', upload.single('additionalDoc
   `).run(req.params.id, row.fullName, now);
 
   notifyCitizen(
-    { phone: row.phoneNumber, email: row.email, name: row.fullName },
-    { type: 'resubmission', referenceNumber: row.referenceNumber,
+    { phoneNumber: row.phoneNumber, email: row.email, fullName: row.fullName },
+    { referenceNumber: row.referenceNumber,
+      subject: `NileGov — Application Resubmitted: ${row.referenceNumber}`,
       message: `Your application ${row.referenceNumber} has been resubmitted with additional information and is back in the review queue.` }
   ).catch(() => {});
 
@@ -865,8 +973,13 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-// Admin: test a notification channel
+// Admin: test a notification channel — requires X-Admin-Token header
 app.post('/api/admin/test-notification', async (req, res) => {
+  const adminToken = process.env.ADMIN_TOKEN;
+  const provided = req.headers['x-admin-token'];
+  if (!adminToken || !provided || provided !== adminToken) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   const { channel, to, message } = req.body;
   if (!to || !message) return res.status(400).json({ error: 'to and message are required' });
 
@@ -900,8 +1013,9 @@ app.patch('/api/applications/:id/withdraw', (req, res) => {
   db.prepare(`INSERT INTO audit_log (applicationId, action, actorPersona, actorName, notes, createdAt) VALUES (?, 'Application withdrawn by citizen', 'citizen', ?, 'Citizen requested withdrawal before officer review.', ?)`).run(req.params.id, row.fullName, now);
   db.prepare(`INSERT INTO notifications (applicationId, type, channel, recipient, message, status, createdAt) VALUES (?, 'citizen', 'portal', ?, ?, 'simulated_sent', ?)`).run(req.params.id, row.fullName, `Your application ${row.referenceNumber} has been withdrawn as requested.`, now);
   notifyCitizen(
-    { phone: row.phoneNumber, email: row.email, name: row.fullName },
-    { type: 'withdrawal', referenceNumber: row.referenceNumber,
+    { phoneNumber: row.phoneNumber, email: row.email, fullName: row.fullName },
+    { referenceNumber: row.referenceNumber,
+      subject: `NileGov — Application Withdrawn: ${row.referenceNumber}`,
       message: `Your application ${row.referenceNumber} has been withdrawn as requested. You may submit a new application at any time.` }
   ).catch(() => {});
   res.json({ ok: true });
@@ -910,9 +1024,11 @@ app.patch('/api/applications/:id/withdraw', (req, res) => {
 // ─── ERROR HANDLER ─────────────────────────────────────────────────────────
 
 app.use((err: any, _req: any, res: any, next: any) => {
-  if (err?.code === 'LIMIT_FILE_SIZE') return res.status(413).json({ error: 'File too large. Maximum 5MB.' });
+  if (err?.code === 'LIMIT_FILE_SIZE')      return res.status(413).json({ error: 'File too large. Maximum 5MB per file.' });
   if (err?.code === 'LIMIT_UNEXPECTED_FILE') return res.status(400).json({ error: 'Unexpected file field.' });
-  if (err) { console.error('API error:', err.message); return res.status(500).json({ error: 'Internal server error.' }); }
+  if (err?.message === 'INVALID_FILE_TYPE') return res.status(400).json({ error: 'Invalid file type. Only PDF, JPEG, PNG, WebP, and GIF are accepted.' });
+  if (err?.message === 'Not allowed by CORS') return res.status(403).json({ error: 'CORS: origin not allowed.' });
+  if (err) { console.error('[API error]', err.message); return res.status(500).json({ error: 'Internal server error.' }); }
   next();
 });
 
