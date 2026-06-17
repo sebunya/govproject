@@ -1,65 +1,72 @@
-# NileGov Stack
+# NileGov Stack — Citizen Service Operational Layer
 
-NileGov Stack is a Uganda-built service delivery and case-management workflow accountability platform designed for Government Ministries, Departments, and Agencies (MDAs). It provides a structured framework to receive, assign, track, resolve, and audit citizen service requests.
+**A Uganda-built operational layer for Government service delivery**
 
----
-
-## Technical Auditing Disclaimer
-
-> [!IMPORTANT]
-> **Prototype Deployment & Integration Notice:**
-> 1. **Mocks & Simulations Only:** All external government database integrations (NIRA registry lookup, URA tax validations, UGHub message publishing) in this repository are **simulated models only**. There is no live Government network connection. Actual production interfaces require formal data sharing agreements, security reviews, and institutional onboarding.
-> 2. **Single-Node VPS Hosting:** The Hetzner deployment package included in this repository is an early-stage deployment draft intended for prototype demonstrations. Sovereign production systems for public agencies must run on approved hosting infrastructures with full security auditing, high availability clustering, and failover disaster recovery policies.
+Submission to the Ministry of ICT and National Guidance Innovator Showcase · June 2026  
+MDA: Mbarara District Local Government
 
 ---
 
-## End-to-End Workflow Demonstration
-
-NileGov Stack models the following service request lifecycle:
-1. **Citizen Request:** Citizen submits an application draft (e.g. Lost National ID replacement) with attachments.
-2. **Consent Capture:** Citizen signs a legal data-sharing authorization check.
-3. **Simulated Registry Check:** System invokes a mock NIRA gateway lookup.
-4. **Queue Allocation:** System assigns the verified request to the least-busy Case Officer.
-5. **Desk Review:** Case Officer starts the desk evaluation, triggering an SLA countdown timer.
-6. **Supervisor Review / Escalation:** Overdue cases automatically escalate to the supervisor dashboard.
-7. **Resolution Audit Trail:** State transitions are committed to a secure, append-only compliance log.
-8. **Dashboard Monitoring:** Management monitors throughput and SLA compliance on a read-only statistics dashboard.
-
----
-
-## Directory Structure
-
-```text
-Nile_Gov/
-  ├── apps/                  # Custom Frappe App code
-  │   └── nilegov_stack/
-  │       └── nilegov_stack/
-  │           ├── domain/    # Decoupled Pure Python entities & rules
-  │           ├── application/# Use-case services & abstract ports
-  │           ├── infrastructure/# DB repositories, notification & mock adapters
-  │           ├── interfaces/ # Frappe controller overrides, API pages
-  │           └── tests/      # 5-tier testing suite
-  ├── docs/                  # Architecture, specifications, and disclaimers
-  ├── deployment/            # Single-node Hetzner Compose configs & setup scripts
-  ├── pytest.ini             # Pytest paths configuration
-  ├── implementation_plan.md # Release blueprint tracking
-  ├── task.md                # Task verification checklist
-  └── walkthrough.md         # Pass verification walkthrough logs
-```
-
----
-
-## Running the Verification Suite
-
-Unit tests, use case validations, and automated static architecture fitness checks are run using `pytest` inside the local virtual environment:
+## Quick Start (Demo Setup)
 
 ```bash
-# Create local virtual environment and install pytest
-python3 -m venv .venv
-source .venv/bin/activate
-pip install pytest
-
-# Run all test suites
-pytest
+npm install            # install all dependencies
+npm run seed           # wipe & re-seed DB to camera-ready state
+npm run dev            # start API (port 3001) + UI (port 3000)
 ```
-*Tests can be executed in isolation on any machine without needing a running database or Frappe Bench environment.*
+
+- **Citizen Portal:**   http://localhost:3000/portal?persona=citizen
+- **Officer Desk:**     http://localhost:3000/desk?persona=officer
+- **Supervisor Desk:**  http://localhost:3000/supervisor?persona=supervisor
+- **Exec Dashboard:**   http://localhost:3000/dashboard?persona=leadership
+
+---
+
+## Demo Persona Switcher
+
+A gold bar at the top of every screen switches personas without login screens.
+
+| Persona | URL Parameter | Role |
+|---------|--------------|------|
+| Akello Sarah | `?persona=citizen` | Smallholder farmer / applicant |
+| Tumusiime Robert | `?persona=officer` | District Agricultural Officer |
+| Nakamya Grace | `?persona=supervisor` | Senior District Officer |
+| Executive View | `?persona=leadership` | District Leadership dashboard |
+
+---
+
+## 13-Step Demo Workflow
+
+1. Citizen portal landing page — "Apply for a Service"
+2. Service catalogue — select Cooperative Registration & Agribusiness Permit
+3. Enter NIN `CM93019100ABC1J` → Verify Identity (1.5s spinner + SIMULATED NIRA banner)
+4. NIRA data auto-fills (read-only, lock icon)
+5. Enter cooperative name + TIN → Verify Tax Status (1s spinner + SIMULATED URA banner)
+6. Tick Data Protection & Privacy Act 2019 consent checkbox
+7. Upload Cooperative Bylaws + Member Roster
+8. Review & Submit → Confirmation with reference number + SLA commitment
+9. Officer task queue shows new application with SLA countdown timers
+10. Officer review interface: applicant details, SOP checklist, UGHub Integration Spine panel
+11. Officer selects Approve → application routes to supervisor countersignature queue
+12. Supervisor countersignature queue — Nakamya reviews Tumusiime's recommendation
+13. Supervisor approves → citizen sees "Approved" status → rates service ★★★★★ → executive dashboard updates
+
+---
+
+## Technical Stack
+
+- **Backend:** Node.js 22 + built-in `node:sqlite` + Express 4 + Multer
+- **Frontend:** React 18 + Vite 5 + Tailwind CSS 3 + Recharts + React Query
+- **Database:** SQLite — persists in `/server/data/nilegov.db`
+- **Uploads:** stored in `/server/data/uploads/`
+- No Docker. No authentication providers. No native compilation required.
+
+---
+
+## Simulated Integrations (all labelled on screen)
+
+| Integration | Simulation |
+|-------------|-----------|
+| NIRA Identity API | Returns mock data for NIN `CM93019100ABC1J`. Production requires NITA-U Data Sharing Agreement. |
+| URA Tax Clearance API | Returns "Compliant" status. Production requires URA system integration via NITA-U. |
+
